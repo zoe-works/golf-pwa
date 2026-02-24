@@ -1,0 +1,42 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "hole-07-path",
+      "properties": { "courseId": "demo-course", "hole": 7, "kind": "hole_path" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [139.70010, 35.67010],
+          [139.70080, 35.67060],
+          [139.70150, 35.67110]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hole-07-green-front",
+      "properties": { "courseId": "demo-course", "hole": 7, "kind": "green_front", "label": "Green Front" },
+      "geometry": { "type": "Point", "coordinates": [139.70145, 35.67105] }
+    },
+    {
+      "type": "Feature",
+      "id": "hole-07-green-back",
+      "properties": { "courseId": "demo-course", "hole": 7, "kind": "green_back", "label": "Green Back" },
+      "geometry": { "type": "Point", "coordinates": [139.70160, 35.67120] }
+    },
+    {
+      "type": "Feature",
+      "id": "hole-07-hazard-front",
+      "properties": { "courseId": "demo-course", "hole": 7, "kind": "hazard_front", "hazardType": "bunker", "label": "Hazard Front" },
+      "geometry": { "type": "Point", "coordinates": [139.70095, 35.67080] }
+    },
+    {
+      "type": "Feature",
+      "id": "hole-07-hazard-back",
+      "properties": { "courseId": "demo-course", "hole": 7, "kind": "hazard_back", "hazardType": "bunker", "label": "Hazard Back" },
+      "geometry": { "type": "Point", "coordinates": [139.70110, 35.67095] }
+    }
+  ]
+}
