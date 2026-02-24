@@ -17,12 +17,33 @@ export class GeolocationTracker {
             timeout: 15000
         };
 
+        // Low-Pass Filter (EMA) parameters
+        let smoothedLng = null;
+        let smoothedLat = null;
+        const alpha = 0.3; // Smoothing factor (0 to 1). Lower = more smooth/delay, Higher = more responsive/jitter.
+
         // Watch position gives continuous updates when device moves
         this.watchId = navigator.geolocation.watchPosition(
             (pos) => {
+                const rawLng = pos.coords.longitude;
+                const rawLat = pos.coords.latitude;
+
+                // Apply EMA smoothing
+                if (smoothedLng === null || smoothedLat === null) {
+                    // First fix: initialize with raw values
+                    smoothedLng = rawLng;
+                    smoothedLat = rawLat;
+                } else {
+                    // Subsequent fixes: apply smoothing formula
+                    smoothedLng = alpha * rawLng + (1 - alpha) * smoothedLng;
+                    smoothedLat = alpha * rawLat + (1 - alpha) * smoothedLat;
+                }
+
                 this.onUpdate({
-                    lng: pos.coords.longitude,
-                    lat: pos.coords.latitude,
+                    lng: smoothedLng,
+                    lat: smoothedLat,
+                    rawLng: rawLng,
+                    rawLat: rawLat,
                     accuracy: pos.coords.accuracy, // meters
                 });
             },
