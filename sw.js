@@ -1,9 +1,10 @@
-const CACHE_NAME = 'golf-pwa-v4';
+const CACHE_NAME = 'golf-pwa-v5';
 const ASSETS = [
     './',
     './index.html',
     './style.css',
     './app.js',
+    './icon.png',
     './distance.js',
     './geolocation.js',
     './data/hole7.geojson',
