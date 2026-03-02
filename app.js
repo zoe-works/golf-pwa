@@ -44,6 +44,8 @@ async function init() {
     // Edit map toggle
     const btnEditToggle = document.getElementById('btn-edit-toggle');
     const btnExportData = document.getElementById('btn-export-data');
+    const btnImportData = document.getElementById('btn-import-data');
+    const importFileInput = document.getElementById('import-file-input');
     const btnResetData = document.getElementById('btn-reset-data');
 
     btnEditToggle.addEventListener('click', () => {
@@ -52,12 +54,14 @@ async function init() {
             btnEditToggle.classList.add('active');
             btnEditToggle.innerText = 'Done Editing';
             btnExportData.style.display = 'block';
+            btnImportData.style.display = 'block';
             btnResetData.style.display = 'block';
             document.getElementById('app').classList.add('editing');
         } else {
             btnEditToggle.classList.remove('active');
             btnEditToggle.innerText = 'Edit Map';
             btnExportData.style.display = 'none';
+            btnImportData.style.display = 'none';
             btnResetData.style.display = 'none';
             document.getElementById('app').classList.remove('editing');
         }
@@ -65,6 +69,43 @@ async function init() {
         if (holeSelector.value) {
             displayHole(parseInt(holeSelector.value));
         }
+    });
+
+    // Import data logic
+    btnImportData.addEventListener('click', () => {
+        importFileInput.click();
+    });
+
+    importFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                // Basic validation
+                if (importedData.type === "FeatureCollection" && importedData.features) {
+                    courseData = importedData;
+                    saveCourseData();
+                    alert("データをインポートして保存しました！");
+
+                    // Reload current hole
+                    if (holeSelector.value) {
+                        displayHole(parseInt(holeSelector.value));
+                    }
+                } else {
+                    alert("無効なデータ形式です。");
+                }
+            } catch (error) {
+                console.error("Error parsing imported JSON:", error);
+                alert("ファイルの読み込みに失敗しました。");
+            }
+        };
+        reader.readAsText(file);
+
+        // Reset input so the same file can be selected again if needed
+        importFileInput.value = '';
     });
 
     // Export / Share modified data
