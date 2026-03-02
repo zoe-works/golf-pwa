@@ -184,6 +184,57 @@ body {
     background: #1565c0;
 }
 
+/* User Marker with Heading */
+.user-marker-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+}
+
+.user-dot {
+    width: 14px;
+    height: 14px;
+    background: #1e88e5;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.user-heading-cone {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 40px solid rgba(30, 136, 229, 0.3);
+    top: -30px;
+    left: 5px;
+    transform-origin: 50% 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Tap Distance Popup/Marker */
+.tap-marker-icon {
+    background: #ff5722;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.tap-distance-label {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
 /* Floating Action Button (FAB) */
 .fab {
     position: absolute;

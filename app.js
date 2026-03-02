@@ -3,6 +3,9 @@ import { GeolocationTracker } from './geolocation.js';
 
 let map;
 let userMarker;
+let userHeading = 0;
+let tapMarker;
+let tapLine;
 let holeTargets = {}; // Stores coordinates { green_center: [lng, lat], ... }
 let currentHoleLayers = L.layerGroup();
 
@@ -23,7 +26,47 @@ async function init() {
 
     currentHoleLayers.addTo(map);
 
-    // 2. Setup UI event listeners
+    // 2. Map click listener for distance tool
+    map.on('click', (e) => {
+        if (!lastPos) return;
+        const clickedLatLng = e.latlng;
+        const userLatLng = [lastPos.lat, lastPos.lng];
+        const userCoords = [lastPos.lng, lastPos.lat];
+        const targetCoords = [clickedLatLng.lng, clickedLatLng.lat];
+
+        const meters = haversineMeters(userCoords, targetCoords);
+        const yards = metersToYardsRounded(meters);
+
+        if (!tapMarker) {
+            tapMarker = L.marker(clickedLatLng, {
+                icon: L.divIcon({
+                    className: 'tap-marker-icon',
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                })
+            }).addTo(map);
+        } else {
+            tapMarker.setLatLng(clickedLatLng);
+        }
+
+        tapMarker.bindTooltip(`<div class="tap-distance-label">${yards} yd</div>`, {
+            permanent: true,
+            direction: 'top',
+            className: 'tap-tooltip'
+        }).openTooltip();
+
+        if (!tapLine) {
+            tapLine = L.polyline([userLatLng, clickedLatLng], {
+                color: '#ff5722',
+                weight: 2,
+                dashArray: '5, 10'
+            }).addTo(map);
+        } else {
+            tapLine.setLatLngs([userLatLng, clickedLatLng]);
+        }
+    });
+
+    // 3. Setup UI event listeners
     document.getElementById('btn-start').addEventListener('click', toggleTracking);
 
     document.getElementById('btn-recenter').addEventListener('click', () => {
@@ -359,6 +402,7 @@ function toggleTracking() {
         );
         tracker.start();
         updateGpsStatus('connecting', 'Connecting...');
+        initCompass();
     }
 }
 
@@ -369,16 +413,32 @@ function updateLocationUI(pos) {
 
     // 1. Update Map Marker
     if (!userMarker) {
-        userMarker = L.circleMarker(latlng, {
-            radius: 8,
-            fillColor: '#1e88e5',
-            color: '#fff',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 1
+        const userIcon = L.divIcon({
+            className: 'user-marker-container',
+            html: `
+                <div id="user-heading-cone" class="user-heading-cone" style="transform: rotate(${userHeading}deg)"></div>
+                <div class="user-dot"></div>
+            `,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+        });
+
+        userMarker = L.marker(latlng, {
+            icon: userIcon,
+            zIndexOffset: 1000
         }).addTo(map).bindPopup("You");
     } else {
         userMarker.setLatLng(latlng);
+        // Update rotation if element exists
+        const cone = document.getElementById('user-heading-cone');
+        if (cone) {
+            cone.style.transform = `rotate(${userHeading}deg)`;
+        }
+    }
+
+    // Update tap line if it exists
+    if (tapLine) {
+        tapLine.setLatLngs([latlng, tapLine.getLatLngs()[1]]);
     }
 
     // 2. Center Map on first fix
@@ -414,6 +474,37 @@ function updateLocationUI(pos) {
 
     // 3. Update Status
     updateGpsStatus('connected', `GPS: ±${Math.round(pos.accuracy)}m`);
+}
+
+// Orientation / Compass handling
+function initCompass() {
+    if (window.DeviceOrientationEvent) {
+        // Special handling for iOS 13+
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission()
+                .then(permissionState => {
+                    if (permissionState === 'granted') {
+                        window.addEventListener('deviceorientation', handleOrientation);
+                    }
+                })
+                .catch(console.error);
+        } else {
+            window.addEventListener('deviceorientation', handleOrientation);
+        }
+    }
+}
+
+function handleOrientation(event) {
+    // alpha is the compass direction
+    let compass = event.webkitCompassHeading || event.alpha;
+    if (compass !== null && compass !== undefined) {
+        // adjust for absolute vs relative if needed? webkitCompassHeading is already absolute.
+        userHeading = compass;
+        const cone = document.getElementById('user-heading-cone');
+        if (cone) {
+            cone.style.transform = `rotate(${userHeading}deg)`;
+        }
+    }
 }
 
 function handleLocationError(err) {
