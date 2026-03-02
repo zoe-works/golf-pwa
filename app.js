@@ -6,6 +6,11 @@ let userMarker;
 let holeTargets = {}; // Stores coordinates { green_center: [lng, lat], ... }
 let currentHoleLayers = L.layerGroup();
 
+const COURSE_METADATA = {
+    'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
+    'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
+};
+
 async function init() {
     // 1. Initialize Leaflet Map
     map = L.map('map').setView([14.141, 100.951], 16);
@@ -19,13 +24,13 @@ async function init() {
     currentHoleLayers.addTo(map);
 
     // 2. Setup UI event listeners
-    document.getElementById('btn-start').addEventListener('click', startTracking);
+    document.getElementById('btn-start').addEventListener('click', toggleTracking);
 
     document.getElementById('btn-recenter').addEventListener('click', () => {
         if (lastPos) {
             map.setView([lastPos.lat, lastPos.lng], 17);
         } else {
-            startTracking();
+            toggleTracking();
         }
     });
 
@@ -157,12 +162,42 @@ async function init() {
         }
     });
 
-    // 3. Initial Load
-    await loadCourse(courseSelector.value);
+    // 3. Initial Load - Try auto-detecting nearest course
+    let initialCourse = courseSelector.value;
 
-    // 4. Auto-start tracking if possible (many browsers require user interaction, so we might just wait for the button)
-    // But we'll try to start it or at least be ready.
-    // startTracking(); // Optional: uncomment if you want auto-start
+    if ("geolocation" in navigator) {
+        updateGpsStatus('connecting', 'Finding nearest course...');
+        try {
+            const pos = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+            });
+            const nearest = findNearestCourse(pos.coords.latitude, pos.coords.longitude);
+            if (nearest) {
+                console.log(`Auto-selected nearest course: ${nearest}`);
+                courseSelector.value = nearest;
+                initialCourse = nearest;
+            }
+        } catch (err) {
+            console.log("Auto-select failed or timed out, using default.", err);
+        }
+    }
+
+    await loadCourse(initialCourse);
+}
+
+function findNearestCourse(userLat, userLng) {
+    let nearestUrl = null;
+    let minDist = Infinity;
+
+    for (const [url, meta] of Object.entries(COURSE_METADATA)) {
+        const dist = haversineMeters([userLng, userLat], [meta.lng, meta.lat]);
+        if (dist < minDist) {
+            minDist = dist;
+            nearestUrl = url;
+        }
+    }
+    // Only auto-select if within 50km
+    return minDist < 50000 ? nearestUrl : null;
 }
 
 let courseData = null;
@@ -303,22 +338,28 @@ let tracker = null;
 let lastPos = null;
 let isFirstFix = true;
 
-function startTracking() {
+function toggleTracking() {
     const btn = document.getElementById('btn-start');
-    if (btn) {
-        btn.innerText = "Tracking location...";
-        btn.disabled = true;
-    }
 
-    if (!tracker) {
+    if (tracker) {
+        // STOP
+        tracker.stop();
+        tracker = null;
+        if (btn) btn.innerText = "Start Location Tracking";
+        updateGpsStatus('disconnected', 'Tracking stopped');
+    } else {
+        // START
+        if (btn) {
+            btn.innerText = "Stop Location Tracking";
+        }
+
         tracker = new GeolocationTracker(
             (pos) => updateLocationUI(pos),
             (err) => handleLocationError(err)
         );
         tracker.start();
+        updateGpsStatus('connecting', 'Connecting...');
     }
-
-    updateGpsStatus('connecting', 'Connecting...');
 }
 
 function updateLocationUI(pos) {
@@ -379,8 +420,11 @@ function handleLocationError(err) {
     console.warn("Location error:", err);
     updateGpsStatus('disconnected', `Error: ${err.message}`);
     const btn = document.getElementById('btn-start');
-    btn.innerText = "Retry Tracking";
-    btn.disabled = false;
+    if (btn) {
+        btn.innerText = "Start Location Tracking";
+        btn.disabled = false;
+    }
+    tracker = null;
 }
 
 function updateGpsStatus(state, msg) {
