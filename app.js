@@ -44,6 +44,7 @@ async function init() {
     // Edit map toggle
     const btnEditToggle = document.getElementById('btn-edit-toggle');
     const btnExportData = document.getElementById('btn-export-data');
+    const btnResetData = document.getElementById('btn-reset-data');
 
     btnEditToggle.addEventListener('click', () => {
         isEditMode = !isEditMode;
@@ -51,11 +52,13 @@ async function init() {
             btnEditToggle.classList.add('active');
             btnEditToggle.innerText = 'Done Editing';
             btnExportData.style.display = 'block';
+            btnResetData.style.display = 'block';
             document.getElementById('app').classList.add('editing');
         } else {
             btnEditToggle.classList.remove('active');
             btnEditToggle.innerText = 'Edit Map';
             btnExportData.style.display = 'none';
+            btnResetData.style.display = 'none';
             document.getElementById('app').classList.remove('editing');
         }
         // Force redraw of current hole to apply draggable markers
@@ -64,16 +67,54 @@ async function init() {
         }
     });
 
-    // Export modified data
-    btnExportData.addEventListener('click', () => {
+    // Export / Share modified data
+    btnExportData.addEventListener('click', async () => {
         if (!courseData) return;
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(courseData, null, 2));
+        const jsonString = JSON.stringify(courseData, null, 2);
+        const fileName = currentCourseUrl.split('/').pop() || "course_data.json";
+
+        // Try Web Share API for mobile devices (iOS Safari)
+        if (navigator.share && navigator.canShare) {
+            const file = new File([jsonString], fileName, { type: 'application/json' });
+            if (navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Golf Course Data',
+                        text: 'Updated green coordinates'
+                    });
+                    return; // Successfully shared
+                } catch (err) {
+                    console.log("Share cancelled or failed", err);
+                    // Fall through to regular download
+                }
+            }
+        }
+
+        // Fallback for desktop or non-supported browsers
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", currentCourseUrl.split('/').pop() || "course_data.json");
+        downloadAnchorNode.setAttribute("download", fileName);
         document.body.appendChild(downloadAnchorNode); // required for firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
+    });
+
+    // Reset local data to defaults
+    btnResetData.addEventListener('click', async () => {
+        if (confirm("デフォルトのマップデータに戻しますか？ローカルの編集内容は消去されます。")) {
+            localStorage.removeItem(`golf-course-${currentCourseUrl}`);
+            await loadCourse(currentCourseUrl);
+
+            // Turn off edit mode
+            isEditMode = false;
+            btnEditToggle.classList.remove('active');
+            btnEditToggle.innerText = 'Edit Map';
+            btnExportData.style.display = 'none';
+            btnResetData.style.display = 'none';
+            document.getElementById('app').classList.remove('editing');
+        }
     });
 
     // 3. Initial Load
