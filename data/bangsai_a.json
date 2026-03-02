@@ -1,0 +1,150 @@
+{
+    "type": "FeatureCollection",
+    "name": "Bangsai Country Club Course A",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 1,
+                "par": 4,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4560,
+                    14.1700
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 2,
+                "par": 4,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4550,
+                    14.1720
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 3,
+                "par": 3,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4530,
+                    14.1730
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 4,
+                "par": 4,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4520,
+                    14.1740
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 5,
+                "par": 4,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4510,
+                    14.1720
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 6,
+                "par": 5,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4520,
+                    14.1710
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 7,
+                "par": 3,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4540,
+                    14.1700
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 8,
+                "par": 4,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4550,
+                    14.1680
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": 9,
+                "par": 5,
+                "kind": "green_center",
+                "description": "Approximate Green Center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.4570,
+                    14.1690
+                ]
+            }
+        }
+    ]
+}
