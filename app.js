@@ -21,6 +21,14 @@ async function init() {
     // 2. Setup UI event listeners
     document.getElementById('btn-start').addEventListener('click', startTracking);
 
+    document.getElementById('btn-recenter').addEventListener('click', () => {
+        if (lastPos) {
+            map.setView([lastPos.lat, lastPos.lng], 17);
+        } else {
+            startTracking();
+        }
+    });
+
     const courseSelector = document.getElementById('course-selector');
     const holeSelector = document.getElementById('hole-selector');
 
@@ -35,6 +43,10 @@ async function init() {
 
     // 3. Initial Load
     await loadCourse(courseSelector.value);
+
+    // 4. Auto-start tracking if possible (many browsers require user interaction, so we might just wait for the button)
+    // But we'll try to start it or at least be ready.
+    // startTracking(); // Optional: uncomment if you want auto-start
 }
 
 let courseData = null;
@@ -115,22 +127,29 @@ function displayHole(holeNumber) {
 
 // Global tracker instance
 let tracker = null;
+let lastPos = null;
+let isFirstFix = true;
 
 function startTracking() {
     const btn = document.getElementById('btn-start');
-    btn.innerText = "Tracking location...";
-    btn.disabled = true;
+    if (btn) {
+        btn.innerText = "Tracking location...";
+        btn.disabled = true;
+    }
 
-    tracker = new GeolocationTracker(
-        (pos) => updateLocationUI(pos),
-        (err) => handleLocationError(err)
-    );
-    tracker.start();
+    if (!tracker) {
+        tracker = new GeolocationTracker(
+            (pos) => updateLocationUI(pos),
+            (err) => handleLocationError(err)
+        );
+        tracker.start();
+    }
 
     updateGpsStatus('connecting', 'Connecting...');
 }
 
 function updateLocationUI(pos) {
+    lastPos = pos;
     const latlng = [pos.lat, pos.lng];
     const userCoords = [pos.lng, pos.lat]; // [lng, lat] for Haversine
 
@@ -146,6 +165,12 @@ function updateLocationUI(pos) {
         }).addTo(map).bindPopup("You");
     } else {
         userMarker.setLatLng(latlng);
+    }
+
+    // 2. Center Map on first fix
+    if (isFirstFix) {
+        map.setView(latlng, 17);
+        isFirstFix = false;
     }
 
     // 2. Calculate Distances

@@ -178,3 +178,34 @@ body {
 .btn-primary:active {
     background: #1565c0;
 }
+
+/* Floating Action Button (FAB) */
+.fab {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    background-color: #1e88e5;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    pointer-events: auto;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.fab:active {
+    transform: scale(0.9);
+    background-color: #1565c0;
+}
+
+.fab svg {
+    width: 28px;
+    height: 28px;
+}
