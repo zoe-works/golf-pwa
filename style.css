@@ -316,3 +316,7 @@ body {
     border: 3px solid #f44336;
     box-sizing: border-box;
 }
+
+.hidden {
+    display: none !important;
+}
