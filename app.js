@@ -37,8 +37,7 @@ async function init() {
     });
 
     holeSelector.addEventListener('change', () => {
-        const selectedHole = parseInt(holeSelector.value);
-        displayHole(selectedHole);
+        displayHole(holeSelector.value);
     });
 
     // Edit map toggle
@@ -67,7 +66,7 @@ async function init() {
         }
         // Force redraw of current hole to apply draggable markers
         if (holeSelector.value) {
-            displayHole(parseInt(holeSelector.value));
+            displayHole(holeSelector.value);
         }
     });
 
@@ -92,7 +91,7 @@ async function init() {
 
                     // Reload current hole
                     if (holeSelector.value) {
-                        displayHole(parseInt(holeSelector.value));
+                        displayHole(holeSelector.value);
                     }
                 } else {
                     alert("無効なデータ形式です。");
@@ -189,12 +188,13 @@ async function loadCourse(url) {
         holeSelector.innerHTML = '';
 
         // Extract unique hole numbers
-        const holes = [...new Set(courseData.features.map(f => f.properties.hole))].sort((a, b) => a - b);
+        const holes = [...new Set(courseData.features.map(f => f.properties.hole))];
+        holes.sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
 
         holes.forEach(hole => {
             const opt = document.createElement('option');
             opt.value = hole;
-            opt.innerText = `Hole ${hole}`;
+            opt.innerText = String(hole).match(/^[A-Z]-/) ? hole : `Hole ${hole}`;
             holeSelector.appendChild(opt);
         });
 
@@ -218,7 +218,7 @@ function displayHole(holeNumber) {
     currentHoleLayers.clearLayers();
     holeTargets = {};
 
-    const holeFeatures = courseData.features.filter(f => f.properties.hole === holeNumber);
+    const holeFeatures = courseData.features.filter(f => String(f.properties.hole) === String(holeNumber));
 
     // Custom style for the hole path
     const holeStyle = {
