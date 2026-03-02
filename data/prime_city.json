@@ -2,23 +2,311 @@
   "type": "FeatureCollection",
   "name": "Prime City Golf Club",
   "features": [
-    { "type": "Feature", "properties": { "hole": 1, "kind": "green_center", "label": "Green 1 Center", "par": 4, "yards": 389 }, "geometry": { "type": "Point", "coordinates": [100.94318, 14.14422] } },
-    { "type": "Feature", "properties": { "hole": 2, "kind": "green_center", "label": "Green 2 Center", "par": 5, "yards": 487 }, "geometry": { "type": "Point", "coordinates": [100.94051, 14.14702] } },
-    { "type": "Feature", "properties": { "hole": 3, "kind": "green_center", "label": "Green 3 Center", "par": 4, "yards": 377 }, "geometry": { "type": "Point", "coordinates": [100.94313, 14.14881] } },
-    { "type": "Feature", "properties": { "hole": 4, "kind": "green_center", "label": "Green 4 Center", "par": 3, "yards": 150 }, "geometry": { "type": "Point", "coordinates": [100.94582, 14.14912] } },
-    { "type": "Feature", "properties": { "hole": 5, "kind": "green_center", "label": "Green 5 Center", "par": 4, "yards": 398 }, "geometry": { "type": "Point", "coordinates": [100.95071, 14.14762] } },
-    { "type": "Feature", "properties": { "hole": 6, "kind": "green_center", "label": "Green 6 Center", "par": 5, "yards": 489 }, "geometry": { "type": "Point", "coordinates": [100.95421, 14.14472] } },
-    { "type": "Feature", "properties": { "hole": 7, "kind": "green_center", "label": "Green 7 Center", "par": 4, "yards": 379 }, "geometry": { "type": "Point", "coordinates": [100.95031, 14.14232] } },
-    { "type": "Feature", "properties": { "hole": 8, "kind": "green_center", "label": "Green 8 Center", "par": 3, "yards": 150 }, "geometry": { "type": "Point", "coordinates": [100.95021, 14.14101] } },
-    { "type": "Feature", "properties": { "hole": 9, "kind": "green_center", "label": "Green 9 Center", "par": 4, "yards": 369 }, "geometry": { "type": "Point", "coordinates": [100.94721, 14.14412] } },
-    { "type": "Feature", "properties": { "hole": 10, "kind": "green_center", "label": "Green 10 Center", "par": 4, "yards": 354 }, "geometry": { "type": "Point", "coordinates": [100.94251, 14.13862] } },
-    { "type": "Feature", "properties": { "hole": 11, "kind": "green_center", "label": "Green 11 Center", "par": 5, "yards": 526 }, "geometry": { "type": "Point", "coordinates": [100.94121, 14.14491] } },
-    { "type": "Feature", "properties": { "hole": 12, "kind": "green_center", "label": "Green 12 Center", "par": 4, "yards": 384 }, "geometry": { "type": "Point", "coordinates": [100.94421, 14.14652] } },
-    { "type": "Feature", "properties": { "hole": 13, "kind": "green_center", "label": "Green 13 Center", "par": 3, "yards": 175 }, "geometry": { "type": "Point", "coordinates": [100.95021, 14.14441] } },
-    { "type": "Feature", "properties": { "hole": 14, "kind": "green_center", "label": "Green 14 Center", "par": 4, "yards": 371 }, "geometry": { "type": "Point", "coordinates": [100.94821, 14.14612] } },
-    { "type": "Feature", "properties": { "hole": 15, "kind": "green_center", "label": "Green 15 Center", "par": 5, "yards": 463 }, "geometry": { "type": "Point", "coordinates": [100.95381, 14.14202] } },
-    { "type": "Feature", "properties": { "hole": 16, "kind": "green_center", "label": "Green 16 Center", "par": 4, "yards": 337 }, "geometry": { "type": "Point", "coordinates": [100.94551, 14.14062] } },
-    { "type": "Feature", "properties": { "hole": 17, "kind": "green_center", "label": "Green 17 Center", "par": 3, "yards": 171 }, "geometry": { "type": "Point", "coordinates": [100.94221, 14.14041] } },
-    { "type": "Feature", "properties": { "hole": 18, "kind": "green_center", "label": "Green 18 Center", "par": 4, "yards": 393 }, "geometry": { "type": "Point", "coordinates": [100.94711, 14.14322] } }
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 1,
+        "kind": "green_center",
+        "label": "Green 1 Center",
+        "par": 4,
+        "yards": 379
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94318,
+          14.14422
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 2,
+        "kind": "green_center",
+        "label": "Green 2 Center",
+        "par": 5,
+        "yards": 487
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94051,
+          14.14702
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 3,
+        "kind": "green_center",
+        "label": "Green 3 Center",
+        "par": 4,
+        "yards": 377
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94313,
+          14.14881
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 4,
+        "kind": "green_center",
+        "label": "Green 4 Center",
+        "par": 3,
+        "yards": 150
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94582,
+          14.14912
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 5,
+        "kind": "green_center",
+        "label": "Green 5 Center",
+        "par": 4,
+        "yards": 398
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.95071,
+          14.14762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 6,
+        "kind": "green_center",
+        "label": "Green 6 Center",
+        "par": 5,
+        "yards": 489
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.95421,
+          14.14472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 7,
+        "kind": "green_center",
+        "label": "Green 7 Center",
+        "par": 4,
+        "yards": 379
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.95031,
+          14.14232
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 8,
+        "kind": "green_center",
+        "label": "Green 8 Center",
+        "par": 3,
+        "yards": 150
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.95021,
+          14.14101
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 9,
+        "kind": "green_center",
+        "label": "Green 9 Center",
+        "par": 4,
+        "yards": 369
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94721,
+          14.14412
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 10,
+        "kind": "green_center",
+        "label": "Green 10 Center",
+        "par": 4,
+        "yards": 354
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94251,
+          14.13862
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 11,
+        "kind": "green_center",
+        "label": "Green 11 Center",
+        "par": 5,
+        "yards": 526
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94121,
+          14.14491
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 12,
+        "kind": "green_center",
+        "label": "Green 12 Center",
+        "par": 4,
+        "yards": 384
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94421,
+          14.14652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 13,
+        "kind": "green_center",
+        "label": "Green 13 Center",
+        "par": 3,
+        "yards": 175
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.95021,
+          14.14441
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 14,
+        "kind": "green_center",
+        "label": "Green 14 Center",
+        "par": 4,
+        "yards": 371
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94821,
+          14.14612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 15,
+        "kind": "green_center",
+        "label": "Green 15 Center",
+        "par": 5,
+        "yards": 463
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.95381,
+          14.14202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 16,
+        "kind": "green_center",
+        "label": "Green 16 Center",
+        "par": 4,
+        "yards": 337
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94551,
+          14.14062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 17,
+        "kind": "green_center",
+        "label": "Green 17 Center",
+        "par": 3,
+        "yards": 171
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94221,
+          14.14041
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 18,
+        "kind": "green_center",
+        "label": "Green 18 Center",
+        "par": 4,
+        "yards": 393
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.94711,
+          14.14322
+        ]
+      }
+    }
   ]
 }
