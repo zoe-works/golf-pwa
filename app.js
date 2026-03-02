@@ -41,6 +41,41 @@ async function init() {
         displayHole(selectedHole);
     });
 
+    // Edit map toggle
+    const btnEditToggle = document.getElementById('btn-edit-toggle');
+    const btnExportData = document.getElementById('btn-export-data');
+
+    btnEditToggle.addEventListener('click', () => {
+        isEditMode = !isEditMode;
+        if (isEditMode) {
+            btnEditToggle.classList.add('active');
+            btnEditToggle.innerText = 'Done Editing';
+            btnExportData.style.display = 'block';
+            document.getElementById('app').classList.add('editing');
+        } else {
+            btnEditToggle.classList.remove('active');
+            btnEditToggle.innerText = 'Edit Map';
+            btnExportData.style.display = 'none';
+            document.getElementById('app').classList.remove('editing');
+        }
+        // Force redraw of current hole to apply draggable markers
+        if (holeSelector.value) {
+            displayHole(parseInt(holeSelector.value));
+        }
+    });
+
+    // Export modified data
+    btnExportData.addEventListener('click', () => {
+        if (!courseData) return;
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(courseData, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", currentCourseUrl.split('/').pop() || "course_data.json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    });
+
     // 3. Initial Load
     await loadCourse(courseSelector.value);
 
@@ -50,19 +85,29 @@ async function init() {
 }
 
 let courseData = null;
+let currentCourseUrl = null;
+let isEditMode = false;
 
 async function loadCourse(url) {
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-        courseData = data;
+        currentCourseUrl = url;
+
+        // Check local storage first
+        const savedData = localStorage.getItem(`golf-course-${url}`);
+        if (savedData) {
+            courseData = JSON.parse(savedData);
+            console.log("Loaded course from local storage");
+        } else {
+            const response = await fetch(url);
+            courseData = await response.json();
+        }
 
         // Populate hole selector
         const holeSelector = document.getElementById('hole-selector');
         holeSelector.innerHTML = '';
 
         // Extract unique hole numbers
-        const holes = [...new Set(data.features.map(f => f.properties.hole))].sort((a, b) => a - b);
+        const holes = [...new Set(courseData.features.map(f => f.properties.hole))].sort((a, b) => a - b);
 
         holes.forEach(hole => {
             const opt = document.createElement('option');
@@ -77,6 +122,13 @@ async function loadCourse(url) {
         }
     } catch (error) {
         console.error("Error loading course data", error);
+    }
+}
+
+function saveCourseData() {
+    if (courseData && currentCourseUrl) {
+        localStorage.setItem(`golf-course-${currentCourseUrl}`, JSON.stringify(courseData));
+        console.log(`Saved modified data for ${currentCourseUrl} to local storage.`);
     }
 }
 
@@ -101,19 +153,58 @@ function displayHole(holeNumber) {
             const kind = feature.properties.kind;
             holeTargets[kind] = feature.geometry.coordinates;
 
-            let color = '#333';
-            let radius = 6;
-            if (kind.startsWith('green')) color = '#43a047';
-            if (kind.startsWith('hazard')) color = '#f9a825';
+            if (kind.startsWith('green')) {
+                // If edit mode is on, create a draggable marker with a custom divIcon
+                if (isEditMode) {
+                    const icon = L.divIcon({
+                        className: 'editable-marker',
+                        html: `<div style="width: 16px; height: 16px; background: #f44336; border: 2px solid white; border-radius: 50%;"></div>`,
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8]
+                    });
 
-            return L.circleMarker(latlng, {
-                radius: radius,
-                fillColor: color,
-                color: '#fff',
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            }).bindPopup(feature.properties.label || kind);
+                    const marker = L.marker(latlng, {
+                        icon: icon,
+                        draggable: true
+                    }).bindPopup(feature.properties.label || kind);
+
+                    marker.on('dragend', function (event) {
+                        const newPos = event.target.getLatLng();
+                        // Update feature coordinates [lng, lat]
+                        feature.geometry.coordinates = [newPos.lng, newPos.lat];
+                        // Update holeTargets for immediate distance recalc
+                        holeTargets[kind] = [newPos.lng, newPos.lat];
+                        // Save to local storage
+                        saveCourseData();
+                        // Recalculate distances if we have a user position
+                        if (lastPos) updateLocationUI(lastPos);
+                    });
+
+                    return marker;
+                } else {
+                    // Normal display mode
+                    return L.circleMarker(latlng, {
+                        radius: 6,
+                        fillColor: '#43a047',
+                        color: '#fff',
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).bindPopup(feature.properties.label || kind);
+                }
+            } else if (kind.startsWith('hazard')) {
+                return L.circleMarker(latlng, {
+                    radius: 6,
+                    fillColor: '#f9a825',
+                    color: '#fff',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).bindPopup(feature.properties.label || kind);
+            }
+
+            // Fallback
+            return L.circleMarker(latlng);
         }
     });
 

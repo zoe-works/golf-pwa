@@ -25,7 +25,6 @@
             <div id="top-bar">
                 <select id="course-selector">
                     <option value="data/prime_city.json">Prime City & Golf</option>
-                    <option value="data/hole7.geojson">Demo Hole 7</option>
                 </select>
                 <select id="hole-selector">
                     <!-- Options will be populated dynamically -->
@@ -42,6 +41,12 @@
                         d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z" />
                 </svg>
             </button>
+
+            <!-- Edit Mode Controls -->
+            <div id="edit-controls">
+                <button id="btn-edit-toggle" class="edit-btn">Edit Map</button>
+                <button id="btn-export-data" class="edit-btn secondary" style="display: none;">Export</button>
+            </div>
         </div>
 
         <div id="distance-panel">
