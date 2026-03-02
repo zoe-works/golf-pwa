@@ -3,74 +3,113 @@ import { GeolocationTracker } from './geolocation.js';
 
 let map;
 let userMarker;
-let holeTargets = {}; // Stores coordinates { green_front: [lng, lat], ... }
+let holeTargets = {}; // Stores coordinates { green_center: [lng, lat], ... }
+let currentHoleLayers = L.layerGroup();
 
 async function init() {
     // 1. Initialize Leaflet Map
-    // Start with a generic center, will adjust when GeoJSON loads
-    map = L.map('map').setView([35.670, 139.700], 16);
+    map = L.map('map').setView([14.141, 100.951], 16);
 
-    // Add standard OSM tiles (Since it's MVP, free without API key)
+    // Add standard OSM tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    // 2. Load Course Data (Hole 7)
-    await loadHoleData('data/hole7.geojson');
+    currentHoleLayers.addTo(map);
 
-    // 3. Setup UI event listeners
+    // 2. Setup UI event listeners
     document.getElementById('btn-start').addEventListener('click', startTracking);
+
+    const courseSelector = document.getElementById('course-selector');
+    const holeSelector = document.getElementById('hole-selector');
+
+    courseSelector.addEventListener('change', async () => {
+        await loadCourse(courseSelector.value);
+    });
+
+    holeSelector.addEventListener('change', () => {
+        const selectedHole = parseInt(holeSelector.value);
+        displayHole(selectedHole);
+    });
+
+    // 3. Initial Load
+    await loadCourse(courseSelector.value);
 }
 
-async function loadHoleData(url) {
+let courseData = null;
+
+async function loadCourse(url) {
     try {
         const response = await fetch(url);
         const data = await response.json();
+        courseData = data;
 
-        // Reset targets
-        holeTargets = {};
+        // Populate hole selector
+        const holeSelector = document.getElementById('hole-selector');
+        holeSelector.innerHTML = '';
 
-        // Custom style for the hole path
-        const holeStyle = {
-            color: '#43a047',
-            weight: 4,
-            opacity: 0.8
-        };
+        // Extract unique hole numbers
+        const holes = [...new Set(data.features.map(f => f.properties.hole))].sort((a, b) => a - b);
 
-        const geoJsonLayer = L.geoJSON(data, {
-            style: function (feature) {
-                if (feature.properties.kind === 'hole_path') return holeStyle;
-            },
-            pointToLayer: function (feature, latlng) {
-                // Find which target this point represents
-                const kind = feature.properties.kind;
+        holes.forEach(hole => {
+            const opt = document.createElement('option');
+            opt.value = hole;
+            opt.innerText = `Hole ${hole}`;
+            holeSelector.appendChild(opt);
+        });
 
-                // Store coordinates (GeoJSON is lng,lat but Leaflet prefers lat,lng internally, we store the original lng,lat array for our distance func)
-                holeTargets[kind] = feature.geometry.coordinates;
-
-                // Visual markers for targets
-                let color = '#333';
-                let radius = 6;
-                if (kind.startsWith('green')) color = '#43a047';
-                if (kind.startsWith('hazard')) color = '#f9a825';
-
-                return L.circleMarker(latlng, {
-                    radius: radius,
-                    fillColor: color,
-                    color: '#fff',
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                }).bindPopup(feature.properties.label);
-            }
-        }).addTo(map);
-
-        // Zoom to fit the hole
-        map.fitBounds(geoJsonLayer.getBounds(), { padding: [20, 20] });
-
+        // Display first hole
+        if (holes.length > 0) {
+            displayHole(holes[0]);
+        }
     } catch (error) {
-        console.error("Error loading GeoJSON", error);
+        console.error("Error loading course data", error);
+    }
+}
+
+function displayHole(holeNumber) {
+    currentHoleLayers.clearLayers();
+    holeTargets = {};
+
+    const holeFeatures = courseData.features.filter(f => f.properties.hole === holeNumber);
+
+    // Custom style for the hole path
+    const holeStyle = {
+        color: '#43a047',
+        weight: 4,
+        opacity: 0.8
+    };
+
+    const geoJsonLayer = L.geoJSON(holeFeatures, {
+        style: function (feature) {
+            if (feature.properties.kind === 'hole_path') return holeStyle;
+        },
+        pointToLayer: function (feature, latlng) {
+            const kind = feature.properties.kind;
+            holeTargets[kind] = feature.geometry.coordinates;
+
+            let color = '#333';
+            let radius = 6;
+            if (kind.startsWith('green')) color = '#43a047';
+            if (kind.startsWith('hazard')) color = '#f9a825';
+
+            return L.circleMarker(latlng, {
+                radius: radius,
+                fillColor: color,
+                color: '#fff',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).bindPopup(feature.properties.label || kind);
+        }
+    });
+
+    currentHoleLayers.addLayer(geoJsonLayer);
+
+    // Zoom to fit the hole
+    if (geoJsonLayer.getBounds().isValid()) {
+        map.fitBounds(geoJsonLayer.getBounds(), { padding: [50, 50] });
     }
 }
 
@@ -99,36 +138,37 @@ function updateLocationUI(pos) {
     if (!userMarker) {
         userMarker = L.circleMarker(latlng, {
             radius: 8,
-            fillColor: '#1e88e5', // blue point
+            fillColor: '#1e88e5',
             color: '#fff',
             weight: 2,
             opacity: 1,
             fillOpacity: 1
         }).addTo(map).bindPopup("You");
-        // map.setView(latlng, 17); // Optional: Pan map to user on first fix
     } else {
         userMarker.setLatLng(latlng);
     }
 
     // 2. Calculate Distances
     const distMap = {
+        'green_center': 'dist-green-center',
         'green_front': 'dist-green-front',
         'green_back': 'dist-green-back',
         'hazard_front': 'dist-hazard-front',
         'hazard_back': 'dist-hazard-back',
     };
 
-    for (const [kind, elemId] of Object.entries(distMap)) {
-        if (holeTargets[kind]) {
-            const targetCoords = holeTargets[kind]; // [lng, lat]
-            const meters = haversineMeters(userCoords, targetCoords);
-            const yards = metersToYardsRounded(meters);
+    const accuracyPrefix = pos.accuracy > 20 ? '± ' : '';
 
-            const el = document.getElementById(elemId);
-            if (el) {
-                // Include ± precision based on GPS accuracy. If accuracy > 20m, add "±" for context.
-                const accuracyPrefix = pos.accuracy > 20 ? '± ' : '';
+    for (const [kind, elemId] of Object.entries(distMap)) {
+        const el = document.getElementById(elemId);
+        if (el) {
+            if (holeTargets[kind]) {
+                const targetCoords = holeTargets[kind]; // [lng, lat]
+                const meters = haversineMeters(userCoords, targetCoords);
+                const yards = metersToYardsRounded(meters);
                 el.innerText = `${accuracyPrefix}${yards} yd`;
+            } else {
+                el.innerText = "-- yd";
             }
         }
     }
@@ -152,3 +192,4 @@ function updateGpsStatus(state, msg) {
 
 // Boot up
 document.addEventListener('DOMContentLoaded', init);
+

@@ -16,11 +16,14 @@
         <div id="map-container">
             <div id="map"></div>
 
-            <!-- Top floating overlay for hole selection -->
+            <!-- Top floating overlay for course and hole selection -->
             <div id="top-bar">
+                <select id="course-selector">
+                    <option value="data/prime_city.json">Prime City & Golf</option>
+                    <option value="data/hole7.geojson">Demo Hole 7</option>
+                </select>
                 <select id="hole-selector">
-                    <option value="7">Hole 7</option>
-                    <!-- Additional holes would go here -->
+                    <!-- Options will be populated dynamically -->
                 </select>
                 <div id="gps-status" class="status-indicator">
                     <span class="dot disconnected"></span> GPS: Waiting...
@@ -29,6 +32,10 @@
         </div>
 
         <div id="distance-panel">
+            <div class="distance-row priority">
+                <div class="target-label green">Green Center</div>
+                <div class="target-value" id="dist-green-center">-- yd</div>
+            </div>
             <div class="distance-row">
                 <div class="target-label green">Green Front</div>
                 <div class="target-value" id="dist-green-front">-- yd</div>

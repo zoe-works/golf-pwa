@@ -49,10 +49,11 @@ body {
     /* Let clicks pass through except on children */
 }
 
+#course-selector,
 #hole-selector {
     pointer-events: auto;
-    font-size: 16px;
-    padding: 8px 16px;
+    font-size: 14px;
+    padding: 8px 12px;
     border-radius: 20px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background: white;
@@ -61,6 +62,12 @@ body {
     outline: none;
     -webkit-appearance: none;
     appearance: none;
+    margin-right: 8px;
+}
+
+#course-selector {
+    max-width: 150px;
+    text-overflow: ellipsis;
 }
 
 #gps-status {
