@@ -8,13 +8,13 @@
                 "hole": 1,
                 "par": 4,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4560,
-                    14.1700
+                    100.46337,
+                    14.21147
                 ]
             }
         },
@@ -24,13 +24,13 @@
                 "hole": 2,
                 "par": 4,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4550,
-                    14.1720
+                    100.45716,
+                    14.21235
                 ]
             }
         },
@@ -40,13 +40,13 @@
                 "hole": 3,
                 "par": 3,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4530,
-                    14.1730
+                    100.46609,
+                    14.21375
                 ]
             }
         },
@@ -56,13 +56,13 @@
                 "hole": 4,
                 "par": 4,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4520,
-                    14.1740
+                    100.46280,
+                    14.21357
                 ]
             }
         },
@@ -72,13 +72,13 @@
                 "hole": 5,
                 "par": 4,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4510,
-                    14.1720
+                    100.46328,
+                    14.21408
                 ]
             }
         },
@@ -88,13 +88,13 @@
                 "hole": 6,
                 "par": 5,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4520,
-                    14.1710
+                    100.46244,
+                    14.21404
                 ]
             }
         },
@@ -102,15 +102,15 @@
             "type": "Feature",
             "properties": {
                 "hole": 7,
-                "par": 3,
+                "par": 4,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4540,
-                    14.1700
+                    100.46694,
+                    14.21147
                 ]
             }
         },
@@ -120,13 +120,13 @@
                 "hole": 8,
                 "par": 4,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4550,
-                    14.1680
+                    100.47683,
+                    14.20958
                 ]
             }
         },
@@ -134,15 +134,15 @@
             "type": "Feature",
             "properties": {
                 "hole": 9,
-                "par": 5,
+                "par": 4,
                 "kind": "green_center",
-                "description": "Approximate Green Center"
+                "description": "Green Center"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    100.4570,
-                    14.1690
+                    100.46654,
+                    14.20986
                 ]
             }
         }
