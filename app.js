@@ -10,10 +10,10 @@ async function init() {
     // 1. Initialize Leaflet Map
     map = L.map('map').setView([14.141, 100.951], 16);
 
-    // Add standard OSM tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
+    // Add Google Maps Hybrid tiles (Satellite + Labels)
+    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        attribution: 'Map data &copy; <a href="https://www.google.com/maps">Google</a>'
     }).addTo(map);
 
     currentHoleLayers.addTo(map);
