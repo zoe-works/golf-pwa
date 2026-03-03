@@ -396,6 +396,35 @@ body {
     color: white;
 }
 
+/* Floating Action Buttons */
+.fab {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.2s;
+}
+
+.btn-recenter {
+    top: 90px;
+    left: 20px;
+    background-color: white;
+    color: #333;
+    padding: 10px;
+}
+
+.btn-recenter:active {
+    background-color: #f0f0f0;
+}
+
 /* Record Shot FAB */
 .btn-record-shot {
     bottom: 90px;
@@ -413,14 +442,18 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 2000;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .modal-content {
