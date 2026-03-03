@@ -24,6 +24,7 @@ const COURSE_METADATA = {
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
     map = L.map('map', {
+        zoomControl: false,
         rotate: true,
         touchRotate: true,
         rotateControl: {

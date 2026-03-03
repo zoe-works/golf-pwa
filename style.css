@@ -414,11 +414,10 @@ body {
 }
 
 .btn-recenter {
-    top: 90px;
-    left: 20px;
+    bottom: 160px;
+    right: 20px;
     background-color: white;
     color: #333;
-    padding: 10px;
 }
 
 .btn-recenter:active {
@@ -442,8 +441,10 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.6);
     z-index: 9999;
     display: flex;
