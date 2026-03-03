@@ -218,11 +218,14 @@ body {
 
     /* 60 degree fan (from -30 to +30 relative to top) */
     background: conic-gradient(from 330deg at 50% 100%,
-            rgba(66, 133, 244, 0) 0deg,
-            rgba(66, 133, 244, 0.4) 15deg,
-            rgba(66, 133, 244, 0.7) 30deg,
-            rgba(66, 133, 244, 0.4) 45deg,
-            rgba(66, 133, 244, 0) 60deg,
+            transparent 0deg,
+            rgba(66, 133, 244, 0) 1deg,
+            rgba(66, 133, 244, 0.8) 4deg,
+            rgba(66, 133, 244, 0.15) 15deg,
+            rgba(66, 133, 244, 0.05) 30deg,
+            rgba(66, 133, 244, 0.15) 45deg,
+            rgba(66, 133, 244, 0.8) 56deg,
+            rgba(66, 133, 244, 0) 59deg,
             transparent 60deg);
 
     /* Smooth radial fade out */
