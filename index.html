@@ -56,8 +56,13 @@
                 <button id="btn-reset-data" class="edit-btn danger" style="display: none;">Reset</button>
             </div>
 
-            <div id="gps-status" class="status-indicator">
-                <span class="dot disconnected"></span> GPS: Waiting...
+            <div id="top-indicators">
+                <div id="gps-status" class="status-indicator">
+                    <span class="dot disconnected"></span> GPS: Waiting...
+                </div>
+                <div id="hole-status" class="status-indicator" style="display: none;">
+                    Hole <span id="ui-current-hole">1</span> &nbsp;|&nbsp; Par <span id="ui-current-par">4</span>
+                </div>
             </div>
         </div>
 
@@ -83,11 +88,10 @@
                 <div class="target-value" id="dist-hazard-back">-- yd</div>
             </div>
 
-            <div class="score-summary-bar" id="score-summary-bar" style="display: none;">
-                <div class="score-info">Hole <span id="ui-current-hole">1</span> | Par <span
-                        id="ui-current-par">4</span> | Score: <span id="ui-current-score" class="score-value">0</span>
-                </div>
-                <button id="btn-finish-hole" class="btn-secondary btn-small">Finish Hole</button>
+            <div class="score-summary-bar" id="score-summary-bar"
+                style="display: none; justify-content: space-between; gap: 10px;">
+                <button id="btn-finish-hole" class="btn-secondary btn-small" style="flex: 1;">Hole out</button>
+                <button id="btn-round-finish" class="btn-primary btn-small" style="flex: 1;">Round finish</button>
             </div>
 
             <button id="btn-start" class="btn-primary">Start Location Tracking</button>
@@ -189,8 +193,10 @@
                 <div id="scorecard-body" class="scorecard-scrollable">
                     <!-- Dynamic table goes here -->
                 </div>
-                <div class="modal-actions">
-                    <button id="btn-export-ai" class="btn-primary">Copy for AI Analysis</button>
+                <div class="modal-actions" style="display: flex; gap: 10px;">
+                    <button id="btn-save-round" class="btn-primary" style="flex: 2;">Save Results</button>
+                    <button id="btn-export-ai" class="btn-secondary"
+                        style="flex: 1; padding: 12px 5px; font-size: 13px;">Copy AI Text</button>
                 </div>
             </div>
         </div>

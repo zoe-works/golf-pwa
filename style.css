@@ -76,12 +76,18 @@ body {
     text-overflow: ellipsis;
 }
 
-#gps-status {
+#top-indicators {
     position: absolute;
     bottom: 15px;
     left: 15px;
     z-index: 1001;
     pointer-events: auto;
+    display: flex;
+    gap: 8px;
+}
+
+#gps-status,
+#hole-status {
     background: rgba(255, 255, 255, 0.9);
     padding: 6px 12px;
     border-radius: 20px;

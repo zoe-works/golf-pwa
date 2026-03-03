@@ -122,6 +122,7 @@ async function init() {
             map.setView([lastPos.lat, lastPos.lng], 17);
             // Re-enable heading up on recenter
             isHeadingUp = true;
+            document.getElementById('btn-recenter').classList.add('active');
             if (userHeading) map.setBearing(360 - userHeading);
         } else {
             toggleTracking();
@@ -131,6 +132,7 @@ async function init() {
     // Disable auto-rotation if user manually rotates the map
     map.on('rotatestart', () => {
         isHeadingUp = false;
+        document.getElementById('btn-recenter').classList.remove('active');
     });
 
     // Intercept clicking on Leaflet's compass control to lock heading instead of reverting to North
@@ -140,6 +142,7 @@ async function init() {
             e.preventDefault();
             // User requested: "Lock the map in THAT direction"
             isHeadingUp = false; // Disable auto tracking to lock it in place
+            document.getElementById('btn-recenter').classList.remove('active');
         }
     }, true); // capture phase
 
@@ -241,14 +244,33 @@ async function init() {
     document.getElementById('btn-save-hole').addEventListener('click', finalizeHole);
 
     // Scorecard Summary
-    document.getElementById('score-summary-bar').addEventListener('click', (e) => {
-        if (e.target.id !== 'btn-finish-hole') {
-            showScorecardModal();
-        }
-    });
+    document.getElementById('btn-round-finish').addEventListener('click', showScorecardModal);
 
     document.getElementById('btn-close-scorecard').addEventListener('click', () => {
         document.getElementById('scorecard-modal').classList.add('hidden');
+    });
+
+    document.getElementById('btn-save-round').addEventListener('click', () => {
+        const rows = document.querySelectorAll('.score-table tbody tr');
+        rows.forEach(row => {
+            const hNumStr = row.getAttribute('data-hole');
+            if (hNumStr) {
+                const hNum = parseInt(hNumStr, 10);
+                const editScore = parseInt(row.querySelector('.edit-score').value, 10);
+                const editPutts = parseInt(row.querySelector('.edit-putts').value, 10);
+                const editPens = parseInt(row.querySelector('.edit-pens').value, 10);
+
+                if (scorecard.roundData.holes[hNum]) {
+                    scorecard.roundData.holes[hNum].hole_score = editScore;
+                    scorecard.roundData.holes[hNum].putts = editPutts;
+                    scorecard.roundData.holes[hNum].penalties = editPens;
+                }
+            }
+        });
+        scorecard.saveScorecard();
+        document.getElementById('scorecard-modal').classList.add('hidden');
+        alert("Round results saved successfully! You can now copy the data for AI.");
+        updateScoreUI();
     });
 
     document.getElementById('btn-export-ai').addEventListener('click', () => {
@@ -544,14 +566,8 @@ function drawShotTracks() {
 }
 
 function updateScoreUI() {
-    const holeData = scorecard.getHoleData();
-    if (holeData) {
-        let currentScore = holeData.shots.length; // Basic score is shots taken
-        if (holeData.hole_score > 0) {
-            currentScore = holeData.hole_score; // Completed hole
-        }
-        document.getElementById('ui-current-score').innerText = currentScore;
-    }
+    // Score summary is no longer displayed on the main UI
+    // It is shown inside the full Scorecard Modal when the 'Round finish' button is pressed.
 }
 
 function showHoleModal() {
@@ -629,12 +645,12 @@ function showScorecardModal() {
         const h = scorecard.roundData.holes[i];
         if (h && h.hole_score > 0) {
             html += `
-                <tr>
+                <tr data-hole="${i}">
                     <td>${i}</td>
                     <td>${h.par}</td>
-                    <td><strong>${h.hole_score}</strong></td>
-                    <td>${h.putts}</td>
-                    <td>${h.penalties}</td>
+                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 45px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
                 </tr>
             `;
         }
@@ -741,6 +757,10 @@ function displayHole(holeNumber) {
     scorecard.setHole(holeNumber, holePar);
     document.getElementById('ui-current-hole').innerText = holeNumber;
     document.getElementById('ui-current-par').innerText = holePar;
+    document.getElementById('hole-status').style.display = 'flex';
+    document.getElementById('score-summary-bar').style.display = 'flex';
+    document.getElementById('btn-record-shot').style.display = 'flex';
+    document.getElementById('edit-controls').style.display = 'flex';
     updateScoreUI();
     drawShotTracks(); // Load past shots for this hole
 
