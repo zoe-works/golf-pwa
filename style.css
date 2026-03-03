@@ -194,26 +194,43 @@ body {
 }
 
 .user-dot {
-    width: 14px;
-    height: 14px;
-    background: #1e88e5;
-    border: 2px solid white;
+    width: 18px;
+    height: 18px;
+    background: #4285F4;
+    border: 3px solid white;
     border-radius: 50%;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
     z-index: 2;
 }
 
 .user-heading-cone {
     position: absolute;
-    width: 60px;
-    height: 60px;
-    background: conic-gradient(from -30deg at 50% 100%, rgba(30, 136, 229, 0.45) 0deg, rgba(30, 136, 229, 0) 30deg, rgba(30, 136, 229, 0) 330deg, rgba(30, 136, 229, 0.45) 360deg);
-    top: -50px;
-    left: -10px;
+    width: 100px;
+    height: 100px;
+    /* Container is 40x40 (center 20,20). Box is 100x100. Bottom center of box is (50, 100).
+       To place bottom center at (20,20):
+       left: 20 - 50 = -30px
+       top: 20 - 100 = -80px
+    */
+    left: -30px;
+    top: -80px;
     transform-origin: 50% 100%;
+
+    /* 60 degree fan (from -30 to +30 relative to top) */
+    background: conic-gradient(from 330deg at 50% 100%,
+            rgba(66, 133, 244, 0) 0deg,
+            rgba(66, 133, 244, 0.4) 15deg,
+            rgba(66, 133, 244, 0.7) 30deg,
+            rgba(66, 133, 244, 0.4) 45deg,
+            rgba(66, 133, 244, 0) 60deg,
+            transparent 60deg);
+
+    /* Smooth radial fade out */
+    -webkit-mask-image: radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 1) 10px, rgba(0, 0, 0, 0.8) 40%, rgba(0, 0, 0, 0) 90%);
+    mask-image: radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 1) 10px, rgba(0, 0, 0, 0.8) 40%, rgba(0, 0, 0, 0) 90%);
+
     pointer-events: none;
     z-index: 1;
-    filter: blur(1px);
 }
 
 .tap-distance-label.segment-b {
