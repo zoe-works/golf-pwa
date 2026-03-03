@@ -16,7 +16,7 @@ let shotLayers = L.layerGroup(); // Layer to hold shot markers and lines
 
 let scorecard = new ScorecardManager();
 let currentEditingShotNum = 1;
-let tempShotData = { club: null, score: 50, memo: '' };
+let tempShotData = { club: null, penalties: [], score: 50, memo: '' };
 
 const COURSE_METADATA = {
     'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
@@ -153,11 +153,25 @@ async function init() {
     // Club selection (Toggle state)
     document.querySelectorAll('.club-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            // Remove selected from all
             document.querySelectorAll('.club-btn').forEach(b => b.classList.remove('selected'));
-            // Add to clicked
             e.target.classList.add('selected');
             tempShotData.club = e.target.dataset.club;
+        });
+    });
+
+    // Penalty selection (Toggle state autonomously)
+    document.querySelectorAll('.penalty-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const thisPenalty = e.target.dataset.penalty;
+            if (tempShotData.penalties.includes(thisPenalty)) {
+                // Deselect
+                tempShotData.penalties = tempShotData.penalties.filter(p => p !== thisPenalty);
+                e.target.classList.remove('selected');
+            } else {
+                // Select
+                tempShotData.penalties.push(thisPenalty);
+                e.target.classList.add('selected');
+            }
         });
     });
 
@@ -385,9 +399,26 @@ function showShotModal(shotNum) {
     const holeData = scorecard.getHoleData();
     const existingShot = holeData ? holeData.shots.find(s => s.shot_num === shotNum) : null;
 
+    let baseClub = null;
+    let parsedPenalties = [];
+    if (existingShot && existingShot.club) {
+        let clubStr = existingShot.club;
+        if (clubStr.includes('(')) {
+            const parts = clubStr.split('(');
+            baseClub = parts[0].trim();
+            const penStr = parts[1].replace(')', '');
+            parsedPenalties = penStr.split(',').map(s => s.trim());
+        } else if (clubStr === 'OB' || clubStr === 'Penalty') {
+            parsedPenalties = [clubStr];
+        } else {
+            baseClub = clubStr;
+        }
+    }
+
     // Reset/Load temp data
     tempShotData = {
-        club: existingShot ? existingShot.club : null,
+        club: baseClub,
+        penalties: parsedPenalties,
         score: existingShot ? existingShot.score : 50,
         memo: existingShot ? existingShot.memo : ''
     };
@@ -400,6 +431,15 @@ function showShotModal(shotNum) {
     // Update Club Selection UI
     document.querySelectorAll('.club-btn').forEach(b => {
         if (b.dataset.club === tempShotData.club) {
+            b.classList.add('selected');
+        } else {
+            b.classList.remove('selected');
+        }
+    });
+
+    // Update Penalty Selection UI
+    document.querySelectorAll('.penalty-btn').forEach(b => {
+        if (tempShotData.penalties.includes(b.dataset.penalty)) {
             b.classList.add('selected');
         } else {
             b.classList.remove('selected');
@@ -431,10 +471,19 @@ function saveShotAndCloseModal() {
         }
     }
 
+    let finalClubStr = tempShotData.club || "";
+    if (tempShotData.penalties.length > 0) {
+        if (finalClubStr) {
+            finalClubStr += ` (${tempShotData.penalties.join(', ')})`;
+        } else {
+            finalClubStr = tempShotData.penalties.join(', ');
+        }
+    }
+
     // Save shot
     scorecard.saveShot(
         currentEditingShotNum,
-        tempShotData.club,
+        finalClubStr,
         tempShotData.score,
         tempShotData.memo,
         userCoords

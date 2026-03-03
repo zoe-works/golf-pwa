@@ -421,10 +421,11 @@ body {
 }
 
 .btn-recenter {
-    bottom: 90px;
-    right: 20px;
+    bottom: calc(75px + env(safe-area-inset-bottom));
+    right: 12px;
     background-color: white;
-    color: #333;
+    color: #1a73e8;
+    /* Blue icon to match the 'old style' feeling */
 }
 
 .btn-recenter:active {
@@ -433,8 +434,8 @@ body {
 
 /* Record Shot FAB */
 .btn-record-shot {
-    bottom: 160px;
-    right: 20px;
+    bottom: calc(140px + env(safe-area-inset-bottom));
+    right: 12px;
     background-color: #f44336;
     font-size: 24px;
 }
@@ -463,6 +464,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    /* Prevent double-tap to zoom or pinch zoom on the popup */
+    touch-action: manipulation;
 }
 
 .hidden {
@@ -540,6 +543,30 @@ body {
     background: #d32f2f;
     color: white;
     border-color: #b71c1c;
+}
+
+/* Penalty Grid Buttons (OB / Penalty) */
+.penalty-btn {
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    border-radius: 8px;
+    padding: 12px 0;
+    font-size: 15px;
+    font-weight: bold;
+    color: #d32f2f;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.penalty-btn:active {
+    background: #ef9a9a;
+}
+
+.penalty-btn.selected {
+    background: #d32f2f;
+    color: white;
+    border-color: #b71c1c;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Modal Header with Navigation */
