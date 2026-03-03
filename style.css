@@ -13,12 +13,19 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
+    /* Safari inner height fix */
+    height: -webkit-fill-available;
 }
 
 #app {
     display: flex;
     flex-direction: column;
+    /* Fallback for older browsers */
     height: 100vh;
+    /* iOS Safari override */
+    height: -webkit-fill-available;
+    /* Modern Dynamic Viewport: auto-adjusts when Safari toolbars appear/hide */
+    height: 100dvh;
     /* Support for iOS safe area padding (e.g., iPhone notch) */
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
