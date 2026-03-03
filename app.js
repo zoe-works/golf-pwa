@@ -31,7 +31,8 @@ async function init() {
         touchRotate: true,
         rotateControl: {
             closeOnZeroBearing: false
-        }
+        },
+        attributionControl: false
     }).setView([14.141, 100.951], 16);
 
     // Add Google Maps Hybrid tiles (Satellite + Labels)
@@ -131,6 +132,16 @@ async function init() {
     map.on('rotatestart', () => {
         isHeadingUp = false;
     });
+
+    // Intercept clicking on Leaflet's compass control to lock heading instead of reverting to North
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.leaflet-control-compass') || e.target.closest('.leaflet-control-rotate')) {
+            e.stopPropagation();
+            e.preventDefault();
+            // User requested: "Lock the map in THAT direction"
+            isHeadingUp = false; // Disable auto tracking to lock it in place
+        }
+    }, true); // capture phase
 
     const courseSelector = document.getElementById('course-selector');
     const holeSelector = document.getElementById('hole-selector');
@@ -545,9 +556,28 @@ function updateScoreUI() {
 
 function showHoleModal() {
     document.getElementById('hole-modal-num').innerText = scorecard.currentHole;
-    document.getElementById('putt-count').innerText = "2"; // Default 2 putts
-    document.getElementById('pen-count').innerText = "0";
-    document.getElementById('hole-memo').value = "";
+
+    // Auto-calculate putts, penalties, and memo from shots
+    const holeData = scorecard.getHoleData();
+    let autoPutts = 0;
+    let autoPens = 0;
+    let aggregatedMemo = [];
+
+    if (holeData && holeData.shots) {
+        holeData.shots.forEach(s => {
+            if (s.club) {
+                if (s.club.includes('PT')) autoPutts++;
+                if (s.club.includes('OB')) autoPens++;
+                if (s.club.includes('Penalty')) autoPens++;
+            }
+            if (s.memo) aggregatedMemo.push(`[S${s.shot_num}] ${s.memo}`);
+        });
+    }
+
+    document.getElementById('putt-count').innerText = autoPutts.toString();
+    document.getElementById('pen-count').innerText = autoPens.toString();
+    document.getElementById('hole-memo').value = aggregatedMemo.join('\n');
+
     document.getElementById('hole-modal').classList.remove('hidden');
 }
 
