@@ -380,10 +380,7 @@ async function init() {
 // --- SCORECARD UI LOGIC ---
 
 function showShotModal(shotNum) {
-    if (!lastPos && shotNum === scorecard.currentShotNum) {
-        alert("Waiting for GPS signal to record new shot...");
-        return;
-    }
+    // Allows testing/viewing modal indoors without GPS.
 
     currentEditingShotNum = shotNum;
     const holeData = scorecard.getHoleData();
