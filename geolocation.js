@@ -1,8 +1,13 @@
+import { haversineMeters } from './distance.js';
+
 export class GeolocationTracker {
     constructor(onUpdate, onError) {
         this.watchId = null;
         this.onUpdate = onUpdate;
         this.onError = onError;
+
+        // Tracking state for speed filter
+        this.lastValidRec = null;
     }
 
     start() {
@@ -13,24 +18,52 @@ export class GeolocationTracker {
 
         const options = {
             enableHighAccuracy: true,
-            maximumAge: 5000,
+            maximumAge: 0, // A: Force fresh calculations, disable cache
             timeout: 15000
         };
 
         // Low-Pass Filter (EMA) parameters
         let smoothedLng = null;
         let smoothedLat = null;
-        const alpha = 0.3; // Smoothing factor (0 to 1). Lower = more smooth/delay, Higher = more responsive/jitter.
+        const alpha = 0.5; // D: Increased from 0.3 to 0.5 for slightly faster response
 
-        // Watch position gives continuous updates when device moves
         this.watchId = navigator.geolocation.watchPosition(
             (pos) => {
                 const rawLng = pos.coords.longitude;
                 const rawLat = pos.coords.latitude;
+                const accuracy = pos.coords.accuracy;
+                const timestamp = pos.timestamp;
+
+                // C: Accuracy Threshold (Ignore fixes worse than 30m)
+                if (accuracy > 30) {
+                    console.log(`[GPS] Ignored: Poor accuracy (${accuracy}m)`);
+                    return;
+                }
+
+                // B: Unrealistic Jump Filter (Speed check)
+                if (this.lastValidRec) {
+                    const timeDiffSec = (timestamp - this.lastValidRec.timestamp) / 1000;
+                    if (timeDiffSec > 0) {
+                        const distMeters = haversineMeters(
+                            [this.lastValidRec.rawLng, this.lastValidRec.rawLat],
+                            [rawLng, rawLat]
+                        );
+
+                        const speedMps = distMeters / timeDiffSec;
+                        // Golf cart top speed is ~24km/h (6.6m/s). 
+                        // Let's set a generous cap of 15m/s (54km/h) to allow for quick recovery but block huge teleportations.
+                        if (speedMps > 15) {
+                            console.log(`[GPS] Ignored: Unrealistic speed jump (${Math.round(speedMps)}m/s)`);
+                            return;
+                        }
+                    }
+                }
+
+                this.lastValidRec = { rawLng, rawLat, timestamp };
 
                 // Apply EMA smoothing
                 if (smoothedLng === null || smoothedLat === null) {
-                    // First fix: initialize with raw values
+                    // First valid fix: initialize with raw values
                     smoothedLng = rawLng;
                     smoothedLat = rawLat;
                 } else {
@@ -44,7 +77,7 @@ export class GeolocationTracker {
                     lat: smoothedLat,
                     rawLng: rawLng,
                     rawLat: rawLat,
-                    accuracy: pos.coords.accuracy, // meters
+                    accuracy: accuracy, // meters
                 });
             },
             (err) => {
@@ -58,6 +91,7 @@ export class GeolocationTracker {
         if (this.watchId !== null) {
             navigator.geolocation.clearWatch(this.watchId);
             this.watchId = null;
+            this.lastValidRec = null; // Reset state
         }
     }
 }

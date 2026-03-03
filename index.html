@@ -32,11 +32,16 @@
             </div>
 
             <!-- Floating button to center on user -->
-            <button id="btn-recenter" class="fab">
+            <button id="btn-recenter" class="fab btn-recenter">
                 <svg viewBox="0 0 24 24" width="24" height="24">
                     <path fill="currentColor"
                         d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z" />
                 </svg>
+            </button>
+
+            <!-- Floating button to Record Shot -->
+            <button id="btn-record-shot" class="fab btn-record-shot" style="display: none;">
+                🎯
             </button>
 
             <!-- Edit Mode Controls -->
@@ -78,8 +83,92 @@
                 <div class="target-value" id="dist-hazard-back">-- yd</div>
             </div>
 
+            <div class="score-summary-bar" id="score-summary-bar" style="display: none;">
+                <div class="score-info">Hole <span id="ui-current-hole">1</span> | Par <span
+                        id="ui-current-par">4</span> | Score: <span id="ui-current-score" class="score-value">0</span>
+                </div>
+                <button id="btn-finish-hole" class="btn-secondary btn-small">Finish Hole</button>
+            </div>
+
             <button id="btn-start" class="btn-primary">Start Location Tracking</button>
         </div>
+
+        <!-- Club Selection Modal -->
+        <div id="club-modal" class="modal hidden">
+            <div class="modal-content text-center">
+                <h3>Select Club</h3>
+                <p class="subtitle">Shot <span id="shot-number-display">1</span></p>
+                <div class="club-grid">
+                    <button class="club-btn" data-club="1W">1W</button>
+                    <button class="club-btn" data-club="3W">3W</button>
+                    <button class="club-btn" data-club="5W">5W</button>
+                    <button class="club-btn" data-club="4U">4U</button>
+                    <button class="club-btn" data-club="5I">5I</button>
+                    <button class="club-btn" data-club="6I">6I</button>
+                    <button class="club-btn" data-club="7I">7I</button>
+                    <button class="club-btn" data-club="8I">8I</button>
+                    <button class="club-btn" data-club="9I">9I</button>
+                    <button class="club-btn" data-club="PW">PW</button>
+                    <button class="club-btn" data-club="AW">AW</button>
+                    <button class="club-btn" data-club="SW">SW</button>
+                    <button class="club-btn" data-club="PT">PT</button>
+                    <button class="club-btn danger" data-club="Penalty">Penalty</button>
+                </div>
+                <button id="btn-cancel-shot" class="btn-secondary mt-15">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Hole Completion Modal -->
+        <div id="hole-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Hole <span id="hole-modal-num">1</span> Result</h3>
+
+                <div class="input-group">
+                    <label>Putts</label>
+                    <div class="stepper">
+                        <button id="btn-putt-minus" class="stepper-btn">-</button>
+                        <span id="putt-count" class="stepper-val">2</span>
+                        <button id="btn-putt-plus" class="stepper-btn">+</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Penalties</label>
+                    <div class="stepper">
+                        <button id="btn-pen-minus" class="stepper-btn">-</button>
+                        <span id="pen-count" class="stepper-val">0</span>
+                        <button id="btn-pen-plus" class="stepper-btn">+</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Memo / Evaluation</label>
+                    <textarea id="hole-memo" rows="2" placeholder="Great drive, poor putting..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="btn-save-hole" class="btn-primary">Save & Next</button>
+                    <button id="btn-cancel-hole" class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Scorecard / Export Modal -->
+        <div id="scorecard-modal" class="modal hidden">
+            <div class="modal-content full-height">
+                <div class="modal-header">
+                    <h3>Scorecard</h3>
+                    <button id="btn-close-scorecard" class="close-btn">&times;</button>
+                </div>
+                <div id="scorecard-body" class="scorecard-scrollable">
+                    <!-- Dynamic table goes here -->
+                </div>
+                <div class="modal-actions">
+                    <button id="btn-export-ai" class="btn-primary">Copy for AI Analysis</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -96,7 +185,10 @@
             });
         }
     </script>
-    <script src="app.js" type="module"></script>
+    <script type="module" src="distance.js"></script>
+    <script type="module" src="geolocation.js"></script>
+    <script type="module" src="scorecard.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 
 </html>
