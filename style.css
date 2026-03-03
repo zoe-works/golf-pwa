@@ -205,16 +205,19 @@ body {
 
 .user-heading-cone {
     position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 40px solid rgba(30, 136, 229, 0.3);
-    top: -30px;
-    left: 5px;
+    width: 60px;
+    height: 60px;
+    background: conic-gradient(from -30deg at 50% 100%, rgba(30, 136, 229, 0.45) 0deg, rgba(30, 136, 229, 0) 30deg, rgba(30, 136, 229, 0) 330deg, rgba(30, 136, 229, 0.45) 360deg);
+    top: -50px;
+    left: -10px;
     transform-origin: 50% 100%;
     pointer-events: none;
     z-index: 1;
+    filter: blur(1px);
+}
+
+.tap-distance-label.segment-b {
+    background: rgba(255, 87, 34, 0.9);
 }
 
 /* Tap Distance Popup/Marker */

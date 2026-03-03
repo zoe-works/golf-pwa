@@ -6,6 +6,9 @@ let userMarker;
 let userHeading = 0;
 let tapMarker;
 let tapLine;
+let tapLineB; // Segment from Tap to Pin
+let pinMarker; // Marker for the pin to help visibility
+let isHeadingUp = true; // Default to Heading Up on start
 let holeTargets = {}; // Stores coordinates { green_center: [lng, lat], ... }
 let currentHoleLayers = L.layerGroup();
 
@@ -15,8 +18,14 @@ const COURSE_METADATA = {
 };
 
 async function init() {
-    // 1. Initialize Leaflet Map
-    map = L.map('map').setView([14.141, 100.951], 16);
+    // 1. Initialize Leaflet Map with Rotation
+    map = L.map('map', {
+        rotate: true,
+        touchRotate: true,
+        rotateControl: {
+            closeOnZeroBearing: false
+        }
+    }).setView([14.141, 100.951], 16);
 
     // Add Google Maps Hybrid tiles (Satellite + Labels)
     L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
@@ -26,7 +35,7 @@ async function init() {
 
     currentHoleLayers.addTo(map);
 
-    // 2. Map click listener for distance tool
+    // 2. Map click listener for distance tool (User -> Tap -> Pin)
     map.on('click', (e) => {
         if (!lastPos) return;
         const clickedLatLng = e.latlng;
@@ -34,8 +43,19 @@ async function init() {
         const userCoords = [lastPos.lng, lastPos.lat];
         const targetCoords = [clickedLatLng.lng, clickedLatLng.lat];
 
-        const meters = haversineMeters(userCoords, targetCoords);
-        const yards = metersToYardsRounded(meters);
+        // Segment A: User -> Tap
+        const metersA = haversineMeters(userCoords, targetCoords);
+        const yardsA = metersToYardsRounded(metersA);
+
+        // Segment B: Tap -> Pin
+        let yardsB = null;
+        let pinLatLng = null;
+        if (holeTargets['green_center']) {
+            const pinCoords = holeTargets['green_center']; // [lng, lat]
+            pinLatLng = [pinCoords[1], pinCoords[0]];
+            const metersB = haversineMeters(targetCoords, pinCoords);
+            yardsB = metersToYardsRounded(metersB);
+        }
 
         if (!tapMarker) {
             tapMarker = L.marker(clickedLatLng, {
@@ -49,12 +69,18 @@ async function init() {
             tapMarker.setLatLng(clickedLatLng);
         }
 
-        tapMarker.bindTooltip(`<div class="tap-distance-label">${yards} yd</div>`, {
+        let tooltipContent = `<div class="tap-distance-label">User→Tap: ${yardsA} yd</div>`;
+        if (yardsB !== null) {
+            tooltipContent += `<div class="tap-distance-label segment-b">Tap→Pin: ${yardsB} yd</div>`;
+        }
+
+        tapMarker.bindTooltip(tooltipContent, {
             permanent: true,
             direction: 'top',
             className: 'tap-tooltip'
         }).openTooltip();
 
+        // Line A: User -> Tap
         if (!tapLine) {
             tapLine = L.polyline([userLatLng, clickedLatLng], {
                 color: '#ff5722',
@@ -64,6 +90,19 @@ async function init() {
         } else {
             tapLine.setLatLngs([userLatLng, clickedLatLng]);
         }
+
+        // Line B: Tap -> Pin
+        if (pinLatLng) {
+            if (!tapLineB) {
+                tapLineB = L.polyline([clickedLatLng, pinLatLng], {
+                    color: '#ff9800',
+                    weight: 2,
+                    dashArray: '2, 5'
+                }).addTo(map);
+            } else {
+                tapLineB.setLatLngs([clickedLatLng, pinLatLng]);
+            }
+        }
     });
 
     // 3. Setup UI event listeners
@@ -72,9 +111,17 @@ async function init() {
     document.getElementById('btn-recenter').addEventListener('click', () => {
         if (lastPos) {
             map.setView([lastPos.lat, lastPos.lng], 17);
+            // Re-enable heading up on recenter
+            isHeadingUp = true;
+            if (userHeading) map.setBearing(360 - userHeading);
         } else {
             toggleTracking();
         }
+    });
+
+    // Disable auto-rotation if user manually rotates the map
+    map.on('rotatestart', () => {
+        isHeadingUp = false;
     });
 
     const courseSelector = document.getElementById('course-selector');
@@ -436,9 +483,23 @@ function updateLocationUI(pos) {
         }
     }
 
-    // Update tap line if it exists
+    // Update tap lines if they exist
     if (tapLine) {
         tapLine.setLatLngs([latlng, tapLine.getLatLngs()[1]]);
+        // Also update tooltip/segments if tapLineB exists
+        if (tapLineB && holeTargets['green_center']) {
+            const tapCoords = [tapLine.getLatLngs()[1].lng, tapLine.getLatLngs()[1].lat];
+            const pinCoords = holeTargets['green_center'];
+            const userCoords = [pos.lng, pos.lat];
+
+            const yardsA = metersToYardsRounded(haversineMeters(userCoords, tapCoords));
+            const yardsB = metersToYardsRounded(haversineMeters(tapCoords, pinCoords));
+
+            tapMarker.getTooltip().setContent(`
+                <div class="tap-distance-label">User→Tap: ${yardsA} yd</div>
+                <div class="tap-distance-label segment-b">Tap→Pin: ${yardsB} yd</div>
+            `);
+        }
     }
 
     // 2. Center Map on first fix
@@ -493,16 +554,20 @@ function initCompass() {
         }
     }
 }
-
 function handleOrientation(event) {
-    // alpha is the compass direction
     let compass = event.webkitCompassHeading || event.alpha;
     if (compass !== null && compass !== undefined) {
-        // adjust for absolute vs relative if needed? webkitCompassHeading is already absolute.
         userHeading = compass;
+        if (isHeadingUp && map) {
+            map.setBearing(360 - compass);
+        }
         const cone = document.getElementById('user-heading-cone');
         if (cone) {
-            cone.style.transform = `rotate(${userHeading}deg)`;
+            if (isHeadingUp) {
+                cone.style.transform = `rotate(0deg)`;
+            } else {
+                cone.style.transform = `rotate(${userHeading}deg)`;
+            }
         }
     }
 }
