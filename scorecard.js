@@ -55,48 +55,74 @@ export class ScorecardManager {
 
     // --- Actions ---
 
-    recordShot(club, coords) {
+    saveShot(shotNum, club, score, memo, coords) {
         const hole = this.roundData.holes[this.currentHole];
-        const newShot = {
-            shot_num: this.currentShotNum,
-            club: club,
-            start_coords: coords,
-            end_coords: null,
-            distance_yd: 0
-        };
+        let shot = hole.shots.find(s => s.shot_num === shotNum);
 
-        // If not the first shot, calculate distance of previous shot
-        if (this.currentShotNum > 1) {
-            const prevShot = hole.shots[this.currentShotNum - 2];
-            prevShot.end_coords = coords;
-            // distance_yd will be calculated externally by app.js (haversine) and updated later, 
-            // but we can just store the coords here.
-        }
+        if (!shot) {
+            // New shot
+            shot = {
+                shot_num: shotNum,
+                club: club,
+                start_coords: coords,
+                end_coords: null,
+                distance_yd: 0,
+                score: score,
+                memo: memo
+            };
 
-        hole.shots.push(newShot);
-        this.currentShotNum++;
-        this.saveRoundData();
-        return newShot;
-    }
-
-    updatePreviousShotDistance(distanceYd) {
-        const hole = this.roundData.holes[this.currentHole];
-        if (this.currentShotNum > 1 && hole.shots.length > 0) {
-            const prevShot = hole.shots[hole.shots.length - 1]; // Wait, if currentShotNum is 2, length is 1. prevShot is index 0.
-            // Actually, if we just recorded shot 2, length is 2. prevShot is index 0.
-            // Let's rely on app.js to pass the exact shot index if needed, or simply update the last shot BEFORE the current one.
-            if (hole.shots.length >= 2) {
-                hole.shots[hole.shots.length - 2].distance_yd = distanceYd;
-                this.saveRoundData();
+            // Calculate distance for the previous shot if it exists and hasn't been closed
+            if (shotNum > 1 && hole.shots.length >= shotNum - 1) {
+                const prevShot = hole.shots[shotNum - 2];
+                // Only set end_coords if not already set, to prevent overwriting distance if editing
+                if (!prevShot.end_coords) {
+                    prevShot.end_coords = coords;
+                    // distance_yd will be updated by app.js shortly after
+                }
             }
+
+            hole.shots.push(shot);
+            // Ensure array is sorted by shot_num
+            hole.shots.sort((a, b) => a.shot_num - b.shot_num);
+
+            if (shotNum >= this.currentShotNum) {
+                this.currentShotNum = shotNum + 1;
+            }
+        } else {
+            // Edit existing shot (coords remain unchanged)
+            shot.club = club;
+            shot.score = score;
+            shot.memo = memo;
+        }
+
+        this.saveRoundData();
+        return shot;
+    }
+
+    updatePreviousShotDistance(distanceYd, shotIndex) {
+        const hole = this.roundData.holes[this.currentHole];
+        if (hole && hole.shots[shotIndex]) {
+            hole.shots[shotIndex].distance_yd = distanceYd;
+            this.saveRoundData();
         }
     }
 
-    finishHole(putts, penalties, memo) {
+    finishHole(putts, penalties, overallMemo) {
         const hole = this.roundData.holes[this.currentHole];
         hole.putts = putts;
         hole.penalties = penalties;
-        hole.memo = memo;
+
+        let combinedMemo = "";
+        hole.shots.forEach(s => {
+            if (s.memo && s.memo.trim() !== "") {
+                combinedMemo += `[Shot ${s.shot_num}] ${s.memo}\n`;
+            }
+        });
+        if (overallMemo && overallMemo.trim() !== "") {
+            combinedMemo += overallMemo;
+        }
+
+        hole.memo = combinedMemo.trim();
         hole.hole_score = hole.shots.length + putts + penalties;
 
         this.saveRoundData();
@@ -134,7 +160,8 @@ export class ScorecardManager {
 
                 const clubLog = h.shots.map(s => {
                     let d = s.distance_yd ? `${s.distance_yd}yd` : '';
-                    return `${s.club}${d ? ' ' + d : ''}`;
+                    let sc = s.score !== undefined ? `[${s.score}]` : '';
+                    return `${s.club}${d ? ' ' + d : ''}${sc}`;
                 }).join(' -> ');
 
                 if (clubLog) text += `  Shots: ${clubLog}\n`;

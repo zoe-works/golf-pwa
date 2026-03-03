@@ -142,19 +142,63 @@ async function init() {
 
     // --- SCORECARD UI LISTENERS ---
 
-    // FAB Record Shot
-    document.getElementById('btn-record-shot').addEventListener('click', showClubModal);
+    let currentEditingShotNum = 1;
+    let tempShotData = { club: null, score: 50, memo: '' };
 
-    // Club selection
+    // FAB Record Shot
+    document.getElementById('btn-record-shot').addEventListener('click', () => {
+        showShotModal(scorecard.currentShotNum);
+    });
+
+    // Club selection (Toggle state)
     document.querySelectorAll('.club-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const club = e.target.dataset.club;
-            recordShotAndCloseModal(club);
+            // Remove selected from all
+            document.querySelectorAll('.club-btn').forEach(b => b.classList.remove('selected'));
+            // Add to clicked
+            e.target.classList.add('selected');
+            tempShotData.club = e.target.dataset.club;
         });
+    });
+
+    // Score Stepper
+    document.getElementById('btn-shot-score-plus').addEventListener('click', () => {
+        tempShotData.score = Math.min(100, tempShotData.score + 10);
+        document.getElementById('shot-score-val').innerText = tempShotData.score;
+    });
+    document.getElementById('btn-shot-score-minus').addEventListener('click', () => {
+        tempShotData.score = Math.max(0, tempShotData.score - 10);
+        document.getElementById('shot-score-val').innerText = tempShotData.score;
+    });
+
+    // Memo Input
+    document.getElementById('shot-memo-input').addEventListener('input', (e) => {
+        tempShotData.memo = e.target.value;
+    });
+
+    // Save & Cancel Shot
+    document.getElementById('btn-save-shot').addEventListener('click', () => {
+        if (!tempShotData.club) {
+            alert("Please select a club.");
+            return;
+        }
+        saveShotAndCloseModal();
     });
 
     document.getElementById('btn-cancel-shot').addEventListener('click', () => {
         document.getElementById('club-modal').classList.add('hidden');
+    });
+
+    // Shot Navigation
+    document.getElementById('btn-shot-prev').addEventListener('click', () => {
+        if (currentEditingShotNum > 1) {
+            showShotModal(currentEditingShotNum - 1);
+        }
+    });
+    document.getElementById('btn-shot-next').addEventListener('click', () => {
+        if (currentEditingShotNum < scorecard.currentShotNum) {
+            showShotModal(currentEditingShotNum + 1);
+        }
     });
 
     // Hole Completion
@@ -334,34 +378,71 @@ async function init() {
 
 // --- SCORECARD UI LOGIC ---
 
-function showClubModal() {
-    if (!lastPos) {
-        alert("Waiting for GPS signal...");
+function showShotModal(shotNum) {
+    if (!lastPos && shotNum === scorecard.currentShotNum) {
+        alert("Waiting for GPS signal to record new shot...");
         return;
     }
-    const shotNumDisplay = document.getElementById('shot-number-display');
-    shotNumDisplay.innerText = scorecard.currentShotNum;
+
+    currentEditingShotNum = shotNum;
+    const holeData = scorecard.getHoleData();
+    const existingShot = holeData ? holeData.shots.find(s => s.shot_num === shotNum) : null;
+
+    // Reset/Load temp data
+    tempShotData = {
+        club: existingShot ? existingShot.club : null,
+        score: existingShot ? existingShot.score : 50,
+        memo: existingShot ? existingShot.memo : ''
+    };
+
+    // Update UI
+    document.getElementById('shot-number-display').innerText = shotNum;
+    document.getElementById('shot-score-val').innerText = tempShotData.score;
+    document.getElementById('shot-memo-input').value = tempShotData.memo || '';
+
+    // Update Club Selection UI
+    document.querySelectorAll('.club-btn').forEach(b => {
+        if (b.dataset.club === tempShotData.club) {
+            b.classList.add('selected');
+        } else {
+            b.classList.remove('selected');
+        }
+    });
+
+    // Navigation arrows visibility
+    document.getElementById('btn-shot-prev').style.visibility = (shotNum > 1) ? 'visible' : 'hidden';
+    document.getElementById('btn-shot-next').style.visibility = (shotNum < scorecard.currentShotNum && existingShot) ? 'visible' : 'hidden';
+
     document.getElementById('club-modal').classList.remove('hidden');
 }
 
-function recordShotAndCloseModal(club) {
-    if (!lastPos) return;
-    const userCoords = [lastPos.lng, lastPos.lat]; // [lng, lat]
+function saveShotAndCloseModal() {
+    if (!lastPos && currentEditingShotNum === scorecard.currentShotNum) return;
 
-    // Auto-calculate distance for the previous shot if exists
-    if (scorecard.currentShotNum > 1) {
+    // For new shots, use current GPS. For old shots, pass null (scorecard.js handles not overwriting coords)
+    const userCoords = (currentEditingShotNum === scorecard.currentShotNum) ? [lastPos.lng, lastPos.lat] : null;
+
+    // Auto-calculate distance for the previous shot if exists and we are recording a NEW shot
+    if (currentEditingShotNum === scorecard.currentShotNum && scorecard.currentShotNum > 1) {
         const holeData = scorecard.getHoleData();
         const prevShotIndex = scorecard.currentShotNum - 2;
-        if (holeData && holeData.shots[prevShotIndex]) {
+        if (holeData && holeData.shots[prevShotIndex] && !holeData.shots[prevShotIndex].end_coords) {
             const prevCoords = holeData.shots[prevShotIndex].start_coords;
             const distMeters = haversineMeters(prevCoords, userCoords);
             const distYards = metersToYardsRounded(distMeters);
-            scorecard.updatePreviousShotDistance(distYards);
+            scorecard.updatePreviousShotDistance(distYards, prevShotIndex);
         }
     }
 
-    // Record new shot
-    scorecard.recordShot(club, userCoords);
+    // Save shot
+    scorecard.saveShot(
+        currentEditingShotNum,
+        tempShotData.club,
+        tempShotData.score,
+        tempShotData.memo,
+        userCoords
+    );
+
     document.getElementById('club-modal').classList.add('hidden');
 
     drawShotTracks();
@@ -382,6 +463,8 @@ function drawShotTracks() {
         let label = `${shot.shot_num}`;
         let popupText = `Shot ${shot.shot_num}: ${shot.club}`;
         if (shot.distance_yd) popupText += `<br>Distance: ${shot.distance_yd} yd`;
+        if (shot.score !== undefined) popupText += `<br>Quality: ${shot.score}/100`;
+        if (shot.memo) popupText += `<br>Memo: ${shot.memo}`;
 
         L.marker(latlng, {
             icon: L.divIcon({
