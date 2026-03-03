@@ -15,6 +15,8 @@ let currentHoleLayers = L.layerGroup();
 let shotLayers = L.layerGroup(); // Layer to hold shot markers and lines
 
 let scorecard = new ScorecardManager();
+let currentEditingShotNum = 1;
+let tempShotData = { club: null, score: 50, memo: '' };
 
 const COURSE_METADATA = {
     'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
@@ -142,9 +144,6 @@ async function init() {
     });
 
     // --- SCORECARD UI LISTENERS ---
-
-    let currentEditingShotNum = 1;
-    let tempShotData = { club: null, score: 50, memo: '' };
 
     // FAB Record Shot
     document.getElementById('btn-record-shot').addEventListener('click', () => {
