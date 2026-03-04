@@ -55,7 +55,6 @@ body {
     /* Let clicks pass through except on children */
 }
 
-#btn-start-round,
 #course-selector,
 #hole-selector {
     pointer-events: auto;
@@ -69,6 +68,13 @@ body {
     outline: none;
     -webkit-appearance: none;
     appearance: none;
+    margin-right: 8px;
+}
+
+#btn-start-round {
+    pointer-events: auto;
+    border-radius: 20px;
+    font-weight: 600;
     margin-right: 8px;
 }
 
