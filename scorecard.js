@@ -8,10 +8,11 @@ export class ScorecardManager {
         this.bindEvents();
     }
 
-    createNewRound() {
+    createNewRound(holeSequence = []) {
         return {
             round_id: 'Round_' + new Date().toISOString(),
             date: new Date().toISOString(),
+            holeSequence: holeSequence,
             holes: {},
             summary: {
                 total_score: 0,
@@ -23,12 +24,27 @@ export class ScorecardManager {
 
     loadRoundData() {
         const data = localStorage.getItem('golf_pwa_round_data');
-        return data ? JSON.parse(data) : null;
+        if (data) {
+            const parsed = JSON.parse(data);
+            if (!parsed.holeSequence) {
+                parsed.holeSequence = Array.from({ length: 18 }, (_, i) => i + 1);
+            }
+            return parsed;
+        }
+        return null;
     }
 
     saveRoundData() {
         localStorage.setItem('golf_pwa_round_data', JSON.stringify(this.roundData));
         this.updateSummary();
+    }
+
+    startNewRound(courseName, holesArray) {
+        this.roundData = this.createNewRound(holesArray);
+        this.roundData.course_name = courseName;
+        this.currentHole = holesArray[0] || 1;
+        this.currentShotNum = 1;
+        this.saveRoundData();
     }
 
     // --- State Management --- 
@@ -133,9 +149,9 @@ export class ScorecardManager {
         let totalPutts = 0;
         let totalPenalties = 0;
 
-        for (let i = 1; i <= 18; i++) {
-            if (this.roundData.holes[i]) {
-                const h = this.roundData.holes[i];
+        for (const hNum of (this.roundData.holeSequence || [])) {
+            if (this.roundData.holes[hNum]) {
+                const h = this.roundData.holes[hNum];
                 totalScore += (h.hole_score || 0);
                 totalPutts += (h.putts || 0);
                 totalPenalties += (h.penalties || 0);
@@ -153,10 +169,10 @@ export class ScorecardManager {
         let text = `【Round Report: ${new Date(this.roundData.date).toLocaleDateString()}】\n`;
         text += `Total: ${this.roundData.summary.total_score} (Putts: ${this.roundData.summary.total_putts}, Penalties: ${this.roundData.summary.total_penalties})\n\n`;
 
-        for (let i = 1; i <= 18; i++) {
-            const h = this.roundData.holes[i];
+        for (const hNum of (this.roundData.holeSequence || [])) {
+            const h = this.roundData.holes[hNum];
             if (h) {
-                text += `${i}H (Par ${h.par}): ${h.hole_score} (Putts: ${h.putts}, Pen: ${h.penalties})\n`;
+                text += `${hNum}H (Par ${h.par}): ${h.hole_score} (Putts: ${h.putts}, Pen: ${h.penalties})\n`;
 
                 const clubLog = h.shots.map(s => {
                     let d = s.distance_yd ? `${s.distance_yd}yd` : '';
@@ -205,12 +221,13 @@ export class ScorecardManager {
         const history = this.getHistory();
         let best = Infinity;
         history.forEach(round => {
+            const sequence = round.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
             // Count holes played
             let holesPlayed = 0;
-            for (let i = 1; i <= 18; i++) {
-                if (round.holes[i] && round.holes[i].hole_score > 0) holesPlayed++;
+            for (const hNum of sequence) {
+                if (round.holes[hNum] && round.holes[hNum].hole_score > 0) holesPlayed++;
             }
-            if (holesPlayed === 18 && round.summary.total_score > 0) {
+            if (holesPlayed === sequence.length && round.summary.total_score > 0) {
                 if (round.summary.total_score < best) best = round.summary.total_score;
             }
         });
@@ -221,11 +238,12 @@ export class ScorecardManager {
         const history = this.getHistory();
         // Filter strictly 18-hole rounds
         const fullRounds = history.filter(round => {
+            const sequence = round.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
             let holesPlayed = 0;
-            for (let i = 1; i <= 18; i++) {
-                if (round.holes[i] && round.holes[i].hole_score > 0) holesPlayed++;
+            for (const hNum of sequence) {
+                if (round.holes[hNum] && round.holes[hNum].hole_score > 0) holesPlayed++;
             }
-            return holesPlayed === 18 && round.summary.total_score > 0;
+            return holesPlayed === sequence.length && round.summary.total_score > 0;
         });
 
         if (fullRounds.length === 0) return '--';

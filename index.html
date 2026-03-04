@@ -24,10 +24,9 @@
 
                 <!-- Top floating overlay for course and hole selection -->
                 <div id="top-bar">
-                    <select id="course-selector">
-                        <option value="data/prime_city.json">Prime City & Golf</option>
-                        <option value="data/bangsai.json">Bangsai Country Club (27 Holes)</option>
-                    </select>
+                    <button id="btn-start-round" class="btn-primary"
+                        style="padding: 6px 16px; font-size: 14px; margin-top: 0; margin-right: 8px;">Start
+                        Round</button>
                     <select id="hole-selector">
                         <!-- Options will be populated dynamically -->
                     </select>
@@ -241,6 +240,43 @@
                     <button id="btn-save-round" class="btn-primary" style="flex: 2;">Save Results</button>
                     <button id="btn-export-ai" class="btn-secondary"
                         style="flex: 1; padding: 12px 5px; font-size: 13px;">Copy AI Text</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Round Modal -->
+        <div id="start-round-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 style="margin-top: 0; margin-bottom: 20px;">Start New Round</h3>
+
+                <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <label>Golf Course</label>
+                    <select id="modal-course-select"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 16px;">
+                        <option value="data/prime_city.json">Prime City Golf Club (18H)</option>
+                        <option value="data/bangsai.json">Bangsai Country Club (27H)</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <label>First Half (Starting Holes)</label>
+                    <select id="modal-first-half"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 16px;">
+                        <!-- Populated dynamically based on course -->
+                    </select>
+                </div>
+
+                <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <label>Second Half (Finishing Holes)</label>
+                    <select id="modal-second-half"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 16px;">
+                        <!-- Populated dynamically based on course -->
+                    </select>
+                </div>
+
+                <div class="modal-actions" style="margin-top: 20px;">
+                    <button id="btn-confirm-start" class="btn-primary">Start Round</button>
+                    <button id="btn-cancel-start" class="btn-secondary">Cancel</button>
                 </div>
             </div>
         </div>

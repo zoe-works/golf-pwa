@@ -188,15 +188,148 @@ async function init() {
         }
     }, true); // capture phase
 
-    const courseSelector = document.getElementById('course-selector');
     const holeSelector = document.getElementById('hole-selector');
 
-    courseSelector.addEventListener('change', async () => {
-        await loadCourse(courseSelector.value);
+    document.getElementById('btn-start-round').addEventListener('click', () => {
+        openStartRoundModal();
     });
 
     holeSelector.addEventListener('change', () => {
         displayHole(holeSelector.value);
+    });
+
+    // --- START ROUND UI MODAL ---
+
+    function populateHalfSelectors(courseUrl) {
+        const firstHalf = document.getElementById('modal-first-half');
+        const secondHalf = document.getElementById('modal-second-half');
+        firstHalf.innerHTML = '';
+        secondHalf.innerHTML = '';
+
+        if (courseUrl.includes('bangsai')) {
+            // 27 holes
+            const opts = [
+                { val: 'A', text: 'Course A' },
+                { val: 'B', text: 'Course B' },
+                { val: 'C', text: 'Course C' }
+            ];
+            opts.forEach(opt => {
+                const optEl1 = document.createElement('option');
+                optEl1.value = opt.val;
+                optEl1.innerText = opt.text;
+                firstHalf.appendChild(optEl1);
+
+                const optEl2 = document.createElement('option');
+                optEl2.value = opt.val;
+                optEl2.innerText = opt.text;
+                secondHalf.appendChild(optEl2);
+            });
+            firstHalf.value = 'A';
+            secondHalf.value = 'B';
+        } else {
+            // Standard 18 holes
+            const opts = [
+                { val: 'OUT', text: 'OUT (Holes 1-9)' },
+                { val: 'IN', text: 'IN (Holes 10-18)' }
+            ];
+            opts.forEach(opt => {
+                const optEl1 = document.createElement('option');
+                optEl1.value = opt.val;
+                optEl1.innerText = opt.text;
+                firstHalf.appendChild(optEl1);
+
+                const optEl2 = document.createElement('option');
+                optEl2.value = opt.val;
+                optEl2.innerText = opt.text;
+                secondHalf.appendChild(optEl2);
+            });
+            firstHalf.value = 'OUT';
+            secondHalf.value = 'IN';
+        }
+    }
+
+    async function openStartRoundModal() {
+        // Request permissions if not already active
+        if (!tracker) {
+            toggleTracking();
+        }
+
+        const modalSelect = document.getElementById('modal-course-select');
+
+        // Auto-select based on lastPos if available
+        if (lastPos) {
+            const nearest = findNearestCourse(lastPos.lat, lastPos.lng);
+            if (nearest) {
+                modalSelect.value = nearest;
+            }
+        }
+
+        populateHalfSelectors(modalSelect.value);
+        document.getElementById('start-round-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('modal-course-select').addEventListener('change', (e) => {
+        populateHalfSelectors(e.target.value);
+    });
+
+    document.getElementById('modal-first-half').addEventListener('change', (e) => {
+        const first = e.target.value;
+        const secondHalf = document.getElementById('modal-second-half');
+
+        // Automatic assignment mapping to minimize user input
+        const autoMap = {
+            'OUT': 'IN',
+            'IN': 'OUT',
+            'A': 'B',
+            'B': 'C',
+            'C': 'A'
+        };
+
+        if (autoMap[first]) {
+            secondHalf.value = autoMap[first];
+        }
+    });
+
+    document.getElementById('btn-cancel-start').addEventListener('click', () => {
+        document.getElementById('start-round-modal').classList.add('hidden');
+    });
+
+    document.getElementById('btn-confirm-start').addEventListener('click', async () => {
+        const courseUrl = document.getElementById('modal-course-select').value;
+        const firstHalf = document.getElementById('modal-first-half').value;
+        const secondHalf = document.getElementById('modal-second-half').value;
+
+        // Build sequence
+        let sequence = [];
+        if (courseUrl.includes('bangsai')) {
+            for (let i = 1; i <= 9; i++) sequence.push(`${firstHalf}-${i}`);
+            for (let i = 1; i <= 9; i++) sequence.push(`${secondHalf}-${i}`);
+        } else {
+            const addOut = () => { for (let i = 1; i <= 9; i++) sequence.push(i); };
+            const addIn = () => { for (let i = 10; i <= 18; i++) sequence.push(i); };
+
+            if (firstHalf === 'OUT') addOut(); else addIn();
+            if (secondHalf === 'OUT') addOut(); else addIn();
+        }
+
+        await loadCourse(courseUrl);
+
+        // Re-populate and sync sequence with scorecard
+        holeSelector.innerHTML = '';
+        sequence.forEach(hNum => {
+            const opt = document.createElement('option');
+            opt.value = hNum;
+            opt.innerText = String(hNum).match(/^[A-Z]-/) ? hNum : `Hole ${hNum}`;
+            holeSelector.appendChild(opt);
+        });
+
+        const courseName = document.getElementById('modal-course-select').options[document.getElementById('modal-course-select').selectedIndex].text;
+        scorecard.startNewRound(courseName, sequence);
+
+        holeSelector.value = sequence[0];
+        displayHole(sequence[0]);
+
+        document.getElementById('start-round-modal').classList.add('hidden');
     });
 
     // --- SCORECARD UI LISTENERS ---
@@ -447,36 +580,63 @@ async function init() {
         }
     });
 
-    // 3. Initial Load - Try auto-detecting nearest course
-    let initialCourse = courseSelector.value;
+    // Initialize to default state (we won't auto-load course now since Start Round does it)
+    if (!scorecard.roundData.holeSequence || scorecard.roundData.holeSequence.length === 0) {
+        // Just load something so map isn't blank
+        await loadCourse('data/prime_city.json');
 
-    if ("geolocation" in navigator) {
-        updateGpsStatus('connecting', 'Finding nearest course...');
-        try {
-            const pos = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
-            });
-            const nearest = findNearestCourse(pos.coords.latitude, pos.coords.longitude);
-            if (nearest) {
-                console.log(`Auto-selected nearest course: ${nearest}`);
-                courseSelector.value = nearest;
-                initialCourse = nearest;
-            }
-        } catch (err) {
-            console.log("Auto-select failed or timed out, using default.", err);
+        // Auto-start GPS tracking (Play Mode default behavior)
+        if (!tracker) {
+            setTimeout(() => toggleTracking(), 500);
         }
-    }
+    } else {
+        // If restoring an ongoing round...
+        // Find which course JSON matches the stored course name
+        let targetUrl = 'data/prime_city.json';
+        for (const [url, meta] of Object.entries(COURSE_METADATA)) {
+            if (scorecard.roundData.course_name && scorecard.roundData.course_name.includes(meta.name)) {
+                targetUrl = url;
+                break;
+            }
+        }
+        await loadCourseRestore(targetUrl, scorecard.roundData.holeSequence);
 
-    await loadCourse(initialCourse);
-
-    // Auto-start GPS tracking (Play Mode default behavior)
-    if (!tracker) {
-        // We delay tracking a tiny bit so the map and course load fully first
-        setTimeout(() => toggleTracking(), 500);
+        if (!tracker) {
+            setTimeout(() => toggleTracking(), 500);
+        }
     }
 
     // Ensure club selector is populated correctly at startup
     renderClubSelector();
+}
+
+async function loadCourseRestore(url, sequence) {
+    try {
+        currentCourseUrl = url;
+        const savedData = localStorage.getItem(`golf-course-${url}`);
+        if (savedData) {
+            courseData = JSON.parse(savedData);
+        } else {
+            const response = await fetch(url);
+            courseData = await response.json();
+        }
+
+        const holeSelector = document.getElementById('hole-selector');
+        holeSelector.innerHTML = '';
+        sequence.forEach(hNum => {
+            const opt = document.createElement('option');
+            opt.value = hNum;
+            opt.innerText = String(hNum).match(/^[A-Z]-/) ? hNum : `Hole ${hNum}`;
+            holeSelector.appendChild(opt);
+        });
+
+        if (sequence.length > 0) {
+            holeSelector.value = scorecard.currentHole || sequence[0];
+            displayHole(holeSelector.value);
+        }
+    } catch (error) {
+        console.error("Error restoring course data", error);
+    }
 }
 
 // --- SCORECARD UI LOGIC ---
@@ -704,12 +864,13 @@ function showScorecardModal(historyRoundData = null) {
             <tbody>
     `;
 
-    for (let i = 1; i <= 18; i++) {
-        const h = rd.holes[i];
+    const sequence = rd.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
+    for (const hNum of sequence) {
+        const h = rd.holes[hNum];
         if (h && h.hole_score > 0) {
             html += `
-                <tr data-hole="${i}">
-                    <td>${i}</td>
+                <tr data-hole="${hNum}">
+                    <td>${hNum}</td>
                     <td>${h.par}</td>
                     <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 45px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
                     <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
@@ -753,42 +914,25 @@ let courseData = null;
 let currentCourseUrl = null;
 let isEditMode = false;
 
-async function loadCourse(url) {
-    try {
-        currentCourseUrl = url;
+try {
+    currentCourseUrl = url;
 
-        // Check local storage first
-        const savedData = localStorage.getItem(`golf-course-${url}`);
-        if (savedData) {
-            courseData = JSON.parse(savedData);
-            console.log("Loaded course from local storage");
-        } else {
-            const response = await fetch(url);
-            courseData = await response.json();
-        }
-
-        // Populate hole selector
-        const holeSelector = document.getElementById('hole-selector');
-        holeSelector.innerHTML = '';
-
-        // Extract unique hole numbers
-        const holes = [...new Set(courseData.features.map(f => f.properties.hole))];
-        holes.sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
-
-        holes.forEach(hole => {
-            const opt = document.createElement('option');
-            opt.value = hole;
-            opt.innerText = String(hole).match(/^[A-Z]-/) ? hole : `Hole ${hole}`;
-            holeSelector.appendChild(opt);
-        });
-
-        // Display first hole
-        if (holes.length > 0) {
-            displayHole(holes[0]);
-        }
-    } catch (error) {
-        console.error("Error loading course data", error);
+    // Check local storage first
+    const savedData = localStorage.getItem(`golf-course-${url}`);
+    if (savedData) {
+        courseData = JSON.parse(savedData);
+        console.log("Loaded course from local storage");
+    } else {
+        const response = await fetch(url);
+        courseData = await response.json();
     }
+
+    // We no longer automatically populate the hole selector from ALL JSON holes here.
+    // It is populated by the sequence array in btn-confirm-start or loadCourseRestore.
+    // This function is just to cache courseData globally.
+} catch (error) {
+    console.error("Error loading course data", error);
+}
 }
 
 function saveCourseData() {
