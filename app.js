@@ -914,25 +914,26 @@ let courseData = null;
 let currentCourseUrl = null;
 let isEditMode = false;
 
-try {
-    currentCourseUrl = url;
+async function loadCourse(url) {
+    try {
+        currentCourseUrl = url;
 
-    // Check local storage first
-    const savedData = localStorage.getItem(`golf-course-${url}`);
-    if (savedData) {
-        courseData = JSON.parse(savedData);
-        console.log("Loaded course from local storage");
-    } else {
-        const response = await fetch(url);
-        courseData = await response.json();
+        // Check local storage first
+        const savedData = localStorage.getItem(`golf-course-${url}`);
+        if (savedData) {
+            courseData = JSON.parse(savedData);
+            console.log("Loaded course from local storage");
+        } else {
+            const response = await fetch(url);
+            courseData = await response.json();
+        }
+
+        // We no longer automatically populate the hole selector from ALL JSON holes here.
+        // It is populated by the sequence array in btn-confirm-start or loadCourseRestore.
+        // This function is just to cache courseData globally.
+    } catch (error) {
+        console.error("Error loading course data", error);
     }
-
-    // We no longer automatically populate the hole selector from ALL JSON holes here.
-    // It is populated by the sequence array in btn-confirm-start or loadCourseRestore.
-    // This function is just to cache courseData globally.
-} catch (error) {
-    console.error("Error loading course data", error);
-}
 }
 
 function saveCourseData() {
