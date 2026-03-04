@@ -502,8 +502,8 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    /* Leave space for the bottom nav (65px + safe-area) */
-    height: calc(100% - 65px - env(safe-area-inset-bottom));
+    /* Leave space for the bottom nav (75px + safe-area) */
+    height: calc(100% - 75px - env(safe-area-inset-bottom));
     overflow-y: auto;
     background-color: #f7f9fc;
 }
@@ -524,16 +524,18 @@ body {
 
 /* Headers for Views */
 .view-header {
-    background: white;
-    padding: 15px 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background: #1e88e5;
+    /* Primary blue for better contrast */
+    padding: 20px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
 .view-header h2 {
     margin: 0;
-    font-size: 20px;
-    color: #333;
+    font-size: 22px;
+    font-weight: 800;
+    color: white;
 }
 
 /* Bottom Navigation Bar */
@@ -542,12 +544,13 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: calc(65px + env(safe-area-inset-bottom));
+    height: calc(75px + env(safe-area-inset-bottom));
     background: white;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-around;
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    /* Add padding-bottom to move items up slightly */
     z-index: 9999;
 }
 
@@ -630,13 +633,19 @@ body {
 .settings-group {
     background: white;
     border-radius: 12px;
-    padding: 20px;
-    margin: 0 20px;
+    padding: 24px 20px;
+    /* Increased vertical padding */
+    margin: 0 20px 30px 20px;
+    /* Added bottom margin to prevent button overlap */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .settings-group h3 {
     margin-top: 0;
+    margin-bottom: 8px;
+    /* Give title some space */
+    font-size: 18px;
+    color: #111;
 }
 
 .mt-15 {
