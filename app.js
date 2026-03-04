@@ -1058,11 +1058,11 @@ function handleLocationError(err) {
 // --- SETTINGS LOGIC ---
 const STANDARD_CLUBS = [
     'Dr', '2w', '3w', '4w', '5w', '6w', '7w', '8w', '9w',
-    '1h', '2h', '3h', '4h', '5h', '6h', '7h', '8h', '9h',
-    '1i', '2i', '3i', '4i', '5i', '6i', '7i', '8i', '9i',
-    'Pw', 'Sw', 'Lw', '50°', '52°', '54°', '56°', '58°', '60°', 'PT'
+    '1U', '2U', '3U', '4U', '5U', '6U', '7U', '8U', '9U',
+    '1I', '2I', '3I', '4I', '5I', '6I', '7I', '8I', '9I',
+    'PW', 'SW', 'LW', '50°', '52°', '54°', '56°', '58°', '60°', 'PT'
 ];
-const DEFAULT_CLUBS = ['Dr', '3w', '5w', '4h', '5i', '6i', '7i', '8i', '9i', 'Pw', '52°', '56°', 'PT'];
+const DEFAULT_CLUBS = ['Dr', '3w', '5w', '4U', '5I', '6I', '7I', '8I', '9I', 'PW', '52°', '56°', 'PT'];
 
 function getSavedClubs() {
     const saved = localStorage.getItem('golf-pwa-clubs');
@@ -1094,7 +1094,7 @@ window.renderSettingsUI = function () {
             if (!btn.classList.contains('selected')) {
                 const currentCount = grid.querySelectorAll('.club-btn.selected').length;
                 if (currentCount >= 14) {
-                    alert('最大14本までしか選択できません。');
+                    alert('You can select up to 14 clubs.');
                     return;
                 }
             }
@@ -1109,7 +1109,7 @@ document.getElementById('btn-save-settings').addEventListener('click', () => {
     const selectedBtns = grid.querySelectorAll('.club-btn.selected');
 
     if (selectedBtns.length > 14) {
-        alert('最大14本までしか選択できません。');
+        alert('You can select up to 14 clubs.');
         return;
     }
 
@@ -1119,7 +1119,7 @@ document.getElementById('btn-save-settings').addEventListener('click', () => {
     newClubs.sort((a, b) => STANDARD_CLUBS.indexOf(a) - STANDARD_CLUBS.indexOf(b));
 
     saveClubs(newClubs);
-    alert('設定を保存しました。');
+    alert('Settings saved!');
 });
 
 function renderClubSelector() {
