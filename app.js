@@ -139,7 +139,7 @@ async function init() {
             // Trigger view-specific refreshes
             if (targetId === 'view-play') {
                 setTimeout(() => map.invalidateSize(), 50);
-                if (!isTracking) toggleTracking();
+                if (!tracker) toggleTracking();
             } else if (targetId === 'view-history') {
                 if (typeof window.renderHistoryList === 'function') window.renderHistoryList();
             } else if (targetId === 'view-settings') {
@@ -470,10 +470,13 @@ async function init() {
     await loadCourse(initialCourse);
 
     // Auto-start GPS tracking (Play Mode default behavior)
-    if (!isTracking) {
+    if (!tracker) {
         // We delay tracking a tiny bit so the map and course load fully first
         setTimeout(() => toggleTracking(), 500);
     }
+
+    // Ensure club selector is populated correctly at startup
+    renderClubSelector();
 }
 
 // --- SCORECARD UI LOGIC ---
@@ -1053,12 +1056,22 @@ function handleLocationError(err) {
 }
 
 // --- SETTINGS LOGIC ---
-const STANDARD_CLUBS = ['1W', '3W', '5W', '7W', '3U', '4U', '5U', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'PT'];
-const DEFAULT_CLUBS = ['1W', '3W', '5U', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'PT'];
+const STANDARD_CLUBS = [
+    'Dr', '2w', '3w', '4w', '5w', '6w', '7w', '8w', '9w',
+    '1h', '2h', '3h', '4h', '5h', '6h', '7h', '8h', '9h',
+    '1i', '2i', '3i', '4i', '5i', '6i', '7i', '8i', '9i',
+    'Pw', 'Sw', 'Lw', '50°', '52°', '54°', '56°', '58°', '60°', 'PT'
+];
+const DEFAULT_CLUBS = ['Dr', '3w', '5w', '4h', '5i', '6i', '7i', '8i', '9i', 'Pw', '52°', '56°', 'PT'];
 
 function getSavedClubs() {
     const saved = localStorage.getItem('golf-pwa-clubs');
-    return saved ? JSON.parse(saved) : DEFAULT_CLUBS;
+    if (saved) {
+        let clubs = JSON.parse(saved);
+        clubs = clubs.filter(c => STANDARD_CLUBS.includes(c));
+        if (clubs.length > 0) return clubs;
+    }
+    return DEFAULT_CLUBS;
 }
 
 function saveClubs(clubsArray) {
@@ -1077,7 +1090,16 @@ window.renderSettingsUI = function () {
         btn.className = `club-btn ${isSelected ? 'selected' : ''}`;
         btn.innerText = club;
         btn.dataset.club = club;
-        btn.onclick = () => btn.classList.toggle('selected');
+        btn.onclick = () => {
+            if (!btn.classList.contains('selected')) {
+                const currentCount = grid.querySelectorAll('.club-btn.selected').length;
+                if (currentCount >= 14) {
+                    alert('最大14本までしか選択できません。');
+                    return;
+                }
+            }
+            btn.classList.toggle('selected');
+        };
         grid.appendChild(btn);
     });
 };
@@ -1085,13 +1107,19 @@ window.renderSettingsUI = function () {
 document.getElementById('btn-save-settings').addEventListener('click', () => {
     const grid = document.getElementById('settings-club-grid');
     const selectedBtns = grid.querySelectorAll('.club-btn.selected');
+
+    if (selectedBtns.length > 14) {
+        alert('最大14本までしか選択できません。');
+        return;
+    }
+
     const newClubs = Array.from(selectedBtns).map(btn => btn.dataset.club);
 
     // Sort them according to STANDARD_CLUBS order
     newClubs.sort((a, b) => STANDARD_CLUBS.indexOf(a) - STANDARD_CLUBS.indexOf(b));
 
     saveClubs(newClubs);
-    alert('Settings saved!');
+    alert('設定を保存しました。');
 });
 
 function renderClubSelector() {
