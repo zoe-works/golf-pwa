@@ -55,6 +55,7 @@ body {
     /* Let clicks pass through except on children */
 }
 
+#btn-start-round,
 #course-selector,
 #hole-selector {
     pointer-events: auto;
