@@ -493,8 +493,150 @@ body {
     max-height: 90vh;
 }
 
-.text-center {
-    text-align: center;
+.text-center {}
+
+/* ===== APP NAVIGATION (BOTTOM TABS) & VIEWS ===== */
+
+.view-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Leave space for the bottom nav (65px + safe-area) */
+    height: calc(100% - 65px - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    background-color: #f7f9fc;
+}
+
+.view-section.active {
+    display: block;
+}
+
+.view-section.hidden {
+    display: none !important;
+}
+
+/* Specific overrides for Map View */
+#view-play {
+    overflow: hidden;
+    /* Map handles its own panning */
+}
+
+/* Headers for Views */
+.view-header {
+    background: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.view-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+/* Bottom Navigation Bar */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: calc(65px + env(safe-area-inset-bottom));
+    background: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 9999;
+}
+
+.nav-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #757575;
+    padding: 10px 0;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.nav-btn:active {
+    background-color: #f0f0f0;
+}
+
+.nav-btn.active {
+    color: #1a73e8;
+}
+
+.nav-icon {
+    font-size: 22px;
+    margin-bottom: 4px;
+    line-height: 1;
+}
+
+.nav-text {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* History List styles */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 20px;
+}
+
+.history-item {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.history-item:active {
+    background: #f0f5ff;
+}
+
+.history-date {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.history-course {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+}
+
+.history-score {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1a73e8;
+}
+
+/* Settings View specific */
+.settings-group {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.settings-group h3 {
+    margin-top: 0;
 }
 
 .mt-15 {

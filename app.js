@@ -115,15 +115,51 @@ async function init() {
     });
 
     // 3. Setup UI event listeners
-    document.getElementById('btn-start').addEventListener('click', toggleTracking);
+
+    // Bottom Navigation Logic
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetId = e.currentTarget.getAttribute('data-target');
+
+            // Highlight active button
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            // Switch view container
+            document.querySelectorAll('.view-section').forEach(view => {
+                if (view.id === targetId) {
+                    view.classList.remove('hidden');
+                    view.classList.add('active');
+                } else {
+                    view.classList.add('hidden');
+                    view.classList.remove('active');
+                }
+            });
+
+            // Trigger view-specific refreshes
+            if (targetId === 'view-play') {
+                setTimeout(() => map.invalidateSize(), 50);
+                if (!isTracking) toggleTracking();
+            } else if (targetId === 'view-history') {
+                if (typeof window.renderHistoryList === 'function') window.renderHistoryList();
+            } else if (targetId === 'view-settings') {
+                if (typeof window.renderSettingsUI === 'function') window.renderSettingsUI();
+            }
+        });
+    });
 
     document.getElementById('btn-recenter').addEventListener('click', () => {
         if (lastPos) {
             map.setView([lastPos.lat, lastPos.lng], 17);
-            // Re-enable heading up on recenter
-            isHeadingUp = true;
-            document.getElementById('btn-recenter').classList.add('active');
-            if (userHeading) map.setBearing(360 - userHeading);
+            // Toggle mode
+            if (isHeadingUp) {
+                isHeadingUp = false;
+                document.getElementById('btn-recenter').classList.remove('active');
+            } else {
+                isHeadingUp = true;
+                document.getElementById('btn-recenter').classList.add('active');
+                if (userHeading) map.setBearing(360 - userHeading);
+            }
         } else {
             toggleTracking();
         }
@@ -140,9 +176,15 @@ async function init() {
         if (e.target.closest('.leaflet-control-compass') || e.target.closest('.leaflet-control-rotate')) {
             e.stopPropagation();
             e.preventDefault();
-            // User requested: "Lock the map in THAT direction"
-            isHeadingUp = false; // Disable auto tracking to lock it in place
-            document.getElementById('btn-recenter').classList.remove('active');
+            // Toggle mode
+            if (isHeadingUp) {
+                isHeadingUp = false; // Disable auto tracking to lock it in place
+                document.getElementById('btn-recenter').classList.remove('active');
+            } else {
+                isHeadingUp = true; // Re-enable auto tracking
+                document.getElementById('btn-recenter').classList.add('active');
+                if (userHeading) map.setBearing(360 - userHeading);
+            }
         }
     }, true); // capture phase
 
@@ -164,13 +206,13 @@ async function init() {
         showShotModal(scorecard.currentShotNum);
     });
 
-    // Club selection (Toggle state)
-    document.querySelectorAll('.club-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.club-btn').forEach(b => b.classList.remove('selected'));
+    // Club selection using Event Delegation (since buttons are dynamically generated)
+    document.getElementById('club-grid-container').addEventListener('click', (e) => {
+        if (e.target.classList.contains('club-btn')) {
+            document.querySelectorAll('#club-grid-container .club-btn').forEach(b => b.classList.remove('selected'));
             e.target.classList.add('selected');
             tempShotData.club = e.target.dataset.club;
-        });
+        }
     });
 
     // Penalty selection (Toggle state autonomously)
@@ -267,9 +309,14 @@ async function init() {
                 }
             }
         });
-        scorecard.saveScorecard();
+
+        scorecard.saveRoundData();
+        const courseSelect = document.getElementById('course-selector');
+        const courseName = courseSelect.options[courseSelect.selectedIndex].text;
+        scorecard.saveRoundToHistory(courseName);
+
         document.getElementById('scorecard-modal').classList.add('hidden');
-        alert("Round results saved successfully! You can now copy the data for AI.");
+        alert("Round results saved successfully to your history!");
         updateScoreUI();
     });
 
@@ -421,6 +468,12 @@ async function init() {
     }
 
     await loadCourse(initialCourse);
+
+    // Auto-start GPS tracking (Play Mode default behavior)
+    if (!isTracking) {
+        // We delay tracking a tiny bit so the map and course load fully first
+        setTimeout(() => toggleTracking(), 500);
+    }
 }
 
 // --- SCORECARD UI LOGIC ---
@@ -441,7 +494,7 @@ function showShotModal(shotNum) {
             baseClub = parts[0].trim();
             const penStr = parts[1].replace(')', '');
             parsedPenalties = penStr.split(',').map(s => s.trim());
-        } else if (clubStr === 'OB' || clubStr === 'Penalty') {
+        } else if (clubStr === 'OB' || clubStr === 'Penalty' || clubStr === 'Pena') {
             parsedPenalties = [clubStr];
         } else {
             baseClub = clubStr;
@@ -584,7 +637,7 @@ function showHoleModal() {
             if (s.club) {
                 if (s.club.includes('PT')) autoPutts++;
                 if (s.club.includes('OB')) autoPens++;
-                if (s.club.includes('Penalty')) autoPens++;
+                if (s.club.includes('Penalty') || s.club.includes('Pena')) autoPens++;
             }
             if (s.memo) aggregatedMemo.push(`[S${s.shot_num}] ${s.memo}`);
         });
@@ -629,28 +682,35 @@ function finalizeHole() {
     }
 }
 
-function showScorecardModal() {
+function showScorecardModal(historyRoundData = null) {
+    // If an Event object is passed from an EventListener (like a click), it won't be a valid roundData object
+    const rd = (historyRoundData && !historyRoundData.type) ? historyRoundData : scorecard.roundData;
+    const isReadonly = (historyRoundData && !historyRoundData.type);
+
     const body = document.getElementById('scorecard-body');
+
+    document.getElementById('btn-save-round').style.display = isReadonly ? 'none' : 'block';
+
     let html = `
         <table class="score-table">
             <thead>
                 <tr>
-                    <th>Hole</th><th>Par</th><th>Score</th><th>Putts</th><th>Pen</th>
+                    <th>Hole</th><th>Par</th><th>Score</th><th>Putts</th><th>Pena</th>
                 </tr>
             </thead>
             <tbody>
     `;
 
     for (let i = 1; i <= 18; i++) {
-        const h = scorecard.roundData.holes[i];
+        const h = rd.holes[i];
         if (h && h.hole_score > 0) {
             html += `
                 <tr data-hole="${i}">
                     <td>${i}</td>
                     <td>${h.par}</td>
-                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 45px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
-                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
-                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 45px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
+                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
+                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
                 </tr>
             `;
         }
@@ -660,8 +720,8 @@ function showScorecardModal() {
             </tbody>
         </table>
         <div style="margin-top: 15px; text-align: center;">
-            <strong>Total Score: ${scorecard.roundData.summary.total_score}</strong><br>
-            (Putts: ${scorecard.roundData.summary.total_putts} | Pen: ${scorecard.roundData.summary.total_penalties})
+            <strong>Total Score: ${rd.summary.total_score}</strong><br>
+            (Putts: ${rd.summary.total_putts} | Pen: ${rd.summary.total_penalties})
         </div>
     `;
 
@@ -992,10 +1052,111 @@ function handleLocationError(err) {
     tracker = null;
 }
 
+// --- SETTINGS LOGIC ---
+const STANDARD_CLUBS = ['1W', '3W', '5W', '7W', '3U', '4U', '5U', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'PT'];
+const DEFAULT_CLUBS = ['1W', '3W', '5U', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'PT'];
+
+function getSavedClubs() {
+    const saved = localStorage.getItem('golf-pwa-clubs');
+    return saved ? JSON.parse(saved) : DEFAULT_CLUBS;
+}
+
+function saveClubs(clubsArray) {
+    localStorage.setItem('golf-pwa-clubs', JSON.stringify(clubsArray));
+    renderClubSelector(); // Update the shot modal UI
+}
+
+window.renderSettingsUI = function () {
+    const grid = document.getElementById('settings-club-grid');
+    const selectedClubs = getSavedClubs();
+    grid.innerHTML = '';
+
+    STANDARD_CLUBS.forEach(club => {
+        const isSelected = selectedClubs.includes(club);
+        const btn = document.createElement('button');
+        btn.className = `club-btn ${isSelected ? 'selected' : ''}`;
+        btn.innerText = club;
+        btn.dataset.club = club;
+        btn.onclick = () => btn.classList.toggle('selected');
+        grid.appendChild(btn);
+    });
+};
+
+document.getElementById('btn-save-settings').addEventListener('click', () => {
+    const grid = document.getElementById('settings-club-grid');
+    const selectedBtns = grid.querySelectorAll('.club-btn.selected');
+    const newClubs = Array.from(selectedBtns).map(btn => btn.dataset.club);
+
+    // Sort them according to STANDARD_CLUBS order
+    newClubs.sort((a, b) => STANDARD_CLUBS.indexOf(a) - STANDARD_CLUBS.indexOf(b));
+
+    saveClubs(newClubs);
+    alert('Settings saved!');
+});
+
+function renderClubSelector() {
+    const container = document.getElementById('club-grid-container');
+    const clubs = getSavedClubs();
+    if (container) {
+        container.innerHTML = '';
+        clubs.forEach(club => {
+            const btn = document.createElement('button');
+            btn.className = 'club-btn';
+            btn.dataset.club = club;
+            btn.innerText = club;
+            container.appendChild(btn);
+        });
+    }
+}
+
 function updateGpsStatus(state, msg) {
     const el = document.getElementById('gps-status');
     el.innerHTML = `<span class="dot ${state}"></span> ${msg}`;
 }
+
+window.renderHistoryList = function () {
+    const listEl = document.getElementById('history-list');
+    const bestEl = document.getElementById('stat-best-score');
+    const avgEl = document.getElementById('stat-avg-score');
+
+    bestEl.innerText = scorecard.getBestScore();
+    avgEl.innerText = scorecard.getAverageScore();
+
+    const history = scorecard.getHistory();
+    listEl.innerHTML = '';
+
+    if (history.length === 0) {
+        listEl.innerHTML = '<li style="text-align: center; margin-top: 50px; color: #999;">No saved rounds yet. Go play!</li>';
+        return;
+    }
+
+    history.forEach(round => {
+        const d = new Date(round.date);
+        const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const li = document.createElement('li');
+        li.className = 'history-item';
+
+        const infoDiv = document.createElement('div');
+        infoDiv.innerHTML = `
+            <div class="history-date">${dateStr}</div>
+            <div class="history-course">${round.course_name || 'Golf Course'}</div>
+        `;
+
+        const scoreDiv = document.createElement('div');
+        scoreDiv.className = 'history-score';
+        scoreDiv.innerText = round.summary.total_score || '--';
+
+        li.appendChild(infoDiv);
+        li.appendChild(scoreDiv);
+
+        li.addEventListener('click', () => {
+            showScorecardModal(round);
+        });
+
+        listEl.appendChild(li);
+    });
+};
 
 // Boot up
 document.addEventListener('DOMContentLoaded', init);

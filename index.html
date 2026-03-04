@@ -17,85 +17,139 @@
 
 <body>
     <div id="app">
-        <div id="map-container">
-            <div id="map"></div>
+        <!-- Main Play View -->
+        <div id="view-play" class="view-section active">
+            <div id="map-container">
+                <div id="map"></div>
 
-            <!-- Top floating overlay for course and hole selection -->
-            <div id="top-bar">
-                <select id="course-selector">
-                    <option value="data/prime_city.json">Prime City & Golf</option>
-                    <option value="data/bangsai.json">Bangsai Country Club (27 Holes)</option>
-                </select>
-                <select id="hole-selector">
-                    <!-- Options will be populated dynamically -->
-                </select>
+                <!-- Top floating overlay for course and hole selection -->
+                <div id="top-bar">
+                    <select id="course-selector">
+                        <option value="data/prime_city.json">Prime City & Golf</option>
+                        <option value="data/bangsai.json">Bangsai Country Club (27 Holes)</option>
+                    </select>
+                    <select id="hole-selector">
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Floating button to center on user -->
+                <button id="btn-recenter" class="fab btn-recenter">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" />
+                    </svg>
+                </button>
+
+                <!-- Floating button to Record Shot (Memo) -->
+                <button id="btn-record-shot" class="fab btn-record-shot" style="display: none;">
+                    📝
+                </button>
+
+                <!-- Edit Mode Controls -->
+                <div id="edit-controls">
+                    <button id="btn-edit-toggle" class="edit-btn">Edit Map</button>
+                    <button id="btn-export-data" class="edit-btn secondary" style="display: none;">Share Data</button>
+
+                    <!-- Hidden file input for importing -->
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+                    <button id="btn-import-data" class="edit-btn secondary" style="display: none;">Import Data</button>
+
+                    <button id="btn-reset-data" class="edit-btn danger" style="display: none;">Reset</button>
+                </div>
+
+                <div id="top-indicators">
+                    <div id="gps-status" class="status-indicator">
+                        <span class="dot disconnected"></span> GPS: Waiting...
+                    </div>
+                    <div id="hole-status" class="status-indicator" style="display: none;">
+                        Hole <span id="ui-current-hole">1</span> &nbsp;|&nbsp; Par <span id="ui-current-par">4</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Floating button to center on user -->
-            <button id="btn-recenter" class="fab btn-recenter">
-                <svg viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="currentColor"
-                        d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" />
-                </svg>
-            </button>
+            <div id="distance-panel">
+                <div class="distance-row priority">
+                    <div class="target-label green">Green Center</div>
+                    <div class="target-value" id="dist-green-center">-- yd</div>
+                </div>
+                <div class="distance-row hidden">
+                    <div class="target-label green">Green Front</div>
+                    <div class="target-value" id="dist-green-front">-- yd</div>
+                </div>
+                <div class="distance-row hidden">
+                    <div class="target-label green">Green Back</div>
+                    <div class="target-value" id="dist-green-back">-- yd</div>
+                </div>
+                <div class="distance-row hidden">
+                    <div class="target-label hazard">Hazard Front</div>
+                    <div class="target-value" id="dist-hazard-front">-- yd</div>
+                </div>
+                <div class="distance-row hidden">
+                    <div class="target-label hazard">Hazard Back</div>
+                    <div class="target-value" id="dist-hazard-back">-- yd</div>
+                </div>
 
-            <!-- Floating button to Record Shot (Memo) -->
-            <button id="btn-record-shot" class="fab btn-record-shot" style="display: none;">
-                📝
-            </button>
+                <div class="score-summary-bar" id="score-summary-bar"
+                    style="display: none; justify-content: space-between; gap: 10px;">
+                    <button id="btn-finish-hole" class="btn-secondary btn-small" style="flex: 1;">Hole out</button>
+                    <button id="btn-round-finish" class="btn-primary btn-small" style="flex: 1;">Round finish</button>
+                </div>
 
-            <!-- Edit Mode Controls -->
-            <div id="edit-controls">
-                <button id="btn-edit-toggle" class="edit-btn">Edit Map</button>
-                <button id="btn-export-data" class="edit-btn secondary" style="display: none;">Share Data</button>
+            </div> <!-- End distance-panel -->
+        </div> <!-- End view-play -->
 
-                <!-- Hidden file input for importing -->
-                <input type="file" id="import-file-input" accept=".json" style="display: none;">
-                <button id="btn-import-data" class="edit-btn secondary" style="display: none;">Import Data</button>
+        <!-- History View -->
+        <div id="view-history" class="view-section hidden">
+            <div class="view-header">
+                <h2>Past Scores</h2>
+            </div>
+            <div class="history-summary stat-box-row" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <div class="stat-box" style="flex: 1;">
+                    <span class="stat-num" id="stat-best-score" style="color: #4CAF50;">--</span>
+                    <span class="stat-label">Best (18H)</span>
+                </div>
+                <div class="stat-box" style="flex: 1;">
+                    <span class="stat-num" id="stat-avg-score" style="color: #2196F3;">--</span>
+                    <span class="stat-label">Avg (Last 3)</span>
+                </div>
+            </div>
+            <ul id="history-list" class="history-list">
+                <!-- Populated by JS -->
+            </ul>
+        </div>
 
-                <button id="btn-reset-data" class="edit-btn danger" style="display: none;">Reset</button>
+        <!-- Settings View -->
+        <div id="view-settings" class="view-section hidden">
+            <div class="view-header">
+                <h2>Settings</h2>
             </div>
 
-            <div id="top-indicators">
-                <div id="gps-status" class="status-indicator">
-                    <span class="dot disconnected"></span> GPS: Waiting...
+            <div class="settings-group">
+                <h3>My Clubs</h3>
+                <p class="subtitle">Select the clubs you carry in your bag.</p>
+                <div id="settings-club-grid" class="club-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <!-- Populated by JS -->
                 </div>
-                <div id="hole-status" class="status-indicator" style="display: none;">
-                    Hole <span id="ui-current-hole">1</span> &nbsp;|&nbsp; Par <span id="ui-current-par">4</span>
-                </div>
+                <button id="btn-save-settings" class="btn-primary" style="margin-top: 20px;">Save Settings</button>
             </div>
         </div>
 
-        <div id="distance-panel">
-            <div class="distance-row priority">
-                <div class="target-label green">Green Center</div>
-                <div class="target-value" id="dist-green-center">-- yd</div>
-            </div>
-            <div class="distance-row hidden">
-                <div class="target-label green">Green Front</div>
-                <div class="target-value" id="dist-green-front">-- yd</div>
-            </div>
-            <div class="distance-row hidden">
-                <div class="target-label green">Green Back</div>
-                <div class="target-value" id="dist-green-back">-- yd</div>
-            </div>
-            <div class="distance-row hidden">
-                <div class="target-label hazard">Hazard Front</div>
-                <div class="target-value" id="dist-hazard-front">-- yd</div>
-            </div>
-            <div class="distance-row hidden">
-                <div class="target-label hazard">Hazard Back</div>
-                <div class="target-value" id="dist-hazard-back">-- yd</div>
-            </div>
-
-            <div class="score-summary-bar" id="score-summary-bar"
-                style="display: none; justify-content: space-between; gap: 10px;">
-                <button id="btn-finish-hole" class="btn-secondary btn-small" style="flex: 1;">Hole out</button>
-                <button id="btn-round-finish" class="btn-primary btn-small" style="flex: 1;">Round finish</button>
-            </div>
-
-            <button id="btn-start" class="btn-primary">Start Location Tracking</button>
-        </div>
+        <!-- Global Bottom Navigation -->
+        <nav id="bottom-nav" class="bottom-nav">
+            <button class="nav-btn active" data-target="view-play">
+                <span class="nav-icon">🏌️</span>
+                <span class="nav-text">Play</span>
+            </button>
+            <button class="nav-btn" data-target="view-history">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">History</span>
+            </button>
+            <button class="nav-btn" data-target="view-settings">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Settings</span>
+            </button>
+        </nav>
 
         <!-- Shot Recording Modal -->
         <div id="club-modal" class="modal hidden">
@@ -125,7 +179,7 @@
                 </div>
                 <div class="club-grid" style="margin-top: 8px; grid-template-columns: repeat(2, 1fr);">
                     <button class="penalty-btn danger" data-penalty="OB">OB</button>
-                    <button class="penalty-btn danger" data-penalty="Penalty">Penalty</button>
+                    <button class="penalty-btn danger" data-penalty="Pena">Pena</button>
                 </div>
 
                 <div class="input-group mt-15" style="border-bottom: none; padding-bottom: 5px;">
@@ -163,7 +217,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Penalties</label>
+                    <label>Pena</label>
                     <div class="stepper">
                         <button id="btn-pen-minus" class="stepper-btn">-</button>
                         <span id="pen-count" class="stepper-val">0</span>

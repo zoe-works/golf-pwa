@@ -176,4 +176,63 @@ export class ScorecardManager {
     bindEvents() {
         // Will be orchestrated by app.js to keep map context
     }
+
+    // --- History Management ---
+    getHistory() {
+        const historyData = localStorage.getItem('golf-round-history');
+        return historyData ? JSON.parse(historyData) : [];
+    }
+
+    saveRoundToHistory(courseName) {
+        this.updateSummary();
+        this.roundData.course_name = courseName || this.roundData.course_name || "Unknown Course";
+        let history = this.getHistory();
+
+        // Check if this round already exists in history
+        const existingIndex = history.findIndex(r => r.round_id === this.roundData.round_id);
+        if (existingIndex !== -1) {
+            history[existingIndex] = this.roundData;
+        } else {
+            history.push(this.roundData);
+        }
+
+        // Sort descending by date
+        history.sort((a, b) => new Date(b.date) - new Date(a.date));
+        localStorage.setItem('golf-round-history', JSON.stringify(history));
+    }
+
+    getBestScore() {
+        const history = this.getHistory();
+        let best = Infinity;
+        history.forEach(round => {
+            // Count holes played
+            let holesPlayed = 0;
+            for (let i = 1; i <= 18; i++) {
+                if (round.holes[i] && round.holes[i].hole_score > 0) holesPlayed++;
+            }
+            if (holesPlayed === 18 && round.summary.total_score > 0) {
+                if (round.summary.total_score < best) best = round.summary.total_score;
+            }
+        });
+        return best === Infinity ? '--' : best;
+    }
+
+    getAverageScore() {
+        const history = this.getHistory();
+        // Filter strictly 18-hole rounds
+        const fullRounds = history.filter(round => {
+            let holesPlayed = 0;
+            for (let i = 1; i <= 18; i++) {
+                if (round.holes[i] && round.holes[i].hole_score > 0) holesPlayed++;
+            }
+            return holesPlayed === 18 && round.summary.total_score > 0;
+        });
+
+        if (fullRounds.length === 0) return '--';
+
+        // Take up to last 3
+        const recent = fullRounds.slice(0, 3);
+        const sum = recent.reduce((acc, r) => acc + r.summary.total_score, 0);
+        return Math.round(sum / recent.length);
+    }
 }
