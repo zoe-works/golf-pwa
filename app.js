@@ -818,8 +818,11 @@ function showHoleModal() {
         holeData.shots.forEach(s => {
             if (s.club) {
                 if (s.club.includes('PT')) autoPutts++;
-                if (s.club.includes('OB')) autoPens++;
-                if (s.club.includes('Penalty') || s.club.includes('Pena')) autoPens++;
+                if (s.club.includes('OB')) {
+                    autoPens += 2;
+                } else if (s.club.includes('Penalty') || s.club.includes('Pena')) {
+                    autoPens += 1;
+                }
             }
             if (s.memo) aggregatedMemo.push(`[S${s.shot_num}] ${s.memo}`);
         });
@@ -1234,7 +1237,7 @@ const STANDARD_CLUBS = [
     '1I', '2I', '3I', '4I', '5I', '6I', '7I', '8I', '9I',
     'PW', 'SW', 'LW', '50°', '52°', '54°', '56°', '58°', '60°', 'PT'
 ];
-const DEFAULT_CLUBS = ['Dr', '3w', '5w', '4U', '5I', '6I', '7I', '8I', '9I', 'PW', '52°', '56°', 'PT'];
+const DEFAULT_CLUBS = ['Dr', '3w', '4U', '5I', '6I', '7I', '8I', '9I', 'PW', 'SW', 'PT'];
 
 function getSavedClubs() {
     const saved = localStorage.getItem('golf-pwa-clubs');
