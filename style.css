@@ -78,6 +78,13 @@ body {
     margin-right: 8px;
 }
 
+#btn-start-round.in-round {
+    background: #ff9800;
+    color: white;
+    border-color: #f57c00;
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4);
+}
+
 #course-selector {
     max-width: 150px;
     text-overflow: ellipsis;
@@ -433,12 +440,9 @@ body {
     transition: background-color 0.2s;
 }
 
-.btn-recenter {
-    bottom: calc(75px + env(safe-area-inset-bottom));
-    right: 12px;
-    background-color: white;
-    color: #1a73e8;
-    /* Blue icon to match the 'old style' feeling */
+.btn-recenter.active {
+    background-color: #1a73e8;
+    color: white;
 }
 
 .btn-recenter:active {

@@ -165,6 +165,13 @@ async function init() {
         }
     });
 
+    // Initialize button state if a round is already in progress
+    if (scorecard.roundData && scorecard.roundData.holeSequence && scorecard.roundData.holeSequence.length > 0) {
+        const startBtn = document.getElementById('btn-start-round');
+        startBtn.innerText = 'Round In Progress';
+        startBtn.classList.add('in-round');
+    }
+
     // Disable auto-rotation if user manually rotates the map
     map.on('rotatestart', () => {
         isHeadingUp = false;
@@ -329,6 +336,10 @@ async function init() {
         holeSelector.value = sequence[0];
         displayHole(sequence[0]);
 
+        const startBtn = document.getElementById('btn-start-round');
+        startBtn.innerText = 'Round In Progress';
+        startBtn.classList.add('in-round');
+
         document.getElementById('start-round-modal').classList.add('hidden');
     });
 
@@ -448,6 +459,11 @@ async function init() {
 
         document.getElementById('scorecard-modal').classList.add('hidden');
         alert("Round results saved successfully to your history!");
+
+        // Reset Start Round Button
+        const startBtn = document.getElementById('btn-start-round');
+        startBtn.innerText = 'Start Round';
+        startBtn.classList.remove('in-round');
 
         // Switch to History View
         const historyBtn = document.querySelector('.nav-btn[data-target="view-history"]');
@@ -1036,8 +1052,14 @@ function displayHole(holeNumber) {
 
     currentHoleLayers.addLayer(geoJsonLayer);
 
-    if (geoJsonLayer.getBounds().isValid()) {
-        map.fitBounds(geoJsonLayer.getBounds(), { padding: [50, 50] });
+    let bounds = geoJsonLayer.getBounds();
+    // If we have a current position, include it in the bounds so both user and pin are visible
+    if (typeof lastPos !== 'undefined' && lastPos) {
+        bounds.extend([lastPos.lat, lastPos.lng]);
+    }
+
+    if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [70, 70], maxZoom: 18 });
     }
 }
 
