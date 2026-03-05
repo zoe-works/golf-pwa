@@ -154,21 +154,21 @@
 
         <!-- Shot Recording Modal -->
         <div id="club-modal" class="modal hidden">
-            <div class="modal-content text-center">
+            <div class="modal-content">
                 <div class="modal-header" style="margin-bottom: 5px;">
                     <button id="btn-shot-prev" class="icon-btn" style="visibility: hidden;">&larr;</button>
-                    <h3 style="margin: 0; flex: 1;"><strong>Record shot <span id="shot-number-display">1</span></strong>
+                    <h3 style="margin: 0; flex: 1; text-align: left;"><strong>Record shot <span id="shot-number-display">1</span></strong>
                     </h3>
                     <button id="btn-shot-next" class="icon-btn" style="visibility: hidden;">&rarr;</button>
                 </div>
-                <p class="subtitle" style="margin-top: 0;">Select club</p>
+                <p class="subtitle" style="margin-top: 0; text-align: left;">Select club</p>
 
                 <div class="club-grid" id="club-grid-container" style="grid-template-columns: repeat(5, 1fr);">
                     <!-- Populated by JS -->
                 </div>
                 <div class="club-grid" style="margin-top: 8px; grid-template-columns: repeat(2, 1fr);">
                     <button class="penalty-btn danger" data-penalty="OB">OB</button>
-                    <button class="penalty-btn danger" data-penalty="Pena">Pena</button>
+                    <button class="penalty-btn danger" data-penalty="Penalty">1 Penalty</button>
                 </div>
 
                 <div class="input-group mt-15" style="border-bottom: none; padding-bottom: 5px;">
