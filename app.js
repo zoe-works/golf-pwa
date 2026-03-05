@@ -430,15 +430,14 @@ async function init() {
         rows.forEach(row => {
             const hNumStr = row.getAttribute('data-hole');
             if (hNumStr) {
-                const hNum = parseInt(hNumStr, 10);
                 const editScore = parseInt(row.querySelector('.edit-score').value, 10);
                 const editPutts = parseInt(row.querySelector('.edit-putts').value, 10);
                 const editPens = parseInt(row.querySelector('.edit-pens').value, 10);
 
-                if (scorecard.roundData.holes[hNum]) {
-                    scorecard.roundData.holes[hNum].hole_score = editScore;
-                    scorecard.roundData.holes[hNum].putts = editPutts;
-                    scorecard.roundData.holes[hNum].penalties = editPens;
+                if (scorecard.roundData.holes[hNumStr]) {
+                    scorecard.roundData.holes[hNumStr].hole_score = editScore;
+                    scorecard.roundData.holes[hNumStr].putts = editPutts;
+                    scorecard.roundData.holes[hNumStr].penalties = editPens;
                 }
             }
         });
@@ -829,24 +828,26 @@ function finalizeHole() {
     scorecard.finishHole(putts, pens, memo);
     document.getElementById('hole-modal').classList.add('hidden');
 
-    // Auto advance to next hole if possible
-    const currentHoleNum = parseInt(scorecard.currentHole, 10);
     const holeSelector = document.getElementById('hole-selector');
+    const options = Array.from(holeSelector.options).map(o => o.value);
+    const currentIndex = options.indexOf(scorecard.currentHole.toString());
 
-    if (currentHoleNum < 18) {
-        const nextHoleStr = (currentHoleNum + 1).toString();
-        // check if next hole exists in selector
-        const options = Array.from(holeSelector.options).map(o => o.value);
-        if (options.includes(nextHoleStr)) {
-            holeSelector.value = nextHoleStr;
-            // trigger change event to reload map and UI
-            holeSelector.dispatchEvent(new Event('change'));
-        }
+    if (currentIndex !== -1 && currentIndex < options.length - 1) {
+        // Advance to next hole in sequence
+        const nextHoleVal = options[currentIndex + 1];
+        holeSelector.value = nextHoleVal;
+        holeSelector.dispatchEvent(new Event('change'));
+    } else {
+        // End of round reached
+        showScorecardModal();
     }
 }
 
 function showScorecardModal(historyRoundData = null) {
-    // If an Event object is passed from an EventListener (like a click), it won't be a valid roundData object
+    if (!historyRoundData || historyRoundData.type) {
+        scorecard.updateSummary(); // Ensure totals are fresh for ongoing round
+    }
+
     const rd = (historyRoundData && !historyRoundData.type) ? historyRoundData : scorecard.roundData;
     const isReadonly = (historyRoundData && !historyRoundData.type);
 

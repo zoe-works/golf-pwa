@@ -44,6 +44,7 @@ export class ScorecardManager {
         this.roundData.course_name = courseName;
         this.currentHole = holesArray[0] || 1;
         this.currentShotNum = 1;
+        this.updateSummary();
         this.saveRoundData();
     }
 
