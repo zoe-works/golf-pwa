@@ -443,13 +443,17 @@ async function init() {
         });
 
         scorecard.saveRoundData();
-        const courseSelect = document.getElementById('course-selector');
-        const courseName = courseSelect.options[courseSelect.selectedIndex].text;
+        const courseName = scorecard.roundData.course_name || "Unknown Course";
         scorecard.saveRoundToHistory(courseName);
 
         document.getElementById('scorecard-modal').classList.add('hidden');
         alert("Round results saved successfully to your history!");
-        updateScoreUI();
+
+        // Switch to History View
+        const historyBtn = document.querySelector('.nav-btn[data-target="view-history"]');
+        if (historyBtn) {
+            historyBtn.click();
+        }
     });
 
     document.getElementById('btn-export-ai').addEventListener('click', () => {
