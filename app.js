@@ -584,6 +584,9 @@ async function init() {
             }
         }
         await loadCourseRestore(targetUrl, scorecard.roundData.holeSequence);
+        const startBtn = document.getElementById('btn-start-round');
+        startBtn.innerText = 'Round In Progress';
+        startBtn.classList.add('in-round');
 
         if (!tracker) {
             setTimeout(() => toggleTracking(), 500);
@@ -1015,9 +1018,12 @@ function displayHole(holeNumber) {
     scorecard.setHole(holeNumber, holePar);
     document.getElementById('ui-current-hole').innerText = holeNumber;
     document.getElementById('ui-current-par').innerText = holePar;
-    document.getElementById('hole-status').style.display = 'flex';
-    document.getElementById('score-summary-bar').style.display = 'flex';
-    document.getElementById('btn-record-shot').style.display = 'flex';
+
+    const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
+
+    document.getElementById('hole-status').style.display = isRoundActive ? 'flex' : 'none';
+    document.getElementById('score-summary-bar').style.display = isRoundActive ? 'flex' : 'none';
+    document.getElementById('btn-record-shot').style.display = isRoundActive ? 'flex' : 'none';
     document.getElementById('edit-controls').style.display = 'flex';
     updateScoreUI();
     drawShotTracks(); // Load past shots for this hole
