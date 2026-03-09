@@ -798,6 +798,175 @@ body {
     font-weight: bold;
 }
 
+/* Textarea */
+textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+    margin-top: 8px;
+}
+
+/* Scorecard Table */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+}
+
+.scorecard-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.score-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.score-table th,
+.score-table td {
+    padding: 8px 4px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.score-table th {
+    background: #f5f5f5;
+    position: sticky;
+    top: 0;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-actions button {
+    flex: 1;
+}
+
+/* Small Shot Marker on Map */
+.shot-marker {
+    background: white;
+    border: 2px solid #1e88e5;
+    border-radius: 50%;
+    color: #1e88e5;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================
+   BOTTOM NAVIGATION & VIEWS
+   ========================================= */
+.view-section {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    /* Take remaining space in #app */
+    overflow-y: auto;
+    width: 100%;
+    background-color: #f0f2f5;
+}
+
+.view-section.active {
+    display: flex;
+}
+
+#view-play {
+    overflow: hidden;
+    /* Prevent scrolling, map and distance panel handle their own */
+}
+
+/* Navigation Bar */
+.bottom-nav {
+    width: 100%;
+    height: 60px;
+    background: #fff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 2000;
+}
+
+.nav-btn {
+    border: none;
+    background: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #b0bec5;
+    width: 33.33%;
+    height: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.nav-btn.active {
+    color: #1e88e5;
+}
+
+.nav-btn .nav-icon {
+    font-size: 22px;
+    margin-bottom: 3px;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.nav-btn.active .nav-icon {
+    filter: none;
+    opacity: 1;
+}
+
+/* History View Styles */
+.view-header {
+    background: #1e88e5;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.view-header h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.history-summary {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 0 15px;
+}
+
+.history-list {
+    list-style: none;
+    padding: 0 15px;
+}
+
 /* Premium Stat Redesign */
 .stat-box {
     background: white;
@@ -854,4 +1023,38 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.history-date {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.history-course {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.history-score {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1e88e5;
+}
+
+/* Settings View Styles */
+.settings-group {
+    padding: 0 15px;
+    margin-bottom: 25px;
+}
+
+.settings-group h3 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 10px;
 }

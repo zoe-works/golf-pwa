@@ -944,8 +944,7 @@ function showScorecardModal(historyRoundData = null) {
             document.getElementById('scorecard-modal').classList.add('hidden');
         } else {
             // Standard save for ongoing round
-            const courseUrl = document.getElementById('modal-course-select').value;
-            const courseName = COURSE_METADATA[courseUrl]?.name || "Golf Course";
+            const courseName = (COURSE_METADATA[currentCourseUrl] || {}).name || "Golf Course";
             scorecard.saveRoundToHistory(courseName);
             alert('Round saved to history!');
             document.getElementById('scorecard-modal').classList.add('hidden');
