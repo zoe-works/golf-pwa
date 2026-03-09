@@ -260,7 +260,7 @@ async function init() {
 
         // If round is already in progress, ask to cancel
         if (startBtn.classList.contains('in-round')) {
-            if (confirm("Roundを中断しますか？中断したRoundは記録されません。")) {
+            if (confirm("Cancel this round? Unsaved data will be lost.")) {
                 // Reset UI to default state
                 startBtn.innerText = 'Start Round';
                 startBtn.classList.remove('in-round');
@@ -277,11 +277,19 @@ async function init() {
                 hs.innerHTML = '';
                 hs.value = '';
 
+                // Clear distance display
+                holeTargets = {};
+                currentHoleLayers.clearLayers();
+                ['dist-green-center', 'dist-green-front', 'dist-green-back', 'dist-hazard-front', 'dist-hazard-back'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerText = '-- yd';
+                });
+
                 // CRITICAL: Clear internal state and storage
                 scorecard.roundData = scorecard.createNewRound();
                 localStorage.removeItem('golf_pwa_round_data');
 
-                alert("ラウンドを中断しました。");
+                alert("Round has been cancelled.");
             }
             return; // Don't open the start modal
         }
@@ -525,18 +533,18 @@ async function init() {
                 if (importedData.type === "FeatureCollection" && importedData.features) {
                     courseData = importedData;
                     saveCourseData();
-                    alert("データをインポートして保存しました！");
+                    alert("Data imported and saved!");
 
                     // Reload current hole
                     if (holeSelector.value) {
                         displayHole(holeSelector.value);
                     }
                 } else {
-                    alert("無効なデータ形式です。");
+                    alert("Invalid data format.");
                 }
             } catch (error) {
                 console.error("Error parsing imported JSON:", error);
-                alert("ファイルの読み込みに失敗しました。");
+                alert("Failed to read file.");
             }
         };
         reader.readAsText(file);
@@ -581,7 +589,7 @@ async function init() {
 
     // Reset local data to defaults
     btnResetData.addEventListener('click', async () => {
-        if (confirm("デフォルトのマップデータに戻しますか？ローカルの編集内容は消去されます。")) {
+        if (confirm("Reset to default map data? Local edits will be lost.")) {
             localStorage.removeItem(`golf-course-${currentCourseUrl}`);
             await loadCourse(currentCourseUrl);
 
@@ -812,7 +820,13 @@ function showHoleModal() {
     let autoPens = 0;
     let aggregatedMemo = [];
 
-    if (holeData && holeData.shots) {
+    // Build shot details HTML
+    const shotDetailsEl = document.getElementById('hole-shot-details');
+    let shotHtml = '';
+
+    if (holeData && holeData.shots && holeData.shots.length > 0) {
+        shotHtml = '<div style="font-size: 13px; color: #555; border: 1px solid #eee; border-radius: 8px; padding: 8px;">';
+        shotHtml += '<div style="font-weight: 600; margin-bottom: 6px; color: #333;">Shots Recorded:</div>';
         holeData.shots.forEach(s => {
             if (s.club) {
                 if (s.club.includes('PT')) autoPutts++;
@@ -823,8 +837,20 @@ function showHoleModal() {
                 }
             }
             if (s.memo) aggregatedMemo.push(`[S${s.shot_num}] ${s.memo}`);
+
+            const clubLabel = s.club || '—';
+            const memoLabel = s.memo ? ` · ${s.memo}` : '';
+            shotHtml += `<div style="padding: 3px 0; border-bottom: 1px solid #f5f5f5;">
+                <span style="font-weight: 600; color: #1e88e5;">S${s.shot_num}</span>
+                <span style="margin-left: 6px;">${clubLabel}</span>
+                <span style="color: #999;">${memoLabel}</span>
+            </div>`;
         });
+        shotHtml += '</div>';
+    } else {
+        shotHtml = '<div style="font-size: 13px; color: #999; text-align: center; padding: 8px;">No shots recorded for this hole.</div>';
     }
+    shotDetailsEl.innerHTML = shotHtml;
 
     document.getElementById('putt-count').innerText = autoPutts.toString();
     document.getElementById('pen-count').innerText = autoPens.toString();
@@ -1220,7 +1246,8 @@ function updateLocationUI(pos) {
         isFirstFix = false;
     }
 
-    // 2. Calculate Distances and Show Green Mode
+    // 2. Calculate Distances and Show Green Mode (only during active round)
+    const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
     const distMap = {
         'green_center': 'dist-green-center',
         'green_front': 'dist-green-front',
@@ -1235,7 +1262,7 @@ function updateLocationUI(pos) {
     for (const [kind, elemId] of Object.entries(distMap)) {
         const el = document.getElementById(elemId);
         if (el) {
-            if (holeTargets[kind]) {
+            if (isRoundActive && holeTargets[kind]) {
                 const targetCoords = holeTargets[kind];
                 const meters = haversineMeters(userCoords, targetCoords);
                 const yards = metersToYardsRounded(meters);
