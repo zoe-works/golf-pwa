@@ -167,7 +167,7 @@ export class ScorecardManager {
     }
 
     generateExportText() {
-        let text = `【Round Report: ${new Date(this.roundData.date).toLocaleDateString()}】\n`;
+        let text = `[Round Report: ${new Date(this.roundData.date).toLocaleDateString()}]\n`;
         text += `Total: ${this.roundData.summary.total_score} (Putts: ${this.roundData.summary.total_putts}, Penalties: ${this.roundData.summary.total_penalties})\n\n`;
 
         for (const hNum of (this.roundData.holeSequence || [])) {

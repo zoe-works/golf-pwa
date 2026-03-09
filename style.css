@@ -285,37 +285,6 @@ body {
     white-space: nowrap;
 }
 
-/* Floating Action Button (FAB) */
-.fab {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 56px;
-    height: 56px;
-    border-radius: 28px;
-    background-color: #1e88e5;
-    color: white;
-    border: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 1000;
-    pointer-events: auto;
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-.fab:active {
-    transform: scale(0.9);
-    background-color: #1565c0;
-}
-
-.fab svg {
-    width: 28px;
-    height: 28px;
-}
-
 /* Edit Mode Controls */
 #edit-controls {
     position: absolute;
@@ -511,10 +480,6 @@ body {
     padding: 20px;
     /* Prevent double-tap to zoom or pinch zoom on the popup */
     touch-action: manipulation;
-}
-
-.hidden {
-    display: none !important;
 }
 
 .modal-content {
@@ -1120,4 +1085,144 @@ textarea {
     font-size: 13px;
     color: #777;
     margin-bottom: 10px;
+}
+
+/* Utility & Polish Classes to replace inline styles */
+.mt-0 {
+    margin-top: 0 !important;
+}
+
+.mt-8 {
+    margin-top: 8px !important;
+}
+
+.mt-15 {
+    margin-top: 15px !important;
+}
+
+.mt-20 {
+    margin-top: 20px !important;
+}
+
+.mb-5 {
+    margin-bottom: 5px !important;
+}
+
+.mb-12 {
+    margin-bottom: 12px !important;
+}
+
+.mb-20 {
+    margin-bottom: 20px !important;
+}
+
+.mr-8 {
+    margin-right: 8px !important;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-2 {
+    flex: 2;
+}
+
+.gap-8 {
+    gap: 8px;
+}
+
+.gap-10 {
+    gap: 10px;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.visibility-hidden {
+    visibility: hidden !important;
+}
+
+#btn-start-round {
+    padding: 6px 16px;
+    font-size: 14px;
+}
+
+#hole-status {
+    align-items: center;
+    justify-content: space-between;
+}
+
+#shot-count-display {
+    font-size: 11px;
+    color: #1e88e5;
+    font-weight: 700;
+}
+
+.history-summary {
+    display: flex;
+}
+
+#stat-best-score {
+    color: #4CAF50;
+}
+
+#stat-avg-score {
+    color: #2196F3;
+}
+
+.club-grid-5 {
+    grid-template-columns: repeat(5, 1fr) !important;
+}
+
+.club-grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+#btn-save-settings {
+    display: block;
+    box-sizing: border-box;
+}
+
+.modal-header-mb-5 {
+    margin-bottom: 5px !important;
+}
+
+.header-flex {
+    display: flex;
+}
+
+.no-border-bottom {
+    border-bottom: none !important;
+}
+
+.pb-5 {
+    padding-bottom: 5px !important;
+}
+
+#shot-score-val {
+    width: 50px;
+}
+
+#hole-shot-details {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+#btn-export-ai {
+    padding: 12px 5px;
+    font-size: 13px;
+}
+
+.modal-select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
 }

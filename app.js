@@ -366,16 +366,7 @@ async function init() {
             if (secondHalf === 'OUT') addOut(); else addIn();
         }
 
-        await loadCourse(courseUrl);
-
-        // Re-populate and sync sequence with scorecard
-        holeSelector.innerHTML = '';
-        sequence.forEach(hNum => {
-            const opt = document.createElement('option');
-            opt.value = hNum;
-            opt.innerText = String(hNum).match(/^[A-Z]-/) ? hNum : `Hole ${hNum}`;
-            holeSelector.appendChild(opt);
-        });
+        await loadCourse(courseUrl, sequence);
 
         const courseName = document.getElementById('modal-course-select').options[document.getElementById('modal-course-select').selectedIndex].text;
         scorecard.startNewRound(courseName, sequence);
@@ -468,6 +459,8 @@ async function init() {
     // Hole Completion
     document.getElementById('btn-finish-hole').addEventListener('click', showHoleModal);
 
+    document.getElementById('btn-score-plus').addEventListener('click', () => updateStepper('hole-score-count', 1));
+    document.getElementById('btn-score-minus').addEventListener('click', () => updateStepper('hole-score-count', -1));
     document.getElementById('btn-putt-plus').addEventListener('click', () => updateStepper('putt-count', 1));
     document.getElementById('btn-putt-minus').addEventListener('click', () => updateStepper('putt-count', -1));
     document.getElementById('btn-pen-plus').addEventListener('click', () => updateStepper('pen-count', 1));
@@ -631,7 +624,7 @@ async function init() {
                 break;
             }
         }
-        await loadCourseRestore(targetUrl, scorecard.roundData.holeSequence);
+        await loadCourse(targetUrl, scorecard.roundData.holeSequence, scorecard.currentHole);
         const startBtn = document.getElementById('btn-start-round');
         startBtn.innerText = 'Round In Progress';
         startBtn.classList.add('in-round');
@@ -643,36 +636,6 @@ async function init() {
 
     // Ensure club selector is populated correctly at startup
     renderClubSelector();
-}
-
-async function loadCourseRestore(url, sequence) {
-    try {
-        currentCourseUrl = url;
-        const savedData = localStorage.getItem(`golf-course-${url}`);
-        if (savedData) {
-            courseData = JSON.parse(savedData);
-        } else {
-            const response = await fetch(url);
-            courseData = await response.json();
-        }
-
-        const holeSelector = document.getElementById('hole-selector');
-        holeSelector.innerHTML = '';
-        sequence.forEach(hNum => {
-            const opt = document.createElement('option');
-            opt.value = hNum;
-            opt.innerText = String(hNum).match(/^[A-Z]-/) ? hNum : `Hole ${hNum}`;
-            holeSelector.appendChild(opt);
-        });
-
-        if (sequence.length > 0) {
-            holeSelector.value = scorecard.currentHole || sequence[0];
-            renderClubSelector(); // Safety re-render
-            displayHole(holeSelector.value);
-        }
-    } catch (error) {
-        console.error("Error restoring course data", error);
-    }
 }
 
 // --- SCORECARD UI LOGIC ---
@@ -775,7 +738,12 @@ function saveShotAndCloseModal() {
     document.getElementById('club-modal').classList.add('hidden');
 
     drawShotTracks();
-    updateScoreUI();
+
+    // Update live shot count
+    const hd = scorecard.getHoleData();
+    const sc = hd && hd.shots ? hd.shots.length : 0;
+    const shotCountEl = document.getElementById('ui-shot-count');
+    if (shotCountEl) shotCountEl.innerText = sc;
 }
 
 function drawShotTracks() {
@@ -813,11 +781,6 @@ function drawShotTracks() {
             opacity: 0.7
         }).addTo(shotLayers);
     }
-}
-
-function updateScoreUI() {
-    // Score summary is no longer displayed on the main UI
-    // It is shown inside the full Scorecard Modal when the 'Round finish' button is pressed.
 }
 
 function showHoleModal() {
@@ -861,6 +824,8 @@ function showHoleModal() {
     }
     shotDetailsEl.innerHTML = shotHtml;
 
+    const autoScore = holeData ? holeData.shots.length + autoPutts + autoPens : 0;
+    document.getElementById('hole-score-count').innerText = autoScore.toString();
     document.getElementById('putt-count').innerText = autoPutts.toString();
     document.getElementById('pen-count').innerText = autoPens.toString();
     document.getElementById('hole-memo').value = aggregatedMemo.join('\n');
@@ -877,11 +842,16 @@ function updateStepper(id, change) {
 }
 
 function finalizeHole() {
+    const score = parseInt(document.getElementById('hole-score-count').innerText, 10);
     const putts = parseInt(document.getElementById('putt-count').innerText, 10);
     const pens = parseInt(document.getElementById('pen-count').innerText, 10);
     const memo = document.getElementById('hole-memo').value;
 
+    // Override hole_score with manually set value
     scorecard.finishHole(putts, pens, memo);
+    const holeData = scorecard.getHoleData();
+    if (holeData) holeData.hole_score = score;
+    scorecard.saveRoundData();
     document.getElementById('hole-modal').classList.add('hidden');
 
     const holeSelector = document.getElementById('hole-selector');
@@ -1043,7 +1013,7 @@ let courseData = null;
 let currentCourseUrl = null;
 let isEditMode = false;
 
-async function loadCourse(url) {
+async function loadCourse(url, holeSequence = null, targetHole = null) {
     try {
         currentCourseUrl = url;
 
@@ -1054,14 +1024,33 @@ async function loadCourse(url) {
             console.log("Loaded course from local storage");
         } else {
             const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch course data: ${response.status} ${response.statusText}`);
+            }
             courseData = await response.json();
+            console.log("Fetched course from network");
         }
 
-        // We no longer automatically populate the hole selector from ALL JSON holes here.
-        // It is populated by the sequence array in btn-confirm-start or loadCourseRestore.
-        // This function is just to cache courseData globally.
+        if (holeSequence && holeSequence.length > 0) {
+            const holeSelector = document.getElementById('hole-selector');
+            holeSelector.innerHTML = '';
+            holeSequence.forEach(hNum => {
+                const opt = document.createElement('option');
+                opt.value = hNum;
+                opt.innerText = String(hNum).match(/^[A-Z]-/) ? hNum : `Hole ${hNum}`;
+                holeSelector.appendChild(opt);
+            });
+
+            // Set the target hole
+            const activeHole = targetHole || holeSequence[0];
+            holeSelector.value = activeHole;
+
+            renderClubSelector();
+            displayHole(activeHole);
+        }
     } catch (error) {
-        console.error("Error loading course data", error);
+        console.error("Error loading course data:", error);
+        alert(`Failed to load course: ${error.message}`);
     }
 }
 
@@ -1100,7 +1089,17 @@ function displayHole(holeNumber) {
     document.getElementById('hole-status').style.display = isRoundActive ? 'flex' : 'none';
     document.getElementById('btn-record-shot').style.display = isRoundActive ? 'flex' : 'none';
     document.getElementById('edit-controls').style.display = 'flex';
-    updateScoreUI();
+
+    // Show live shot count in hole status
+    if (isRoundActive) {
+        const holeData = scorecard.getHoleData();
+        const shotCount = holeData && holeData.shots ? holeData.shots.length : 0;
+        document.getElementById('ui-shot-count').innerText = shotCount;
+        document.getElementById('shot-count-display').style.display = 'inline';
+    } else {
+        document.getElementById('shot-count-display').style.display = 'none';
+    }
+
     drawShotTracks(); // Load past shots for this hole
 
     const geoJsonLayer = L.geoJSON(holeFeatures, {
@@ -1162,6 +1161,18 @@ function displayHole(holeNumber) {
 
     currentHoleLayers.addLayer(geoJsonLayer);
 
+    // Toggle distance panel row visibility based on available targets
+    const distRowMap = {
+        'green_front': 'row-green-front',
+        'green_back': 'row-green-back',
+        'hazard_front': 'row-hazard-front',
+        'hazard_back': 'row-hazard-back',
+    };
+    for (const [kind, rowId] of Object.entries(distRowMap)) {
+        const row = document.getElementById(rowId);
+        if (row) row.style.display = holeTargets[kind] ? 'flex' : 'none';
+    }
+
     let bounds = geoJsonLayer.getBounds();
     // If we have a current position, include it in the bounds so both user and pin are visible
     if (typeof lastPos !== 'undefined' && lastPos) {
@@ -1169,7 +1180,9 @@ function displayHole(holeNumber) {
     }
 
     if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [70, 70], maxZoom: 18 });
+        setTimeout(() => {
+            map.fitBounds(bounds, { padding: [70, 70], maxZoom: 18 });
+        }, 200);
     }
 }
 
@@ -1179,21 +1192,16 @@ let lastPos = null;
 let isFirstFix = true;
 
 function toggleTracking() {
-    const btn = document.getElementById('btn-start');
     const fabShot = document.getElementById('btn-record-shot');
 
     if (tracker) {
         // STOP
         tracker.stop();
         tracker = null;
-        if (btn) btn.innerText = "Start Location Tracking";
         fabShot.style.display = 'none';
         updateGpsStatus('disconnected', 'Tracking stopped');
     } else {
         // START
-        if (btn) {
-            btn.innerText = "Stop Location Tracking";
-        }
         fabShot.style.display = 'flex';
 
         tracker = new GeolocationTracker(
@@ -1207,6 +1215,15 @@ function toggleTracking() {
 }
 
 function updateLocationUI(pos) {
+    // Early return for filtered GPS fixes
+    if (pos.status === 'low_accuracy') {
+        updateGpsStatus('connecting', `Low Accuracy (±${Math.round(pos.accuracy)}m)`);
+        return;
+    } else if (pos.status === 'unstable') {
+        updateGpsStatus('connecting', `Unstable Signal (Speed Jump)`);
+        return;
+    }
+
     lastPos = pos;
     const latlng = [pos.lat, pos.lng];
     const userCoords = [pos.lng, pos.lat]; // [lng, lat] for Haversine
@@ -1255,7 +1272,7 @@ function updateLocationUI(pos) {
         isFirstFix = false;
     }
 
-    // 2. Calculate Distances and Show Green Mode (only during active round)
+    // 2. Calculate Distances (only during active round)
     const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
     const distMap = {
         'green_center': 'dist-green-center',
@@ -1283,19 +1300,7 @@ function updateLocationUI(pos) {
         }
     }
 
-    // Show score bar when tracking is active.
-    const scoreBar = document.getElementById('score-summary-bar');
-    scoreBar.style.display = 'flex';
-
     // 3. Update Status
-    if (pos.status === 'low_accuracy') {
-        updateGpsStatus('connecting', `Low Accuracy (±${Math.round(pos.accuracy)}m)`);
-        return; // Don't update map/distances with poor data
-    } else if (pos.status === 'unstable') {
-        updateGpsStatus('connecting', `Unstable Signal (Speed Jump)`);
-        return;
-    }
-
     updateGpsStatus('connected', `GPS: ±${Math.round(pos.accuracy)}m`);
 }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -24,8 +24,7 @@
 
                 <!-- Top floating overlay for course and hole selection -->
                 <div id="top-bar">
-                    <button id="btn-start-round" class="btn-primary"
-                        style="padding: 6px 16px; font-size: 14px; margin-top: 0; margin-right: 8px;">Start
+                    <button id="btn-start-round" class="btn-primary mr-8 mt-0">Start
                         Round</button>
                     <select id="hole-selector">
                         <!-- Options will be populated dynamically -->
@@ -61,10 +60,11 @@
                     <div id="gps-status" class="status-indicator">
                         <span class="dot disconnected"></span> GPS: Waiting...
                     </div>
-                    <div id="hole-status" class="status-indicator"
-                        style="display: none; align-items: center; justify-content: space-between; gap: 10px;">
+                    <div id="hole-status" class="status-indicator gap-10">
                         <span>Hole <span id="ui-current-hole">1</span> &nbsp;|&nbsp; Par <span
                                 id="ui-current-par">4</span></span>
+                        <span id="shot-count-display" class="visibility-hidden">Shots: <span
+                                id="ui-shot-count">0</span></span>
                         <button id="btn-finish-hole" class="btn-primary btn-small">Hole out</button>
                     </div>
                 </div>
@@ -75,19 +75,19 @@
                     <div class="target-label green">Green Center</div>
                     <div class="target-value" id="dist-green-center">-- yd</div>
                 </div>
-                <div class="distance-row hidden">
+                <div class="distance-row" id="row-green-front" style="display: none;">
                     <div class="target-label green">Green Front</div>
                     <div class="target-value" id="dist-green-front">-- yd</div>
                 </div>
-                <div class="distance-row hidden">
+                <div class="distance-row" id="row-green-back" style="display: none;">
                     <div class="target-label green">Green Back</div>
                     <div class="target-value" id="dist-green-back">-- yd</div>
                 </div>
-                <div class="distance-row hidden">
+                <div class="distance-row" id="row-hazard-front" style="display: none;">
                     <div class="target-label hazard">Hazard Front</div>
                     <div class="target-value" id="dist-hazard-front">-- yd</div>
                 </div>
-                <div class="distance-row hidden">
+                <div class="distance-row" id="row-hazard-back" style="display: none;">
                     <div class="target-label hazard">Hazard Back</div>
                     <div class="target-value" id="dist-hazard-back">-- yd</div>
                 </div>
@@ -102,13 +102,13 @@
             <div class="view-header">
                 <h2>Past Scores</h2>
             </div>
-            <div class="history-summary stat-box-row" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <div class="stat-box" style="flex: 1;">
-                    <span class="stat-num" id="stat-best-score" style="color: #4CAF50;">--</span>
+            <div class="history-summary stat-box-row mb-20 gap-10">
+                <div class="stat-box flex-1">
+                    <span class="stat-num" id="stat-best-score">--</span>
                     <span class="stat-label">Best (18H)</span>
                 </div>
-                <div class="stat-box" style="flex: 1;">
-                    <span class="stat-num" id="stat-avg-score" style="color: #2196F3;">--</span>
+                <div class="stat-box flex-1">
+                    <span class="stat-num" id="stat-avg-score">--</span>
                     <span class="stat-label">Avg (Last 3)</span>
                 </div>
             </div>
@@ -126,11 +126,10 @@
             <div class="settings-group">
                 <h3>My Clubs</h3>
                 <p class="subtitle">Select the clubs you carry in your bag.</p>
-                <div id="settings-club-grid" class="club-grid" style="grid-template-columns: repeat(5, 1fr);">
+                <div id="settings-club-grid" class="club-grid club-grid-5">
                     <!-- Populated by JS -->
                 </div>
-                <button id="btn-save-settings" class="btn-primary"
-                    style="margin-top: 20px; width: 100%; display: block; box-sizing: border-box;">Save
+                <button id="btn-save-settings" class="btn-primary mt-20 w-100">Save
                     Settings</button>
             </div>
         </div>
@@ -154,34 +153,33 @@
         <!-- Shot Recording Modal -->
         <div id="club-modal" class="modal hidden">
             <div class="modal-content">
-                <div class="modal-header" style="margin-bottom: 5px;">
-                    <h3 style="margin: 0; text-align: left;"><strong>Record shot <span
-                                id="shot-number-display">1</span></strong></h3>
-                    <div style="display: flex;">
-                        <button id="btn-shot-prev" class="icon-btn" style="visibility: hidden;">&larr;</button>
-                        <button id="btn-shot-next" class="icon-btn" style="visibility: hidden;">&rarr;</button>
+                <div class="modal-header mb-5">
+                    <h3 class="mt-0 text-left"><strong>Record shot <span id="shot-number-display">1</span></strong></h3>
+                    <div class="header-flex">
+                        <button id="btn-shot-prev" class="icon-btn visibility-hidden">&larr;</button>
+                        <button id="btn-shot-next" class="icon-btn visibility-hidden">&rarr;</button>
                     </div>
                 </div>
-                <p class="subtitle" style="margin-top: 0; text-align: left;">Select club</p>
+                <p class="subtitle mt-0 text-left">Select club</p>
 
-                <div class="club-grid" id="club-grid-container" style="grid-template-columns: repeat(5, 1fr);">
+                <div class="club-grid club-grid-5" id="club-grid-container">
                     <!-- Populated by JS -->
                 </div>
-                <div class="club-grid" style="margin-top: 8px; grid-template-columns: repeat(2, 1fr);">
+                <div class="club-grid mt-8 club-grid-2">
                     <button class="penalty-btn danger" data-penalty="OB">OB</button>
                     <button class="penalty-btn danger" data-penalty="Penalty">1 Penalty</button>
                 </div>
 
-                <div class="input-group mt-15" style="border-bottom: none; padding-bottom: 5px;">
+                <div class="input-group mt-15 no-border-bottom pb-5">
                     <label>Shot-Self-Scoring</label>
                     <div class="stepper">
                         <button id="btn-shot-score-minus" class="stepper-btn">-</button>
-                        <span id="shot-score-val" class="stepper-val" style="width: 50px;">50</span>
+                        <span id="shot-score-val" class="stepper-val">50</span>
                         <button id="btn-shot-score-plus" class="stepper-btn">+</button>
                     </div>
                 </div>
 
-                <div class="input-group" style="border-bottom: none;">
+                <div class="input-group no-border-bottom">
                     <textarea id="shot-memo-input" rows="2" placeholder="Shot memo..."></textarea>
                 </div>
 
@@ -197,7 +195,16 @@
             <div class="modal-content">
                 <h3>Hole <span id="hole-modal-num">1</span> Result</h3>
 
-                <div id="hole-shot-details" style="margin-bottom: 12px; max-height: 120px; overflow-y: auto;"></div>
+                <div id="hole-shot-details" class="mb-12"></div>
+
+                <div class="input-group">
+                    <label>Score</label>
+                    <div class="stepper">
+                        <button id="btn-score-minus" class="stepper-btn">-</button>
+                        <span id="hole-score-count" class="stepper-val">4</span>
+                        <button id="btn-score-plus" class="stepper-btn">+</button>
+                    </div>
+                </div>
 
                 <div class="input-group">
                     <label>Putts</label>
@@ -239,10 +246,9 @@
                 <div id="scorecard-body" class="scorecard-scrollable">
                     <!-- Dynamic table goes here -->
                 </div>
-                <div class="modal-actions" style="display: flex; gap: 10px;">
-                    <button id="btn-save-round" class="btn-primary" style="flex: 2;">Save Results</button>
-                    <button id="btn-export-ai" class="btn-secondary"
-                        style="flex: 1; padding: 12px 5px; font-size: 13px;">Copy AI Text</button>
+                <div class="modal-actions gap-10 header-flex">
+                    <button id="btn-save-round" class="btn-primary flex-2">Save Results</button>
+                    <button id="btn-export-ai" class="btn-secondary flex-1">Copy AI Text</button>
                 </div>
             </div>
         </div>
@@ -250,12 +256,11 @@
         <!-- Start Round Modal -->
         <div id="start-round-modal" class="modal hidden">
             <div class="modal-content">
-                <h3 style="margin-top: 0; margin-bottom: 20px;">Start New Round</h3>
+                <h3 class="mt-0 mb-20">Start New Round</h3>
 
                 <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                     <label>Golf Course</label>
-                    <select id="modal-course-select"
-                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 16px;">
+                    <select id="modal-course-select" class="modal-select">
                         <option value="data/prime_city.json">Prime City Golf Club (18H)</option>
                         <option value="data/bangsai.json">Bangsai Country Club (27H)</option>
                     </select>
@@ -263,21 +268,19 @@
 
                 <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                     <label>First Half (Starting Holes)</label>
-                    <select id="modal-first-half"
-                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 16px;">
+                    <select id="modal-first-half" class="modal-select">
                         <!-- Populated dynamically based on course -->
                     </select>
                 </div>
 
                 <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                     <label>Second Half (Finishing Holes)</label>
-                    <select id="modal-second-half"
-                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 16px;">
+                    <select id="modal-second-half" class="modal-select">
                         <!-- Populated dynamically based on course -->
                     </select>
                 </div>
 
-                <div class="modal-actions" style="margin-top: 20px;">
+                <div class="modal-actions mt-20">
                     <button id="btn-confirm-start" class="btn-primary">Start Round</button>
                     <button id="btn-cancel-start" class="btn-secondary">Cancel</button>
                 </div>
