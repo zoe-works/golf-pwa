@@ -436,42 +436,7 @@ async function init() {
         document.getElementById('scorecard-modal').classList.add('hidden');
     });
 
-    document.getElementById('btn-save-round').addEventListener('click', () => {
-        const rows = document.querySelectorAll('.score-table tbody tr');
-        rows.forEach(row => {
-            const hNumStr = row.getAttribute('data-hole');
-            if (hNumStr) {
-                const editScore = parseInt(row.querySelector('.edit-score').value, 10);
-                const editPutts = parseInt(row.querySelector('.edit-putts').value, 10);
-                const editPens = parseInt(row.querySelector('.edit-pens').value, 10);
-
-                if (scorecard.roundData.holes[hNumStr]) {
-                    scorecard.roundData.holes[hNumStr].hole_score = editScore;
-                    scorecard.roundData.holes[hNumStr].putts = editPutts;
-                    scorecard.roundData.holes[hNumStr].penalties = editPens;
-                }
-            }
-        });
-
-        scorecard.saveRoundData();
-        const courseName = scorecard.roundData.course_name || "Unknown Course";
-        scorecard.saveRoundToHistory(courseName);
-
-        document.getElementById('scorecard-modal').classList.add('hidden');
-        alert("Round results saved successfully to your history!");
-
-        // Reset Start Round Button
-        const startBtn = document.getElementById('btn-start-round');
-        startBtn.innerText = 'Start Round';
-        startBtn.classList.remove('in-round');
-
-        // Switch to History View
-        const historyBtn = document.querySelector('.nav-btn[data-target="view-history"]');
-        if (historyBtn) {
-            historyBtn.click();
-        }
-    });
-
+    // Save Round logic moved to showScorecardModal's internal onclick handler to prevent duplicate event triggers
     document.getElementById('btn-export-ai').addEventListener('click', () => {
         const text = scorecard.generateExportText();
         navigator.clipboard.writeText(text).then(() => {
@@ -874,7 +839,7 @@ function showScorecardModal(historyRoundData = null) {
 
     const body = document.getElementById('scorecard-body');
 
-    document.getElementById('btn-save-round').style.display = isReadonly ? 'none' : 'block';
+    document.getElementById('btn-save-round').style.display = 'block';
 
     let html = `
         <table class="score-table">
@@ -894,9 +859,9 @@ function showScorecardModal(historyRoundData = null) {
                 <tr data-hole="${hNum}">
                     <td>${hNum}</td>
                     <td>${h.par}</td>
-                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 45px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
-                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
-                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;" ${isReadonly ? 'disabled' : ''}></td>
+                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 45px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
                 </tr>
             `;
         }
@@ -942,10 +907,21 @@ function showScorecardModal(historyRoundData = null) {
             document.getElementById('scorecard-modal').classList.add('hidden');
         } else {
             // Standard save for ongoing round
-            const courseName = (COURSE_METADATA[currentCourseUrl] || {}).name || "Golf Course";
+            scorecard.saveRoundData();
+            const courseName = scorecard.roundData.course_name || (COURSE_METADATA[currentCourseUrl] || {}).name || "Unknown Course";
             scorecard.saveRoundToHistory(courseName);
-            alert('Round saved to history!');
+
             document.getElementById('scorecard-modal').classList.add('hidden');
+            alert('Round results saved successfully to your history!');
+
+            // Reset Start Round Button
+            const startBtn = document.getElementById('btn-start-round');
+            startBtn.innerText = 'Start Round';
+            startBtn.classList.remove('in-round');
+
+            // Switch to History View
+            const historyBtn = document.querySelector('.nav-btn[data-target="view-history"]');
+            if (historyBtn) historyBtn.click();
         }
     };
 }
