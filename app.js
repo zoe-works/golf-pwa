@@ -722,10 +722,8 @@ function showShotModal(shotNum) {
 }
 
 function saveShotAndCloseModal() {
-    if (!lastPos && currentEditingShotNum === scorecard.currentShotNum) return;
-
-    // For new shots, use current GPS. For old shots, pass null (scorecard.js handles not overwriting coords)
-    const userCoords = (currentEditingShotNum === scorecard.currentShotNum) ? [lastPos.lng, lastPos.lat] : null;
+    // For new shots, use current GPS if available. For old shots, pass null.
+    const userCoords = (currentEditingShotNum === scorecard.currentShotNum && lastPos) ? [lastPos.lng, lastPos.lat] : null;
 
     // Auto-calculate distance for the previous shot if exists and we are recording a NEW shot
     if (currentEditingShotNum === scorecard.currentShotNum && scorecard.currentShotNum > 1) {
