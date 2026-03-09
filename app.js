@@ -333,12 +333,12 @@ async function init() {
         const courseName = document.getElementById('modal-course-select').options[document.getElementById('modal-course-select').selectedIndex].text;
         scorecard.startNewRound(courseName, sequence);
 
-        holeSelector.value = sequence[0];
-        displayHole(sequence[0]);
-
         const startBtn = document.getElementById('btn-start-round');
         startBtn.innerText = 'Round In Progress';
         startBtn.classList.add('in-round');
+
+        holeSelector.value = sequence[0];
+        displayHole(sequence[0]);
 
         document.getElementById('start-round-modal').classList.add('hidden');
     });
