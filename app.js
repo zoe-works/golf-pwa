@@ -1374,8 +1374,12 @@ window.renderHistoryList = function () {
     const bestEl = document.getElementById('stat-best-score');
     const avgEl = document.getElementById('stat-avg-score');
 
-    bestEl.innerText = scorecard.getBestScore();
-    avgEl.innerText = scorecard.getAverageScore();
+    bestEl.parentElement.innerHTML = `<span class="stat-label">Best</span><span id="stat-best-score">${scorecard.getBestScore()}</span>`;
+    avgEl.parentElement.innerHTML = `<span class="stat-label">Avg</span><span id="stat-avg-score">${scorecard.getAverageScore()}</span>`;
+
+    // Re-get elements after innerHTML update
+    const newBestEl = document.getElementById('stat-best-score');
+    const newAvgEl = document.getElementById('stat-avg-score');
 
     const history = scorecard.getHistory();
     listEl.innerHTML = '';
@@ -1400,8 +1404,11 @@ window.renderHistoryList = function () {
         `;
 
         const scoreDiv = document.createElement('div');
-        scoreDiv.className = 'history-score';
-        scoreDiv.innerText = round.summary.total_score || '--';
+        scoreDiv.className = 'history-score-badge';
+        scoreDiv.innerHTML = `
+            <span class="history-score-val">${round.summary.total_score || '--'}</span>
+            <span class="history-score-label">Score</span>
+        `;
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'history-delete-btn';

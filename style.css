@@ -970,43 +970,78 @@ textarea {
 /* Premium Stat Redesign */
 .stat-box {
     background: white;
-    padding: 15px 10px;
-    border-radius: 12px;
+    padding: 18px 10px;
+    border-radius: 16px;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease;
-    border-top: 4px solid #eee;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
 }
 
 .stat-box:first-of-type {
-    border-top-color: #4CAF50;
-    background: linear-gradient(to bottom, #f0fff0, #ffffff);
+    background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+}
+
+.stat-box:first-of-type::before {
+    background: #4CAF50;
 }
 
 .stat-box:last-of-type {
-    border-top-color: #2196F3;
-    background: linear-gradient(to bottom, #f0f7ff, #ffffff);
+    background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+}
+
+.stat-box:last-of-type::before {
+    background: #2196F3;
+}
+
+.stat-box .stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    margin-bottom: 4px;
+    display: block;
 }
 
 /* History Swipe Styles */
 .history-item {
     position: relative;
     overflow: hidden;
-    background: #f44336;
-    /* Delete btn background */
-    border-radius: 12px;
-    margin-bottom: 12px;
+    background: #dc3545;
+    /* Clean red for delete */
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .history-item-content {
     background: white;
-    padding: 15px;
+    padding: 18px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     z-index: 2;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.history-item:active .history-item-content {
+    background: #f8f9fa;
 }
 
 .history-delete-btn {
@@ -1014,32 +1049,64 @@ textarea {
     right: 0;
     top: 0;
     bottom: 0;
-    width: 80px;
-    background: #f44336;
+    width: 90px;
+    background: #dc3545;
     color: white;
     border: none;
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 14px;
     z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-left: 20px;
+    /* Offset for swipe appearance */
+}
+
+.history-info {
+    display: flex;
+    flex-direction: column;
 }
 
 .history-date {
-    font-size: 13px;
-    color: #666;
+    font-size: 11px;
+    font-weight: 600;
+    color: #adb5bd;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     margin-bottom: 4px;
 }
 
 .history-course {
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 700;
+    font-size: 17px;
+    color: #212529;
 }
 
-.history-score {
+.history-score-badge {
+    background: #e7f1ff;
+    color: #007bff;
+    padding: 8px 14px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+}
+
+.history-score-val {
     font-size: 24px;
-    font-weight: bold;
-    color: #1e88e5;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.history-score-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 2px;
+    opacity: 0.8;
 }
 
 /* Settings View Styles */
