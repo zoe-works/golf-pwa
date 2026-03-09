@@ -1434,6 +1434,7 @@ window.renderHistoryList = function () {
 
         li.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
+            currentX = startX; // Reset currentX on tap!
             isSwiping = true;
             itemContent.style.transition = 'none';
         }, { passive: true });
