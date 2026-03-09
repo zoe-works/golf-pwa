@@ -448,6 +448,20 @@ body {
 .btn-recenter.active {
     background-color: #1a73e8;
     color: white;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.3), 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: compass-pulse 2s ease-in-out infinite;
+}
+
+@keyframes compass-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.3), 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(26, 115, 232, 0.15), 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
 }
 
 .btn-recenter:active {
@@ -472,6 +486,7 @@ body {
     right: 12px;
     background-color: white;
     color: #444;
+    transition: all 0.3s ease;
 }
 
 /* Push Leaflet Top Controls Down to avoid overlapping top-bar */

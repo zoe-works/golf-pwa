@@ -148,16 +148,22 @@ async function init() {
         });
     });
 
-    document.getElementById('btn-recenter').addEventListener('click', () => {
+    const recenterBtn = document.getElementById('btn-recenter');
+    const crosshairSVG = `<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>`;
+    const compassSVG = `<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>`;
+
+    recenterBtn.addEventListener('click', () => {
         if (lastPos) {
             map.setView([lastPos.lat, lastPos.lng], 17);
             // Toggle mode
             if (isHeadingUp) {
                 isHeadingUp = false;
-                document.getElementById('btn-recenter').classList.remove('active');
+                recenterBtn.classList.remove('active');
+                recenterBtn.innerHTML = crosshairSVG;
             } else {
                 isHeadingUp = true;
-                document.getElementById('btn-recenter').classList.add('active');
+                recenterBtn.classList.add('active');
+                recenterBtn.innerHTML = compassSVG;
                 if (userHeading) map.setBearing(360 - userHeading);
             }
         } else {
@@ -175,7 +181,8 @@ async function init() {
     // Disable auto-rotation if user manually rotates the map
     map.on('rotatestart', () => {
         isHeadingUp = false;
-        document.getElementById('btn-recenter').classList.remove('active');
+        recenterBtn.classList.remove('active');
+        recenterBtn.innerHTML = crosshairSVG;
     });
 
     // Intercept clicking on Leaflet's compass control to lock heading instead of reverting to North
@@ -186,10 +193,12 @@ async function init() {
             // Toggle mode
             if (isHeadingUp) {
                 isHeadingUp = false; // Disable auto tracking to lock it in place
-                document.getElementById('btn-recenter').classList.remove('active');
+                recenterBtn.classList.remove('active');
+                recenterBtn.innerHTML = crosshairSVG;
             } else {
                 isHeadingUp = true; // Re-enable auto tracking
-                document.getElementById('btn-recenter').classList.add('active');
+                recenterBtn.classList.add('active');
+                recenterBtn.innerHTML = compassSVG;
                 if (userHeading) map.setBearing(360 - userHeading);
             }
         }
