@@ -61,8 +61,11 @@
                     <div id="gps-status" class="status-indicator">
                         <span class="dot disconnected"></span> GPS: Waiting...
                     </div>
-                    <div id="hole-status" class="status-indicator" style="display: none;">
-                        Hole <span id="ui-current-hole">1</span> &nbsp;|&nbsp; Par <span id="ui-current-par">4</span>
+                    <div id="hole-status" class="status-indicator"
+                        style="display: none; align-items: center; justify-content: space-between; gap: 10px;">
+                        <span>Hole <span id="ui-current-hole">1</span> &nbsp;|&nbsp; Par <span
+                                id="ui-current-par">4</span></span>
+                        <button id="btn-finish-hole" class="btn-primary btn-small">Hole out</button>
                     </div>
                 </div>
             </div>
@@ -89,10 +92,7 @@
                     <div class="target-value" id="dist-hazard-back">-- yd</div>
                 </div>
 
-                <div class="score-summary-bar" id="score-summary-bar"
-                    style="display: none; justify-content: space-between; gap: 10px;">
-                    <button id="btn-finish-hole" class="btn-secondary btn-small" style="flex: 1;">Hole out</button>
-                </div>
+
 
             </div> <!-- End distance-panel -->
         </div> <!-- End view-play -->

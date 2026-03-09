@@ -1022,7 +1022,6 @@ function displayHole(holeNumber) {
     const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
 
     document.getElementById('hole-status').style.display = isRoundActive ? 'flex' : 'none';
-    document.getElementById('score-summary-bar').style.display = isRoundActive ? 'flex' : 'none';
     document.getElementById('btn-record-shot').style.display = isRoundActive ? 'flex' : 'none';
     document.getElementById('edit-controls').style.display = 'flex';
     updateScoreUI();
