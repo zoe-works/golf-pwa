@@ -34,9 +34,15 @@ export class GeolocationTracker {
                 const accuracy = pos.coords.accuracy;
                 const timestamp = pos.timestamp;
 
-                // C: Accuracy Threshold (Ignore fixes worse than 30m)
+                // C: Accuracy Threshold (Ignore fixes worse than 30m for internal data, but notify UI)
                 if (accuracy > 30) {
                     console.log(`[GPS] Ignored: Poor accuracy (${accuracy}m)`);
+                    this.onUpdate({
+                        status: 'low_accuracy',
+                        accuracy: accuracy,
+                        lng: rawLng,
+                        lat: rawLat
+                    });
                     return;
                 }
 
@@ -50,10 +56,14 @@ export class GeolocationTracker {
                         );
 
                         const speedMps = distMeters / timeDiffSec;
-                        // Golf cart top speed is ~24km/h (6.6m/s). 
-                        // Let's set a generous cap of 15m/s (54km/h) to allow for quick recovery but block huge teleportations.
                         if (speedMps > 15) {
                             console.log(`[GPS] Ignored: Unrealistic speed jump (${Math.round(speedMps)}m/s)`);
+                            this.onUpdate({
+                                status: 'unstable',
+                                accuracy: accuracy,
+                                lng: rawLng,
+                                lat: rawLat
+                            });
                             return;
                         }
                     }
@@ -73,6 +83,7 @@ export class GeolocationTracker {
                 }
 
                 this.onUpdate({
+                    status: 'ok',
                     lng: smoothedLng,
                     lat: smoothedLat,
                     rawLng: rawLng,

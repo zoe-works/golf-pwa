@@ -1238,6 +1238,14 @@ function updateLocationUI(pos) {
     scoreBar.style.display = 'flex';
 
     // 3. Update Status
+    if (pos.status === 'low_accuracy') {
+        updateGpsStatus('connecting', `Low Accuracy (±${Math.round(pos.accuracy)}m)`);
+        return; // Don't update map/distances with poor data
+    } else if (pos.status === 'unstable') {
+        updateGpsStatus('connecting', `Unstable Signal (Speed Jump)`);
+        return;
+    }
+
     updateGpsStatus('connected', `GPS: ±${Math.round(pos.accuracy)}m`);
 }
 
