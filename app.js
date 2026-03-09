@@ -272,6 +272,11 @@ async function init() {
                 document.getElementById('ui-current-hole').innerText = '-';
                 document.getElementById('ui-current-par').innerText = '-';
 
+                // Reset hole selector
+                const hs = document.getElementById('hole-selector');
+                hs.innerHTML = '';
+                hs.value = '';
+
                 // CRITICAL: Clear internal state and storage
                 scorecard.roundData = scorecard.createNewRound();
                 localStorage.removeItem('golf_pwa_round_data');
@@ -948,6 +953,15 @@ function showScorecardModal(historyRoundData = null) {
             const startBtn = document.getElementById('btn-start-round');
             startBtn.innerText = 'Start Round';
             startBtn.classList.remove('in-round');
+
+            // Reset hole selector
+            const hs = document.getElementById('hole-selector');
+            hs.innerHTML = '';
+            hs.value = '';
+
+            // Hide hole status and record shot button
+            document.getElementById('hole-status').style.display = 'none';
+            document.getElementById('btn-record-shot').style.display = 'none';
 
             // Switch to History View
             const historyBtn = document.querySelector('.nav-btn[data-target="view-history"]');
