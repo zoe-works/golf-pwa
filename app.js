@@ -915,6 +915,59 @@ function showScorecardModal(historyRoundData = null) {
 
     body.innerHTML = html;
     document.getElementById('scorecard-modal').classList.remove('hidden');
+
+    // Action button logic (Update History or Save Round)
+    const saveBtn = document.getElementById('btn-save-round');
+    saveBtn.innerText = isReadonly ? 'Update History' : 'Save Results';
+    saveBtn.onclick = () => {
+        const rows = body.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const hNum = row.dataset.hole;
+            const scoreInp = row.querySelector('.edit-score');
+            const puttsInp = row.querySelector('.edit-putts');
+            const pensInp = row.querySelector('.edit-pens');
+
+            if (scoreInp && rd.holes[hNum]) {
+                rd.holes[hNum].hole_score = parseInt(scoreInp.value, 10);
+                rd.holes[hNum].putts = parseInt(puttsInp.value, 10);
+                rd.holes[hNum].penalties = parseInt(pensInp.value, 10);
+            }
+        });
+
+        if (isReadonly) {
+            // Update historical record
+            const updatedSummary = calculateSummary(rd);
+            rd.summary = updatedSummary;
+            scorecard.updateHistoryRound(rd);
+            alert('History updated!');
+            window.renderHistoryList();
+            document.getElementById('scorecard-modal').classList.add('hidden');
+        } else {
+            // Standard save for ongoing round
+            const courseUrl = document.getElementById('modal-course-select').value;
+            const courseName = COURSE_METADATA[courseUrl]?.name || "Golf Course";
+            scorecard.saveRoundToHistory(courseName);
+            alert('Round saved to history!');
+            document.getElementById('scorecard-modal').classList.add('hidden');
+        }
+    };
+}
+
+function calculateSummary(rd) {
+    let totalScore = 0, totalPutts = 0, totalPenalties = 0;
+    const sequence = rd.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
+    for (const hNum of sequence) {
+        if (rd.holes[hNum]) {
+            totalScore += (rd.holes[hNum].hole_score || 0);
+            totalPutts += (rd.holes[hNum].putts || 0);
+            totalPenalties += (rd.holes[hNum].penalties || 0);
+        }
+    }
+    return {
+        total_score: totalScore,
+        total_putts: totalPutts,
+        total_penalties: totalPenalties
+    };
 }
 
 // --- REST OF APP LOGIC ---
@@ -1341,6 +1394,7 @@ window.renderHistoryList = function () {
         li.className = 'history-item';
 
         const infoDiv = document.createElement('div');
+        infoDiv.className = 'history-info';
         infoDiv.innerHTML = `
             <div class="history-date">${dateStr}</div>
             <div class="history-course">${round.course_name || 'Golf Course'}</div>
@@ -1350,11 +1404,65 @@ window.renderHistoryList = function () {
         scoreDiv.className = 'history-score';
         scoreDiv.innerText = round.summary.total_score || '--';
 
-        li.appendChild(infoDiv);
-        li.appendChild(scoreDiv);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'history-delete-btn';
+        deleteBtn.innerHTML = 'Delete';
+        deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (confirm('Delete this round?')) {
+                scorecard.deleteRoundFromHistory(round.round_id);
+                window.renderHistoryList();
+            }
+        };
 
-        li.addEventListener('click', () => {
-            showScorecardModal(round);
+        const itemContent = document.createElement('div');
+        itemContent.className = 'history-item-content';
+        itemContent.appendChild(infoDiv);
+        itemContent.appendChild(scoreDiv);
+
+        li.appendChild(itemContent);
+        li.appendChild(deleteBtn);
+
+        // Swipe logic
+        let startX = 0;
+        let currentX = 0;
+        let isSwiping = false;
+
+        li.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isSwiping = true;
+            itemContent.style.transition = 'none';
+        }, { passive: true });
+
+        li.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            currentX = e.touches[0].clientX;
+            const diff = Math.min(0, currentX - startX);
+            if (diff < -5) {
+                itemContent.style.transform = `translateX(${diff}px)`;
+            }
+        }, { passive: true });
+
+        li.addEventListener('touchend', () => {
+            isSwiping = false;
+            itemContent.style.transition = 'transform 0.3s ease';
+            const diff = currentX - startX;
+            if (diff < -70) {
+                li.classList.add('swiped');
+                itemContent.style.transform = `translateX(-80px)`;
+            } else {
+                li.classList.remove('swiped');
+                itemContent.style.transform = `translateX(0)`;
+            }
+        });
+
+        itemContent.addEventListener('click', () => {
+            if (li.classList.contains('swiped')) {
+                li.classList.remove('swiped');
+                itemContent.style.transform = `translateX(0)`;
+            } else {
+                showScorecardModal(round);
+            }
         });
 
         listEl.appendChild(li);

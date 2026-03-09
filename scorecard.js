@@ -208,14 +208,31 @@ export class ScorecardManager {
         // Check if this round already exists in history
         const existingIndex = history.findIndex(r => r.round_id === this.roundData.round_id);
         if (existingIndex !== -1) {
-            history[existingIndex] = this.roundData;
+            history[existingIndex] = JSON.parse(JSON.stringify(this.roundData));
         } else {
-            history.push(this.roundData);
+            history.push(JSON.parse(JSON.stringify(this.roundData)));
         }
 
         // Sort descending by date
         history.sort((a, b) => new Date(b.date) - new Date(a.date));
         localStorage.setItem('golf-round-history', JSON.stringify(history));
+    }
+
+    updateHistoryRound(updatedRound) {
+        let history = this.getHistory();
+        const index = history.findIndex(r => r.round_id === updatedRound.round_id);
+        if (index !== -1) {
+            history[index] = updatedRound;
+            localStorage.setItem('golf-round-history', JSON.stringify(history));
+            return true;
+        }
+        return false;
+    }
+
+    deleteRoundFromHistory(roundId) {
+        let history = this.getHistory();
+        const newHistory = history.filter(r => r.round_id !== roundId);
+        localStorage.setItem('golf-round-history', JSON.stringify(newHistory));
     }
 
     getBestScore() {
