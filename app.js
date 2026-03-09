@@ -256,6 +256,31 @@ async function init() {
     }
 
     async function openStartRoundModal() {
+        const startBtn = document.getElementById('btn-start-round');
+
+        // If round is already in progress, ask to cancel
+        if (startBtn.classList.contains('in-round')) {
+            if (confirm("Roundを中断しますか？中断したRoundは記録されません。")) {
+                // Reset UI to default state
+                startBtn.innerText = 'Start Round';
+                startBtn.classList.remove('in-round');
+
+                document.getElementById('hole-status').style.display = 'none';
+                document.getElementById('btn-record-shot').style.display = 'none';
+
+                // Clear UI hole info
+                document.getElementById('ui-current-hole').innerText = '-';
+                document.getElementById('ui-current-par').innerText = '-';
+
+                // CRITICAL: Clear internal state and storage
+                scorecard.roundData = scorecard.createNewRound();
+                localStorage.removeItem('golf_pwa_round_data');
+
+                alert("ラウンドを中断しました。");
+            }
+            return; // Don't open the start modal
+        }
+
         // Request permissions if not already active
         if (!tracker) {
             toggleTracking();
@@ -336,6 +361,9 @@ async function init() {
         const startBtn = document.getElementById('btn-start-round');
         startBtn.innerText = 'Round In Progress';
         startBtn.classList.add('in-round');
+
+        // Ensure club selector is ready for the new round
+        renderClubSelector();
 
         holeSelector.value = sequence[0];
         displayHole(sequence[0]);
@@ -430,8 +458,6 @@ async function init() {
     document.getElementById('btn-save-hole').addEventListener('click', finalizeHole);
 
     // Scorecard Summary
-    document.getElementById('btn-round-finish').addEventListener('click', showScorecardModal);
-
     document.getElementById('btn-close-scorecard').addEventListener('click', () => {
         document.getElementById('scorecard-modal').classList.add('hidden');
     });
@@ -619,6 +645,7 @@ async function loadCourseRestore(url, sequence) {
 
         if (sequence.length > 0) {
             holeSelector.value = scorecard.currentHole || sequence[0];
+            renderClubSelector(); // Safety re-render
             displayHole(holeSelector.value);
         }
     } catch (error) {
