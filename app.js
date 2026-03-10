@@ -150,12 +150,15 @@ async function init() {
     const compassBtn = document.getElementById('btn-compass');
 
     recenterBtn.addEventListener('click', () => {
+        // Essential for iOS: Request permission on user gesture
+        initCompass();
+
         // Toggle mode
         if (isHeadingUp) {
             isHeadingUp = false;
         } else {
             isHeadingUp = true;
-            if (userHeading) map.setBearing(360 - userHeading);
+            if (userHeading !== null) map.setBearing(userHeading);
         }
         updateCompassUI();
 
@@ -1236,7 +1239,7 @@ function updateLocationUI(pos) {
         const userIcon = L.divIcon({
             className: 'user-marker-container',
             html: `
-                <div id="user-heading-cone" class="user-heading-cone" style="transform: rotate(${userHeading}deg)"></div>
+                <div id="user-heading-cone" class="user-heading-cone" style="transform: rotate(${userHeading !== null ? userHeading : 0}deg)"></div>
                 <div class="user-dot"></div>
             `,
             iconSize: [40, 40],
@@ -1251,7 +1254,11 @@ function updateLocationUI(pos) {
         userMarker.setLatLng(latlng);
         const cone = document.getElementById('user-heading-cone');
         if (cone) {
-            cone.style.transform = `rotate(${userHeading}deg)`;
+            if (isHeadingUp) {
+                cone.style.transform = `rotate(0deg)`; // Cone always points up in heading-up mode
+            } else {
+                cone.style.transform = `rotate(${userHeading !== null ? userHeading : 0}deg)`; // Cone rotates with user heading in north-up mode
+            }
         }
     }
 
@@ -1270,8 +1277,12 @@ function updateLocationUI(pos) {
         }
     }
 
-    if (isFirstFix) {
-        map.setView(latlng, 17);
+    if (isFirstFix || isHeadingUp) {
+        if (isHeadingUp) {
+            map.panTo(latlng);
+        } else {
+            map.setView(latlng, 17);
+        }
         isFirstFix = false;
     }
 
@@ -1319,23 +1330,38 @@ function initCompass() {
                 })
                 .catch(console.error);
         } else {
-            window.addEventListener('deviceorientation', handleOrientation);
+            // Android often needs 'deviceorientationabsolute' for North-aligned alpha
+            if ('ondeviceorientationabsolute' in window) {
+                window.addEventListener('deviceorientationabsolute', handleOrientation);
+            } else {
+                window.addEventListener('deviceorientation', handleOrientation);
+            }
         }
     }
 }
+
 function handleOrientation(event) {
+    // webkitCompassHeading is iOS-specific and absolute
+    // alpha is standard, but on Android it's only absolute if using deviceorientationabsolute
     let compass = event.webkitCompassHeading || event.alpha;
-    if (compass !== null && compass !== undefined) {
-        userHeading = compass;
-        if (isHeadingUp && map) {
-            map.setBearing(360 - compass);
-        }
-        const cone = document.getElementById('user-heading-cone');
-        if (cone) {
-            if (isHeadingUp) {
-                cone.style.transform = `rotate(0deg)`;
-            } else {
-                cone.style.transform = `rotate(${userHeading}deg)`;
+
+    // On some Android devices, alpha is absolute but needs to be normalized or inverted
+    if (event.absolute === true || event.webkitCompassHeading !== undefined) {
+        if (compass !== null && compass !== undefined) {
+            userHeading = compass;
+
+            if (isHeadingUp && map) {
+                // Smooth rotation - setBearing(heading) in Leaflet.Rotation plugin
+                map.setBearing(compass);
+            }
+
+            const cone = document.getElementById('user-heading-cone');
+            if (cone) {
+                if (isHeadingUp) {
+                    cone.style.transform = `rotate(0deg)`;
+                } else {
+                    cone.style.transform = `rotate(${userHeading}deg)`;
+                }
             }
         }
     }
