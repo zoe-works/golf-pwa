@@ -433,7 +433,8 @@ body {
     }
 }
 
-.btn-recenter:active {
+.btn-recenter:active,
+.btn-compass:active {
     background-color: #f0f0f0;
 }
 
@@ -449,13 +450,36 @@ body {
     background-color: #d32f2f;
 }
 
-/* Recenter FAB explicitly positioned below Record Shot */
+/* Recenter FAB */
 .btn-recenter {
+    bottom: calc(150px + env(safe-area-inset-bottom));
+    right: 12px;
+    background-color: white;
+    color: #444;
+}
+
+/* Compass FAB */
+.btn-compass {
     bottom: calc(85px + env(safe-area-inset-bottom));
     right: 12px;
     background-color: white;
     color: #444;
     transition: all 0.3s ease;
+}
+
+/* "Follow" Mode styling (Compass) */
+.btn-compass.active {
+    background-color: #1a73e8;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.3), 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: compass-pulse 2s ease-in-out infinite;
+}
+
+/* "Fixed" Mode styling - per user request to change background when NOT follow */
+.btn-compass.is-fixed {
+    background-color: #ff9800;
+    /* Distinct orange for fixed mode */
+    color: white;
 }
 
 /* Push Leaflet Top Controls Down to avoid overlapping top-bar */

@@ -148,28 +148,42 @@ async function init() {
         });
     });
 
-    const recenterBtn = document.getElementById('btn-recenter');
-    const crosshairSVG = `<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>`;
-    const compassSVG = `<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>`;
+    const compassBtn = document.getElementById('btn-compass');
 
     recenterBtn.addEventListener('click', () => {
         if (lastPos) {
             map.setView([lastPos.lat, lastPos.lng], 17);
-            // Toggle mode
-            if (isHeadingUp) {
-                isHeadingUp = false;
-                recenterBtn.classList.remove('active');
-                recenterBtn.innerHTML = crosshairSVG;
-            } else {
-                isHeadingUp = true;
-                recenterBtn.classList.add('active');
-                recenterBtn.innerHTML = compassSVG;
-                if (userHeading) map.setBearing(360 - userHeading);
-            }
         } else {
             toggleTracking();
         }
     });
+
+    compassBtn.addEventListener('click', () => {
+        // Toggle mode
+        if (isHeadingUp) {
+            isHeadingUp = false;
+        } else {
+            isHeadingUp = true;
+            if (userHeading) map.setBearing(360 - userHeading);
+        }
+        updateCompassUI();
+    });
+
+    function updateCompassUI() {
+        if (isHeadingUp) {
+            compassBtn.classList.add('active');
+            compassBtn.classList.remove('is-fixed');
+        } else {
+            compassBtn.classList.remove('active');
+            compassBtn.classList.add('is-fixed');
+            map.setBearing(0); // Optional: Snap to North when entering Fixed mode? 
+            // The user said "Fixed mode" should be North Up or just "Fixed"? 
+            // Usually Fixed = North Up in mapping.
+        }
+    }
+
+    // Initialize UI
+    updateCompassUI();
 
     // Initialize button state if a round is already in progress
     if (scorecard.roundData && scorecard.roundData.holeSequence && scorecard.roundData.holeSequence.length > 0) {
@@ -180,9 +194,10 @@ async function init() {
 
     // Disable auto-rotation if user manually rotates the map
     map.on('rotatestart', () => {
-        isHeadingUp = false;
-        recenterBtn.classList.remove('active');
-        recenterBtn.innerHTML = crosshairSVG;
+        if (isHeadingUp) {
+            isHeadingUp = false;
+            updateCompassUI();
+        }
     });
 
     // Intercept clicking on Leaflet's compass control to lock heading instead of reverting to North
@@ -191,16 +206,10 @@ async function init() {
             e.stopPropagation();
             e.preventDefault();
             // Toggle mode
-            if (isHeadingUp) {
-                isHeadingUp = false; // Disable auto tracking to lock it in place
-                recenterBtn.classList.remove('active');
-                recenterBtn.innerHTML = crosshairSVG;
-            } else {
-                isHeadingUp = true; // Re-enable auto tracking
-                recenterBtn.classList.add('active');
-                recenterBtn.innerHTML = compassSVG;
-                if (userHeading) map.setBearing(360 - userHeading);
-            }
+            isHeadingUp = !isHeadingUp;
+            if (isHeadingUp && userHeading) map.setBearing(360 - userHeading);
+            else if (!isHeadingUp) map.setBearing(0);
+            updateCompassUI();
         }
     }, true); // capture phase
 
