@@ -1203,6 +1203,10 @@ textarea {
     grid-template-columns: repeat(2, 1fr) !important;
 }
 
+.club-grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+}
+
 #btn-save-settings {
     display: block;
     box-sizing: border-box;

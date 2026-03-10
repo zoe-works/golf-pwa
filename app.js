@@ -401,19 +401,27 @@ async function init() {
         }
     });
 
-    // Penalty selection (Toggle state autonomously)
+    // Penalty selection (Mutually Exclusive / Radio style)
     document.querySelectorAll('.penalty-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const thisPenalty = e.target.dataset.penalty;
+            const thisPenalty = e.currentTarget.dataset.penalty;
+
             if (tempShotData.penalties.includes(thisPenalty)) {
                 // Deselect
-                tempShotData.penalties = tempShotData.penalties.filter(p => p !== thisPenalty);
-                e.target.classList.remove('selected');
+                tempShotData.penalties = [];
             } else {
-                // Select
-                tempShotData.penalties.push(thisPenalty);
-                e.target.classList.add('selected');
+                // Select (Clear others first)
+                tempShotData.penalties = [thisPenalty];
             }
+
+            // Update UI for all penalty buttons
+            document.querySelectorAll('.penalty-btn').forEach(b => {
+                if (tempShotData.penalties.includes(b.dataset.penalty)) {
+                    b.classList.add('selected');
+                } else {
+                    b.classList.remove('selected');
+                }
+            });
         });
     });
 
@@ -729,13 +737,21 @@ function saveShotAndCloseModal() {
         }
     }
 
+    // Calculate extra increment for penalties
+    let extraIncrement = 0;
+    const activePenaltyBtn = document.querySelector('.penalty-btn.selected');
+    if (activePenaltyBtn) {
+        extraIncrement = parseInt(activePenaltyBtn.dataset.increment) || 0;
+    }
+
     // Save shot
     scorecard.saveShot(
         currentEditingShotNum,
         finalClubStr,
         tempShotData.score,
         tempShotData.memo,
-        userCoords
+        userCoords,
+        extraIncrement
     );
 
     document.getElementById('club-modal').classList.add('hidden');

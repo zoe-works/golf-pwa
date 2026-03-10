@@ -69,9 +69,13 @@ export class ScorecardManager {
 
     // --- Actions ---
 
-    saveShot(shotNum, club, score, memo, coords) {
+    saveShot(shotNum, club, score, memo, coords, extraIncrement = 0) {
         const hole = this.roundData.holes[this.currentHole];
         let shot = hole.shots.find(s => s.shot_num === shotNum);
+
+        // If editing an existing shot, we might need to adjust total penalties
+        // For simplicity, let's just use the current selection's extraIncrement
+        // In a more complex system, we'd track penalty_score per shot object.
 
         if (!shot) {
             // New shot
@@ -82,31 +86,40 @@ export class ScorecardManager {
                 end_coords: null,
                 distance_yd: 0,
                 score: score,
-                memo: memo
+                memo: memo,
+                penalty_val: extraIncrement // Store it to help with edits later
             };
 
             // Calculate distance for the previous shot if it exists and hasn't been closed
             if (shotNum > 1 && hole.shots.length >= shotNum - 1) {
                 const prevShot = hole.shots[shotNum - 2];
-                // Only set end_coords if not already set, to prevent overwriting distance if editing
                 if (!prevShot.end_coords) {
                     prevShot.end_coords = coords;
-                    // distance_yd will be updated by app.js shortly after
                 }
             }
 
             hole.shots.push(shot);
-            // Ensure array is sorted by shot_num
             hole.shots.sort((a, b) => a.shot_num - b.shot_num);
 
+            // Increment hole penalties
+            hole.penalties = (hole.penalties || 0) + extraIncrement;
+
             if (shotNum >= this.currentShotNum) {
-                this.currentShotNum = shotNum + 1;
+                this.currentShotNum = shotNum + 1 + extraIncrement;
             }
         } else {
-            // Edit existing shot (coords remain unchanged)
+            // Edit existing shot
+            const oldPenalty = shot.penalty_val || 0;
             shot.club = club;
             shot.score = score;
             shot.memo = memo;
+            shot.penalty_val = extraIncrement;
+
+            // Adjust hole penalties based on diff
+            hole.penalties = (hole.penalties || 0) - oldPenalty + extraIncrement;
+
+            // If this was the last shot, we might need to update currentShotNum
+            // But usually currentShotNum is already higher if new shots were added.
         }
 
         this.saveRoundData();
