@@ -148,6 +148,7 @@ async function init() {
         });
     });
 
+    const recenterBtn = document.getElementById('btn-recenter');
     const compassBtn = document.getElementById('btn-compass');
 
     recenterBtn.addEventListener('click', () => {
@@ -202,7 +203,8 @@ async function init() {
 
     // Intercept clicking on Leaflet's compass control to lock heading instead of reverting to North
     document.addEventListener('click', (e) => {
-        if (e.target.closest('.leaflet-control-compass') || e.target.closest('.leaflet-control-rotate')) {
+        const target = e.target.closest('.leaflet-control-compass') || e.target.closest('.leaflet-control-rotate');
+        if (target) {
             e.stopPropagation();
             e.preventDefault();
             // Toggle mode
@@ -211,7 +213,7 @@ async function init() {
             else if (!isHeadingUp) map.setBearing(0);
             updateCompassUI();
         }
-    }, true); // capture phase
+    }); // Use default bubbling phase to avoid blocking other FABs
 
     const holeSelector = document.getElementById('hole-selector');
 
