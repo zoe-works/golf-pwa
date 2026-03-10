@@ -442,8 +442,11 @@ async function init() {
 
     // Save & Cancel Shot
     document.getElementById('btn-save-shot').addEventListener('click', () => {
-        if (!tempShotData.club) {
-            alert("Please select a club.");
+        const hasClub = !!tempShotData.club;
+        const hasPenalty = tempShotData.penalties && tempShotData.penalties.length > 0;
+
+        if (!hasClub && !hasPenalty) {
+            alert("Please select a club or penalty.");
             return;
         }
         saveShotAndCloseModal();
@@ -712,11 +715,19 @@ function showShotModal(shotNum) {
     const totalShots = hd && hd.shots ? hd.shots.length : 0;
 
     // Show Prev if not Shot 1
-    document.getElementById('btn-shot-prev').style.visibility = (shotNum > 1) ? 'visible' : 'hidden';
+    if (shotNum > 1) {
+        document.getElementById('btn-shot-prev').classList.remove('visibility-hidden');
+    } else {
+        document.getElementById('btn-shot-prev').classList.add('visibility-hidden');
+    }
 
     // Show Next if editing an old shot OR if we just recorded the current latest shot
     // (This allows "flowing" through the recording process)
-    document.getElementById('btn-shot-next').style.visibility = (shotNum <= totalShots) ? 'visible' : 'hidden';
+    if (shotNum <= totalShots) {
+        document.getElementById('btn-shot-next').classList.remove('visibility-hidden');
+    } else {
+        document.getElementById('btn-shot-next').classList.add('visibility-hidden');
+    }
 
     document.getElementById('club-modal').classList.remove('hidden');
 }
