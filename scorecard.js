@@ -26,9 +26,6 @@ export class ScorecardManager {
         const data = localStorage.getItem('golf_pwa_round_data');
         if (data) {
             const parsed = JSON.parse(data);
-            if (!parsed.holeSequence) {
-                parsed.holeSequence = Array.from({ length: 18 }, (_, i) => i + 1);
-            }
             return parsed;
         }
         return null;

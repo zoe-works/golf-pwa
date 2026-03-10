@@ -186,12 +186,10 @@ async function init() {
     // Initialize UI
     updateCompassUI();
 
-    // Initialize button state if a round is already in progress
-    if (scorecard.roundData && scorecard.roundData.holeSequence && scorecard.roundData.holeSequence.length > 0) {
-        const startBtn = document.getElementById('btn-start-round');
-        startBtn.innerText = 'Round In Progress';
-        startBtn.classList.add('in-round');
-    }
+    // Explicitly hide round UI on start (it will be shown by restoration logic later if needed)
+    document.getElementById('hole-status').style.display = 'none';
+    document.getElementById('btn-record-shot').style.display = 'none';
+    document.getElementById('edit-controls').style.display = 'flex';
 
     // Disable auto-rotation if user manually rotates the map
     map.on('rotatestart', () => {
