@@ -456,17 +456,30 @@ async function init() {
         document.getElementById('club-modal').classList.add('hidden');
     });
 
+    // Helper to decide if we should auto-save on navigation
+    function shouldAutoSaveCurrentShot() {
+        const hasClub = !!tempShotData.club;
+        const hasPenalty = tempShotData.penalties && tempShotData.penalties.length > 0;
+        const hd = scorecard.getHoleData();
+        const isExistingShot = hd && hd.shots && hd.shots.find(s => s.shot_num === currentEditingShotNum);
+        return hasClub || hasPenalty || isExistingShot;
+    }
+
     // Shot Navigation
     document.getElementById('btn-shot-prev').addEventListener('click', () => {
         if (currentEditingShotNum > 1) {
-            saveCurrentTempShot(); // Auto-save before moving
+            if (shouldAutoSaveCurrentShot()) {
+                saveCurrentTempShot(); // Auto-save before moving
+            }
             showShotModal(currentEditingShotNum - 1);
         }
     });
     document.getElementById('btn-shot-next').addEventListener('click', () => {
         // Can move to next shot if it exists OR if we are on the current latest shot 
         // (to implicitly create or just view the next "potential" shot)
-        saveCurrentTempShot(); // Auto-save before moving
+        if (shouldAutoSaveCurrentShot()) {
+            saveCurrentTempShot(); // Auto-save before moving
+        }
         showShotModal(currentEditingShotNum + 1);
     });
 
