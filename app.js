@@ -377,14 +377,14 @@ async function init() {
             if (secondHalf === 'OUT') addOut(); else addIn();
         }
 
+        const startBtn = document.getElementById('btn-start-round');
+        startBtn.innerText = 'Round In Progress';
+        startBtn.classList.add('in-round');
+
         await loadCourse(courseUrl, sequence);
 
         const courseName = document.getElementById('modal-course-select').options[document.getElementById('modal-course-select').selectedIndex].text;
         scorecard.startNewRound(courseName, sequence);
-
-        const startBtn = document.getElementById('btn-start-round');
-        startBtn.innerText = 'Round In Progress';
-        startBtn.classList.add('in-round');
 
         // Ensure club selector is ready for the new round
         renderClubSelector();
@@ -635,10 +635,11 @@ async function init() {
                 break;
             }
         }
-        await loadCourse(targetUrl, scorecard.roundData.holeSequence, scorecard.currentHole);
         const startBtn = document.getElementById('btn-start-round');
         startBtn.innerText = 'Round In Progress';
         startBtn.classList.add('in-round');
+
+        await loadCourse(targetUrl, scorecard.roundData.holeSequence, scorecard.currentHole);
 
         if (!tracker) {
             setTimeout(() => toggleTracking(), 500);
@@ -1213,7 +1214,10 @@ function toggleTracking() {
         updateGpsStatus('disconnected', 'Tracking stopped');
     } else {
         // START
-        fabShot.style.display = 'flex';
+        const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
+        if (isRoundActive) {
+            fabShot.style.display = 'flex';
+        }
 
         tracker = new GeolocationTracker(
             (pos) => updateLocationUI(pos),
