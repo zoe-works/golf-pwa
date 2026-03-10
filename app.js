@@ -456,13 +456,15 @@ async function init() {
     // Shot Navigation
     document.getElementById('btn-shot-prev').addEventListener('click', () => {
         if (currentEditingShotNum > 1) {
+            saveCurrentTempShot(); // Auto-save before moving
             showShotModal(currentEditingShotNum - 1);
         }
     });
     document.getElementById('btn-shot-next').addEventListener('click', () => {
-        if (currentEditingShotNum < scorecard.currentShotNum) {
-            showShotModal(currentEditingShotNum + 1);
-        }
+        // Can move to next shot if it exists OR if we are on the current latest shot 
+        // (to implicitly create or just view the next "potential" shot)
+        saveCurrentTempShot(); // Auto-save before moving
+        showShotModal(currentEditingShotNum + 1);
     });
 
     // Hole Completion
@@ -706,13 +708,23 @@ function showShotModal(shotNum) {
     });
 
     // Navigation arrows visibility
+    const hd = scorecard.getHoleData();
+    const totalShots = hd && hd.shots ? hd.shots.length : 0;
+
+    // Show Prev if not Shot 1
     document.getElementById('btn-shot-prev').style.visibility = (shotNum > 1) ? 'visible' : 'hidden';
-    document.getElementById('btn-shot-next').style.visibility = (shotNum < scorecard.currentShotNum && existingShot) ? 'visible' : 'hidden';
+
+    // Show Next if editing an old shot OR if we just recorded the current latest shot
+    // (This allows "flowing" through the recording process)
+    document.getElementById('btn-shot-next').style.visibility = (shotNum <= totalShots) ? 'visible' : 'hidden';
 
     document.getElementById('club-modal').classList.remove('hidden');
 }
 
-function saveShotAndCloseModal() {
+/**
+ * Saves current tempShotData to the scorecard without closing the modal.
+ */
+function saveCurrentTempShot() {
     // For new shots, use current GPS if available. For old shots, pass null.
     const userCoords = (currentEditingShotNum === scorecard.currentShotNum && lastPos) ? [lastPos.lng, lastPos.lat] : null;
 
@@ -754,15 +766,18 @@ function saveShotAndCloseModal() {
         extraIncrement
     );
 
-    document.getElementById('club-modal').classList.add('hidden');
-
     drawShotTracks();
 
-    // Update live shot count
+    // Update live shot count on the main UI
     const hd = scorecard.getHoleData();
     const sc = hd && hd.shots ? hd.shots.length : 0;
     const shotCountEl = document.getElementById('ui-shot-count');
     if (shotCountEl) shotCountEl.innerText = sc;
+}
+
+function saveShotAndCloseModal() {
+    saveCurrentTempShot();
+    document.getElementById('club-modal').classList.add('hidden');
 }
 
 function drawShotTracks() {
