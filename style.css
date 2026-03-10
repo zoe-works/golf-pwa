@@ -429,8 +429,14 @@ body {
     }
 
     50% {
-        box-shadow: 0 0 0 6px rgba(26, 115, 232, 0.15), 0 4px 10px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 0 8px rgba(26, 115, 232, 0.1), 0 4px 10px rgba(0, 0, 0, 0.3);
     }
+}
+
+.btn-recenter.is-fixed {
+    background-color: #f57c00;
+    /* Distinct orange for Fixed/North Up mode */
+    color: white;
 }
 
 .btn-recenter:active,

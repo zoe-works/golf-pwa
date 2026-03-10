@@ -150,14 +150,6 @@ async function init() {
     const compassBtn = document.getElementById('btn-compass');
 
     recenterBtn.addEventListener('click', () => {
-        if (lastPos) {
-            map.setView([lastPos.lat, lastPos.lng], 17);
-        } else {
-            toggleTracking();
-        }
-    });
-
-    compassBtn.addEventListener('click', () => {
         // Toggle mode
         if (isHeadingUp) {
             isHeadingUp = false;
@@ -166,18 +158,25 @@ async function init() {
             if (userHeading) map.setBearing(360 - userHeading);
         }
         updateCompassUI();
+
+        // Also recenter if position is available
+        if (lastPos) {
+            map.setView([lastPos.lat, lastPos.lng], 17);
+        } else if (!tracker) {
+            toggleTracking();
+        }
     });
+
+    // (btn-compass listener removed as it was integrated into btn-recenter)
 
     function updateCompassUI() {
         if (isHeadingUp) {
-            compassBtn.classList.add('active');
-            compassBtn.classList.remove('is-fixed');
+            recenterBtn.classList.add('active');
+            recenterBtn.classList.remove('is-fixed');
         } else {
-            compassBtn.classList.remove('active');
-            compassBtn.classList.add('is-fixed');
-            map.setBearing(0); // Optional: Snap to North when entering Fixed mode? 
-            // The user said "Fixed mode" should be North Up or just "Fixed"? 
-            // Usually Fixed = North Up in mapping.
+            recenterBtn.classList.remove('active');
+            recenterBtn.classList.add('is-fixed');
+            map.setBearing(0);
         }
     }
 
