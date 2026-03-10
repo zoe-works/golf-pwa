@@ -29,9 +29,7 @@ async function init() {
         zoomControl: false,
         rotate: true,
         touchRotate: true,
-        rotateControl: {
-            closeOnZeroBearing: false
-        },
+        rotateControl: false,
         attributionControl: false
     }).setView([14.141, 100.951], 16);
 
@@ -188,6 +186,7 @@ async function init() {
 
     // Explicitly hide round UI on start (it will be shown by restoration logic later if needed)
     document.getElementById('hole-status').style.display = 'none';
+    document.getElementById('hole-selector').style.display = 'none';
     document.getElementById('btn-record-shot').style.display = 'none';
     document.getElementById('edit-controls').style.display = 'flex';
 
@@ -199,19 +198,7 @@ async function init() {
         }
     });
 
-    // Intercept clicking on Leaflet's compass control to lock heading instead of reverting to North
-    document.addEventListener('click', (e) => {
-        const target = e.target.closest('.leaflet-control-compass') || e.target.closest('.leaflet-control-rotate');
-        if (target) {
-            e.stopPropagation();
-            e.preventDefault();
-            // Toggle mode
-            isHeadingUp = !isHeadingUp;
-            if (isHeadingUp && userHeading) map.setBearing(360 - userHeading);
-            else if (!isHeadingUp) map.setBearing(0);
-            updateCompassUI();
-        }
-    }); // Use default bubbling phase to avoid blocking other FABs
+    // (Obsolete rotateControl intercept removed as rotateControl is disabled)
 
     const holeSelector = document.getElementById('hole-selector');
 
@@ -294,6 +281,7 @@ async function init() {
                 const hs = document.getElementById('hole-selector');
                 hs.innerHTML = '';
                 hs.value = '';
+                hs.style.display = 'none';
 
                 // Clear distance display
                 holeTargets = {};
@@ -387,6 +375,8 @@ async function init() {
         // Ensure club selector is ready for the new round
         renderClubSelector();
 
+        const holeSelector = document.getElementById('hole-selector');
+        holeSelector.style.display = 'block';
         holeSelector.value = sequence[0];
         displayHole(sequence[0]);
 
@@ -636,6 +626,7 @@ async function init() {
         const startBtn = document.getElementById('btn-start-round');
         startBtn.innerText = 'Round In Progress';
         startBtn.classList.add('in-round');
+        document.getElementById('hole-selector').style.display = 'block';
 
         await loadCourse(targetUrl, scorecard.roundData.holeSequence, scorecard.currentHole);
 
