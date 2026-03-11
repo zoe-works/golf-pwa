@@ -38,7 +38,7 @@
       "type": "Feature",
       "properties": {
         "hole": "A-3",
-        "par": 3,
+        "par": 5,
         "kind": "green_center",
         "description": "Green Center"
       },
@@ -86,7 +86,7 @@
       "type": "Feature",
       "properties": {
         "hole": "A-6",
-        "par": 5,
+        "par": 3,
         "kind": "green_center",
         "description": "Green Center"
       },
@@ -118,7 +118,7 @@
       "type": "Feature",
       "properties": {
         "hole": "A-8",
-        "par": 4,
+        "par": 3,
         "kind": "green_center",
         "description": "Green Center"
       },
@@ -134,7 +134,7 @@
       "type": "Feature",
       "properties": {
         "hole": "A-9",
-        "par": 4,
+        "par": 5,
         "kind": "green_center",
         "description": "Green Center"
       },
@@ -150,7 +150,7 @@
       "type": "Feature",
       "properties": {
         "hole": "B-10",
-        "par": 4,
+        "par": 5,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },
@@ -182,7 +182,7 @@
       "type": "Feature",
       "properties": {
         "hole": "B-12",
-        "par": 4,
+        "par": 3,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },
@@ -214,7 +214,7 @@
       "type": "Feature",
       "properties": {
         "hole": "B-14",
-        "par": 4,
+        "par": 5,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },
@@ -246,7 +246,7 @@
       "type": "Feature",
       "properties": {
         "hole": "B-16",
-        "par": 4,
+        "par": 3,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },
@@ -326,7 +326,7 @@
       "type": "Feature",
       "properties": {
         "hole": "C-3",
-        "par": 4,
+        "par": 3,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },
@@ -390,7 +390,7 @@
       "type": "Feature",
       "properties": {
         "hole": "C-7",
-        "par": 4,
+        "par": 5,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },
@@ -406,7 +406,7 @@
       "type": "Feature",
       "properties": {
         "hole": "C-8",
-        "par": 4,
+        "par": 3,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },

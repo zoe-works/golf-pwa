@@ -240,6 +240,25 @@ async function init() {
             });
             firstHalf.value = 'A';
             secondHalf.value = 'B';
+        } else if (courseUrl.includes('lakewood')) {
+            const opts = [
+                { val: 'LAKE', text: 'LAKE Course' },
+                { val: 'WOOD', text: 'WOOD Course' },
+                { val: 'ROCK', text: 'ROCK Course' }
+            ];
+            opts.forEach(opt => {
+                const optEl1 = document.createElement('option');
+                optEl1.value = opt.val;
+                optEl1.innerText = opt.text;
+                firstHalf.appendChild(optEl1);
+
+                const optEl2 = document.createElement('option');
+                optEl2.value = opt.val;
+                optEl2.innerText = opt.text;
+                secondHalf.appendChild(optEl2);
+            });
+            firstHalf.value = 'LAKE';
+            secondHalf.value = 'WOOD';
         } else {
             // Standard 18 holes
             const opts = [
@@ -354,7 +373,7 @@ async function init() {
 
         // Build sequence
         let sequence = [];
-        if (courseUrl.includes('bangsai')) {
+        if (courseUrl.includes('bangsai') || courseUrl.includes('lakewood')) {
             for (let i = 1; i <= 9; i++) sequence.push(`${firstHalf}-${i}`);
             for (let i = 1; i <= 9; i++) sequence.push(`${secondHalf}-${i}`);
         } else {

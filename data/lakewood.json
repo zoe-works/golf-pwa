@@ -1,0 +1,411 @@
+{
+    "type": "FeatureCollection",
+    "name": "Lakewood Country Club",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-1",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-2",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-3",
+                "par": 3,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-4",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-5",
+                "par": 5,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-6",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-7",
+                "par": 3,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-8",
+                "par": 5,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "LAKE-9",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-1",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-2",
+                "par": 5,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-3",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-4",
+                "par": 3,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-5",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-6",
+                "par": 5,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-7",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-8",
+                "par": 3,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "WOOD-9",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-1",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-2",
+                "par": 5,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-3",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-4",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-5",
+                "par": 3,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-6",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-7",
+                "par": 5,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-8",
+                "par": 3,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "hole": "ROCK-9",
+                "par": 4,
+                "kind": "green_center"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    100.77937358132024,
+                    13.622430108319676
+                ]
+            }
+        }
+    ]
+}

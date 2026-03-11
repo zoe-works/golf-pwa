@@ -42,7 +42,7 @@
         "hole": 3,
         "kind": "green_center",
         "label": "Green 3 Center",
-        "par": 4,
+        "par": 5,
         "yards": 400
       },
       "geometry": {
@@ -59,7 +59,7 @@
         "hole": 4,
         "kind": "green_center",
         "label": "Green 4 Center",
-        "par": 4,
+        "par": 3,
         "yards": 400
       },
       "geometry": {
@@ -127,7 +127,7 @@
         "hole": 8,
         "kind": "green_center",
         "label": "Green 8 Center",
-        "par": 4,
+        "par": 3,
         "yards": 400
       },
       "geometry": {
@@ -144,7 +144,7 @@
         "hole": 9,
         "kind": "green_center",
         "label": "Green 9 Center",
-        "par": 4,
+        "par": 5,
         "yards": 400
       },
       "geometry": {
@@ -178,7 +178,7 @@
         "hole": 11,
         "kind": "green_center",
         "label": "Green 11 Center",
-        "par": 4,
+        "par": 3,
         "yards": 400
       },
       "geometry": {
@@ -195,7 +195,7 @@
         "hole": 12,
         "kind": "green_center",
         "label": "Green 12 Center",
-        "par": 4,
+        "par": 5,
         "yards": 400
       },
       "geometry": {
@@ -246,7 +246,7 @@
         "hole": 15,
         "kind": "green_center",
         "label": "Green 15 Center",
-        "par": 4,
+        "par": 5,
         "yards": 400
       },
       "geometry": {
@@ -263,7 +263,7 @@
         "hole": 16,
         "kind": "green_center",
         "label": "Green 16 Center",
-        "par": 4,
+        "par": 3,
         "yards": 400
       },
       "geometry": {
