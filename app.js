@@ -1112,7 +1112,7 @@ async function loadCourse(url, holeSequence = null, targetHole = null) {
             holeSequence.forEach(hNum => {
                 const opt = document.createElement('option');
                 opt.value = hNum;
-                opt.innerText = String(hNum).match(/^[A-Z]-/) ? hNum : `Hole ${hNum}`;
+                opt.innerText = String(hNum).match(/^[A-Z]+-/) ? hNum : `Hole ${hNum}`;
                 holeSelector.appendChild(opt);
             });
 
