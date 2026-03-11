@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "name": "Silverlake Links Golf Club",
+  "features": [
+    { "type": "Feature", "properties": { "hole": 1, "kind": "green_center", "label": "Green 1 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 2, "kind": "green_center", "label": "Green 2 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 3, "kind": "green_center", "label": "Green 3 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 4, "kind": "green_center", "label": "Green 4 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 5, "kind": "green_center", "label": "Green 5 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 6, "kind": "green_center", "label": "Green 6 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 7, "kind": "green_center", "label": "Green 7 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 8, "kind": "green_center", "label": "Green 8 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 9, "kind": "green_center", "label": "Green 9 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 10, "kind": "green_center", "label": "Green 10 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 11, "kind": "green_center", "label": "Green 11 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 12, "kind": "green_center", "label": "Green 12 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 13, "kind": "green_center", "label": "Green 13 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 14, "kind": "green_center", "label": "Green 14 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 15, "kind": "green_center", "label": "Green 15 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 16, "kind": "green_center", "label": "Green 16 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 17, "kind": "green_center", "label": "Green 17 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } },
+    { "type": "Feature", "properties": { "hole": 18, "kind": "green_center", "label": "Green 18 Center", "par": 4, "yards": 400 }, "geometry": { "type": "Point", "coordinates": [ 100.7820556, 13.6380833 ] } }
+  ]
+}
