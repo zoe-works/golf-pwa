@@ -375,6 +375,8 @@ async function init() {
         document.getElementById('start-player-1').value = '';
         document.getElementById('start-player-2').value = '';
         document.getElementById('start-player-3').value = '';
+        document.getElementById('start-player-4').value = '';
+        document.getElementById('start-player-5').value = '';
 
         document.getElementById('start-round-modal').classList.remove('hidden');
     }
@@ -384,7 +386,9 @@ async function init() {
         const p1 = document.getElementById('start-player-1');
         const p2 = document.getElementById('start-player-2');
         const p3 = document.getElementById('start-player-3');
-        p1.value = ''; p2.value = ''; p3.value = '';
+        const p4 = document.getElementById('start-player-4');
+        const p5 = document.getElementById('start-player-5');
+        p1.value = ''; p2.value = ''; p3.value = ''; p4.value = ''; p5.value = '';
 
         if (val !== '') {
             const groups = getCompanionGroups();
@@ -393,6 +397,8 @@ async function init() {
                 if (group.players[0]) p1.value = group.players[0];
                 if (group.players[1]) p2.value = group.players[1];
                 if (group.players[2]) p3.value = group.players[2];
+                if (group.players[3]) p4.value = group.players[3];
+                if (group.players[4]) p5.value = group.players[4];
             }
         }
     });
@@ -456,7 +462,9 @@ async function init() {
         const p1 = document.getElementById('start-player-1').value.trim();
         const p2 = document.getElementById('start-player-2').value.trim();
         const p3 = document.getElementById('start-player-3').value.trim();
-        const companions = [p1, p2, p3].filter(p => p !== '');
+        const p4 = document.getElementById('start-player-4').value.trim();
+        const p5 = document.getElementById('start-player-5').value.trim();
+        const companions = [p1, p2, p3, p4, p5].filter(p => p !== '');
 
         scorecard.startNewRound(courseName, sequence, companions);
 
@@ -1697,6 +1705,8 @@ function renderCompanionGroupsList() {
             document.getElementById('settings-player-1').value = group.players[0] || '';
             document.getElementById('settings-player-2').value = group.players[1] || '';
             document.getElementById('settings-player-3').value = group.players[2] || '';
+            document.getElementById('settings-player-4').value = group.players[3] || '';
+            document.getElementById('settings-player-5').value = group.players[4] || '';
         };
 
         const delBtn = document.createElement('button');
@@ -1727,13 +1737,15 @@ if (btnAddCompanion) {
         const p1 = document.getElementById('settings-player-1').value.trim();
         const p2 = document.getElementById('settings-player-2').value.trim();
         const p3 = document.getElementById('settings-player-3').value.trim();
+        const p4 = document.getElementById('settings-player-4').value.trim();
+        const p5 = document.getElementById('settings-player-5').value.trim();
 
         if (!nameInput) {
             alert('Please enter a Group Name.');
             return;
         }
 
-        const players = [p1, p2, p3].filter(p => p !== '');
+        const players = [p1, p2, p3, p4, p5].filter(p => p !== '');
         if (players.length === 0) {
             alert('Please enter at least one player name.');
             return;
@@ -1762,6 +1774,8 @@ if (btnClearCompanion) {
         document.getElementById('settings-player-1').value = '';
         document.getElementById('settings-player-2').value = '';
         document.getElementById('settings-player-3').value = '';
+        document.getElementById('settings-player-4').value = '';
+        document.getElementById('settings-player-5').value = '';
     });
 }
 

@@ -126,16 +126,22 @@
             <!-- Settings Main Menu -->
             <div id="settings-menu" class="settings-group" style="padding: 20px; text-align: center;">
                 <div class="history-summary" style="flex-direction: column; gap: 15px; padding: 0;">
-                    <button id="btn-menu-clubs" class="stat-box" style="width: 100%; border:none; text-align: left; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff;">
+                    <button id="btn-menu-clubs" class="stat-box"
+                        style="width: 100%; border:none; text-align: left; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff;">
                         <div>
-                            <div class="stat-label" style="font-size: 18px; color: #333; font-weight: bold; margin-bottom: 5px;">Club Settings</div>
+                            <div class="stat-label"
+                                style="font-size: 18px; color: #333; font-weight: bold; margin-bottom: 5px;">Club
+                                Settings</div>
                             <div style="font-size: 13px; color: #777;">Select the clubs you carry in your bag.</div>
                         </div>
                         <span style="font-size: 24px; color: #1e88e5;">&rarr;</span>
                     </button>
-                    <button id="btn-menu-groups" class="stat-box" style="width: 100%; border:none; text-align: left; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff;">
+                    <button id="btn-menu-groups" class="stat-box"
+                        style="width: 100%; border:none; text-align: left; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff;">
                         <div>
-                            <div class="stat-label" style="font-size: 18px; color: #333; font-weight: bold; margin-bottom: 5px;">Companion Groups</div>
+                            <div class="stat-label"
+                                style="font-size: 18px; color: #333; font-weight: bold; margin-bottom: 5px;">Companion
+                                Groups</div>
                             <div style="font-size: 13px; color: #777;">Save people you often play with.</div>
                         </div>
                         <span style="font-size: 24px; color: #1e88e5;">&rarr;</span>
@@ -145,42 +151,60 @@
 
             <!-- Club Settings Sub-page -->
             <div id="settings-clubs-page" class="settings-group hidden" style="padding-bottom: 24px;">
-                <button id="btn-back-clubs" class="btn-secondary btn-small mb-15" style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
+                <button id="btn-back-clubs" class="btn-secondary btn-small mb-15"
+                    style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
                 <h3 style="position: relative; top: 4px; margin-bottom: 4px;">My Clubs</h3>
                 <p class="subtitle">Select the clubs you carry in your bag.</p>
                 <div id="settings-club-grid" class="club-grid club-grid-5 mb-20">
                     <!-- Populated by JS -->
                 </div>
-                <button id="btn-save-settings" class="btn-primary w-100" style="margin-top: 24px;">Save Settings</button>
+                <button id="btn-save-settings" class="btn-primary w-100" style="margin-top: 24px;">Save
+                    Settings</button>
             </div>
 
             <!-- Group Registration Sub-page -->
             <div id="settings-groups-page" class="settings-group hidden" style="padding-bottom: 24px;">
-                <button id="btn-back-groups" class="btn-secondary btn-small mb-15" style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
+                <button id="btn-back-groups" class="btn-secondary btn-small mb-15"
+                    style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
                 <h3 style="margin-bottom: 4px;">Saved Companion Groups</h3>
-                <p class="subtitle">Save people you often play with (up to 3 per group).</p>
-                
-                <div class="input-group">
-                    <label>Group Name</label>
-                    <input type="text" id="settings-group-name" placeholder="e.g., Company Team, Weekend Friends" class="modal-input">
-                </div>
-                <div class="input-group">
-                    <label>Player 1</label>
-                    <input type="text" id="settings-player-1" placeholder="Name" class="modal-input">
-                </div>
-                <div class="input-group">
-                    <label>Player 2</label>
-                    <input type="text" id="settings-player-2" placeholder="Name (Optional)" class="modal-input">
-                </div>
-                <div class="input-group">
-                    <label>Player 3</label>
-                    <input type="text" id="settings-player-3" placeholder="Name (Optional)" class="modal-input">
+                <p class="subtitle mt-5 mb-15 text-center" style="font-size: 13px;">Save people you often play with (up
+                    to 5 per group).</p>
+
+                <div
+                    style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <div class="input-group">
+                        <label style="font-weight: bold; color: #1e88e5;">Group Name</label>
+                        <input type="text" id="settings-group-name" placeholder="e.g., Company Team, Weekend Friends"
+                            class="modal-input">
+                    </div>
+                    <div class="input-group mt-15">
+                        <label>Player 1</label>
+                        <input type="text" id="settings-player-1" placeholder="Name" class="modal-input">
+                    </div>
+                    <div class="input-group mt-10">
+                        <label>Player 2</label>
+                        <input type="text" id="settings-player-2" placeholder="Name (Optional)" class="modal-input">
+                    </div>
+                    <div class="input-group mt-10">
+                        <label>Player 3</label>
+                        <input type="text" id="settings-player-3" placeholder="Name (Optional)" class="modal-input">
+                    </div>
+                    <div class="input-group mt-10">
+                        <label>Player 4</label>
+                        <input type="text" id="settings-player-4" placeholder="Name (Optional)" class="modal-input">
+                    </div>
+                    <div class="input-group mt-10">
+                        <label>Player 5</label>
+                        <input type="text" id="settings-player-5" placeholder="Name (Optional)" class="modal-input">
+                    </div>
+
+                    <div class="flex-row gap-10 mt-20">
+                        <button id="btn-add-companion-group" class="btn-primary flex-1">Save Group</button>
+                        <button id="btn-clear-companion-inputs" class="btn-secondary flex-1">Clear Inputs</button>
+                    </div>
                 </div>
 
-                <div class="flex-row gap-10 mt-10">
-                    <button id="btn-add-companion-group" class="btn-secondary flex-1">Save Group</button>
-                    <button id="btn-clear-companion-inputs" class="btn-secondary flex-1">Clear Inputs</button>
-                </div>
+                <h4 style="margin-bottom: 10px; color: #555;">Saved Groups:</h4>
 
                 <ul id="settings-groups-list" class="history-list mt-15">
                     <!-- Populated by JS -->
@@ -350,13 +374,17 @@
                         <!-- Populated dynamically from settings -->
                     </select>
 
-                    <div style="display: flex; gap: 8px; width: 100%;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%;">
                         <input type="text" id="start-player-1" placeholder="P1 Name" class="modal-input"
-                            style="flex:1;">
+                            style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
                         <input type="text" id="start-player-2" placeholder="P2 Name" class="modal-input"
-                            style="flex:1;">
+                            style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
                         <input type="text" id="start-player-3" placeholder="P3 Name" class="modal-input"
-                            style="flex:1;">
+                            style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
+                        <input type="text" id="start-player-4" placeholder="P4 Name" class="modal-input"
+                            style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
+                        <input type="text" id="start-player-5" placeholder="P5 Name" class="modal-input"
+                            style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
                     </div>
                 </div>
 
