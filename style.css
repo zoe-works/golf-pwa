@@ -569,13 +569,13 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: calc(75px + env(safe-area-inset-bottom));
+    height: calc(85px + env(safe-area-inset-bottom));
     background: white;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-around;
+    padding-top: 5px; /* Added top padding to expand blue hit area upwards */
     padding-bottom: calc(10px + env(safe-area-inset-bottom));
-    /* Add padding-bottom to move items up slightly */
     z-index: 9999;
 }
 
@@ -588,7 +588,7 @@ body {
     align-items: center;
     justify-content: center;
     color: #757575;
-    padding: 10px 0;
+    padding: 15px 0 10px 0; /* Increased top padding for larger hit area */
     cursor: pointer;
     transition: color 0.2s, background-color 0.2s;
 }
