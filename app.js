@@ -1690,16 +1690,24 @@ function renderCompanionGroupsList() {
 
     groups.forEach((group, index) => {
         const li = document.createElement('li');
-        li.className = 'history-item';
+        li.style.cssText = 'background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #f0f0f0;';
 
-        const infoDiv = document.createElement('div');
-        infoDiv.innerHTML = `<strong>${group.name}</strong><br><small>${group.players.join(', ')}</small>`;
+        const headerDiv = document.createElement('div');
+        headerDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px;';
+        headerDiv.innerHTML = `<strong style="font-size: 16px; color: #333;">${group.name}</strong><span style="font-size: 12px; color: #999;">${group.players.length} Players</span>`;
+
+        const playersDiv = document.createElement('div');
+        playersDiv.style.cssText = 'font-size: 13px; color: #666; display: flex; flex-wrap: wrap; gap: 6px;';
+        group.players.forEach(p => {
+            playersDiv.innerHTML += `<span style="background: #e3f2fd; color: #1e88e5; padding: 4px 10px; border-radius: 16px; font-weight: 500;">${p}</span>`;
+        });
 
         const actionsDiv = document.createElement('div');
+        actionsDiv.style.cssText = 'display: flex; gap: 10px; margin-top: 5px;';
 
         const loadBtn = document.createElement('button');
-        loadBtn.className = 'btn-small btn-primary mr-5';
-        loadBtn.innerText = 'Edit';
+        loadBtn.style.cssText = 'flex: 1; color: #1e88e5; border: 1px solid #1e88e5; background: transparent; padding: 10px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 14px;';
+        loadBtn.innerText = 'Edit Group';
         loadBtn.onclick = () => {
             document.getElementById('settings-group-name').value = group.name;
             document.getElementById('settings-player-1').value = group.players[0] || '';
@@ -1710,7 +1718,7 @@ function renderCompanionGroupsList() {
         };
 
         const delBtn = document.createElement('button');
-        delBtn.className = 'btn-small btn-secondary danger';
+        delBtn.style.cssText = 'flex: 1; color: #d32f2f; background: #ffebee; border: none; padding: 10px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 14px;';
         delBtn.innerText = 'Delete';
         delBtn.onclick = () => {
             if (confirm('Delete this group?')) {
@@ -1723,7 +1731,8 @@ function renderCompanionGroupsList() {
         actionsDiv.appendChild(loadBtn);
         actionsDiv.appendChild(delBtn);
 
-        li.appendChild(infoDiv);
+        li.appendChild(headerDiv);
+        li.appendChild(playersDiv);
         li.appendChild(actionsDiv);
 
         listEl.appendChild(li);
