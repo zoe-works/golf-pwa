@@ -962,7 +962,7 @@ function showHoleModal() {
         holeData.shots.forEach(s => {
             if (s.club) {
                 if (s.club.includes('PT')) autoPutts++;
-                if (s.club.includes('OB-Forward')) {
+                if (s.club.includes('Playing-4') || s.club.includes('OB-Forward')) {
                     autoPens += 2;
                 } else if (s.club.includes('OB')) {
                     autoPens += 1;
