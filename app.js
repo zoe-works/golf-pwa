@@ -1156,7 +1156,7 @@ function displayHole(holeNumber) {
 
     // Set score state
     scorecard.setHole(holeNumber, holePar);
-    document.getElementById('ui-current-hole').innerText = holeNumber;
+    document.getElementById('ui-current-hole').innerText = String(holeNumber).match(/^[A-Z]+-/) ? holeNumber : `Hole ${holeNumber}`;
     document.getElementById('ui-current-par').innerText = holePar;
 
     const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
