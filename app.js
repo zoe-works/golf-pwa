@@ -1028,6 +1028,18 @@ function showHoleModal() {
         });
     }
 
+    // Update Save button text based on whether it's the last hole
+    const holeSelector = document.getElementById('hole-selector');
+    const options = Array.from(holeSelector.options).map(o => o.value);
+    const currentIndex = options.indexOf(scorecard.currentHole.toString());
+    const saveBtn = document.getElementById('btn-save-hole');
+    
+    if (currentIndex !== -1 && currentIndex === options.length - 1) {
+        saveBtn.innerText = 'Round Finish';
+    } else {
+        saveBtn.innerText = 'Next hole';
+    }
+
     document.getElementById('hole-modal').classList.remove('hidden');
 }
 
