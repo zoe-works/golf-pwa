@@ -598,10 +598,28 @@ async function init() {
 
     document.getElementById('btn-score-plus').addEventListener('click', () => updateStepper('hole-score-count', 1));
     document.getElementById('btn-score-minus').addEventListener('click', () => updateStepper('hole-score-count', -1));
-    document.getElementById('btn-putt-plus').addEventListener('click', () => updateStepper('putt-count', 1));
-    document.getElementById('btn-putt-minus').addEventListener('click', () => updateStepper('putt-count', -1));
-    document.getElementById('btn-pen-plus').addEventListener('click', () => updateStepper('pen-count', 1));
-    document.getElementById('btn-pen-minus').addEventListener('click', () => updateStepper('pen-count', -1));
+    document.getElementById('btn-putt-plus').addEventListener('click', () => {
+        updateStepper('putt-count', 1);
+        updateStepper('hole-score-count', 1);
+    });
+    document.getElementById('btn-putt-minus').addEventListener('click', () => {
+        const el = document.getElementById('putt-count');
+        if (parseInt(el.innerText, 10) > 0) {
+            updateStepper('putt-count', -1);
+            updateStepper('hole-score-count', -1);
+        }
+    });
+    document.getElementById('btn-pen-plus').addEventListener('click', () => {
+        updateStepper('pen-count', 1);
+        updateStepper('hole-score-count', 1);
+    });
+    document.getElementById('btn-pen-minus').addEventListener('click', () => {
+        const el = document.getElementById('pen-count');
+        if (parseInt(el.innerText, 10) > 0) {
+            updateStepper('pen-count', -1);
+            updateStepper('hole-score-count', -1);
+        }
+    });
 
     document.getElementById('btn-cancel-hole').addEventListener('click', () => {
         document.getElementById('hole-modal').classList.add('hidden');
