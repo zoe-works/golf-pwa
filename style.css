@@ -140,10 +140,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex: 1;
-    /* Stretch to fill any remaining space in the container */
-    margin-bottom: -1px;
-    /* Remove slight gap */
+    /* Extra padding at bottom to push past any gap if needed, but not forcing flex stretch */
+    padding-bottom: calc(15px + env(safe-area-inset-bottom));
+    flex-shrink: 0;
     max-height: 45vh;
     overflow-y: auto;
 }
@@ -876,6 +875,8 @@ textarea {
 #view-play {
     overflow: hidden;
     /* Prevent scrolling, map and distance panel handle their own */
+    background-color: #e9eef9;
+    /* Match map background to hide gaps */
 }
 
 /* Navigation Bar */
