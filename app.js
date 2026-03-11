@@ -364,7 +364,7 @@ async function init() {
 
         // Populate Companion Groups
         const compSelect = document.getElementById('modal-companion-group');
-        compSelect.innerHTML = '<option value="">-- Select Saved Group --</option>';
+        compSelect.innerHTML = '<option value="">-- Select Group --</option>';
         const groups = getCompanionGroups();
         groups.forEach((g, idx) => {
             const opt = document.createElement('option');
