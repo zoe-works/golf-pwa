@@ -229,6 +229,10 @@ async function init() {
     const holeSelector = document.getElementById('hole-selector');
 
     document.getElementById('btn-start-round').addEventListener('click', () => {
+        // Essential for iOS: Request permission on user gesture
+        initCompass();
+        if (!tracker) toggleTracking();
+
         openStartRoundModal();
     });
 
@@ -1033,7 +1037,7 @@ function showHoleModal() {
     const options = Array.from(holeSelector.options).map(o => o.value);
     const currentIndex = options.indexOf(scorecard.currentHole.toString());
     const saveBtn = document.getElementById('btn-save-hole');
-    
+
     if (currentIndex !== -1 && currentIndex === options.length - 1) {
         saveBtn.innerText = 'Round Finish';
     } else {
