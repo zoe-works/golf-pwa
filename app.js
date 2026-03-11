@@ -141,12 +141,33 @@ async function init() {
             } else if (targetId === 'view-history') {
                 if (typeof window.renderHistoryList === 'function') window.renderHistoryList();
             } else if (targetId === 'view-settings') {
+                document.getElementById('settings-menu').classList.remove('hidden');
+                document.getElementById('settings-clubs-page').classList.add('hidden');
+                document.getElementById('settings-groups-page').classList.add('hidden');
                 if (typeof window.renderSettingsUI === 'function') {
                     window.renderSettingsUI();
                     if (typeof renderCompanionGroupsList === 'function') renderCompanionGroupsList();
                 }
             }
         });
+    });
+
+    // Settings Sub-menu Navigation
+    document.getElementById('btn-menu-clubs')?.addEventListener('click', () => {
+        document.getElementById('settings-menu').classList.add('hidden');
+        document.getElementById('settings-clubs-page').classList.remove('hidden');
+    });
+    document.getElementById('btn-menu-groups')?.addEventListener('click', () => {
+        document.getElementById('settings-menu').classList.add('hidden');
+        document.getElementById('settings-groups-page').classList.remove('hidden');
+    });
+    document.getElementById('btn-back-clubs')?.addEventListener('click', () => {
+        document.getElementById('settings-clubs-page').classList.add('hidden');
+        document.getElementById('settings-menu').classList.remove('hidden');
+    });
+    document.getElementById('btn-back-groups')?.addEventListener('click', () => {
+        document.getElementById('settings-groups-page').classList.add('hidden');
+        document.getElementById('settings-menu').classList.remove('hidden');
     });
 
     const recenterBtn = document.getElementById('btn-recenter');
