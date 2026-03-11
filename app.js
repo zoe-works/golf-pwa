@@ -354,7 +354,10 @@ async function init() {
             'IN': 'OUT',
             'A': 'B',
             'B': 'C',
-            'C': 'A'
+            'C': 'A',
+            'LAKE': 'WOOD',
+            'WOOD': 'ROCK',
+            'ROCK': 'LAKE'
         };
 
         if (autoMap[first]) {
