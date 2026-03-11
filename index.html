@@ -177,24 +177,46 @@
                         <input type="text" id="settings-group-name" placeholder="e.g., Company Team, Weekend Friends"
                             class="modal-input">
                     </div>
-                    <div class="input-group mt-15">
-                        <label>Player 1</label>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 5px;">Select the radio button to indicate
+                        which player is you.</p>
+                    <div class="input-group mt-10">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <label>Player 1</label>
+                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                    name="settings-me" value="0"> Me</label>
+                        </div>
                         <input type="text" id="settings-player-1" placeholder="Name" class="modal-input">
                     </div>
                     <div class="input-group mt-10">
-                        <label>Player 2</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <label>Player 2</label>
+                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                    name="settings-me" value="1"> Me</label>
+                        </div>
                         <input type="text" id="settings-player-2" placeholder="Name (Optional)" class="modal-input">
                     </div>
                     <div class="input-group mt-10">
-                        <label>Player 3</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <label>Player 3</label>
+                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                    name="settings-me" value="2"> Me</label>
+                        </div>
                         <input type="text" id="settings-player-3" placeholder="Name (Optional)" class="modal-input">
                     </div>
                     <div class="input-group mt-10">
-                        <label>Player 4</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <label>Player 4</label>
+                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                    name="settings-me" value="3"> Me</label>
+                        </div>
                         <input type="text" id="settings-player-4" placeholder="Name (Optional)" class="modal-input">
                     </div>
                     <div class="input-group mt-10">
-                        <label>Player 5</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <label>Player 5</label>
+                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                    name="settings-me" value="4"> Me</label>
+                        </div>
                         <input type="text" id="settings-player-5" placeholder="Name (Optional)" class="modal-input">
                     </div>
 
@@ -374,17 +396,39 @@
                         <!-- Populated dynamically from settings -->
                     </select>
 
+                    <p style="font-size: 11px; color: #666; margin-bottom: 5px; width: 100%;">Select the radio button to
+                        indicate which player is you.</p>
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%;">
-                        <input type="text" id="start-player-1" placeholder="P1 Name" class="modal-input"
-                            style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
-                        <input type="text" id="start-player-2" placeholder="P2 Name" class="modal-input"
-                            style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
-                        <input type="text" id="start-player-3" placeholder="P3 Name" class="modal-input"
-                            style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
-                        <input type="text" id="start-player-4" placeholder="P4 Name" class="modal-input"
-                            style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
-                        <input type="text" id="start-player-5" placeholder="P5 Name" class="modal-input"
-                            style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
+                        <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
+                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                    type="radio" name="start-me" value="0"> Me</label>
+                            <input type="text" id="start-player-1" placeholder="P1 Name" class="modal-input"
+                                style="width: 100%;">
+                        </div>
+                        <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
+                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                    type="radio" name="start-me" value="1"> Me</label>
+                            <input type="text" id="start-player-2" placeholder="P2 Name" class="modal-input"
+                                style="width: 100%;">
+                        </div>
+                        <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
+                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                    type="radio" name="start-me" value="2"> Me</label>
+                            <input type="text" id="start-player-3" placeholder="P3 Name" class="modal-input"
+                                style="width: 100%;">
+                        </div>
+                        <div style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
+                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                    type="radio" name="start-me" value="3"> Me</label>
+                            <input type="text" id="start-player-4" placeholder="P4 Name" class="modal-input"
+                                style="width: 100%;">
+                        </div>
+                        <div style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
+                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                    type="radio" name="start-me" value="4"> Me</label>
+                            <input type="text" id="start-player-5" placeholder="P5 Name" class="modal-input"
+                                style="width: 100%;">
+                        </div>
                     </div>
                 </div>
 

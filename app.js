@@ -378,6 +378,9 @@ async function init() {
         document.getElementById('start-player-4').value = '';
         document.getElementById('start-player-5').value = '';
 
+        const startRadio = document.querySelector('input[name="start-me"][value="0"]');
+        if (startRadio) startRadio.checked = true;
+
         document.getElementById('start-round-modal').classList.remove('hidden');
     }
 
@@ -399,6 +402,10 @@ async function init() {
                 if (group.players[2]) p3.value = group.players[2];
                 if (group.players[3]) p4.value = group.players[3];
                 if (group.players[4]) p5.value = group.players[4];
+
+                // Set radio button to the group's main player, mapped by their index
+                const startMeRadio = document.querySelector(`input[name="start-me"][value="${group.mainPlayerIndex || 0}"]`);
+                if (startMeRadio) startMeRadio.checked = true;
             }
         }
     });
@@ -464,7 +471,12 @@ async function init() {
         const p3 = document.getElementById('start-player-3').value.trim();
         const p4 = document.getElementById('start-player-4').value.trim();
         const p5 = document.getElementById('start-player-5').value.trim();
-        const companions = [p1, p2, p3, p4, p5].filter(p => p !== '');
+
+        const startPlayerRadio = document.querySelector('input[name="start-me"]:checked');
+        const meIndex = startPlayerRadio ? parseInt(startPlayerRadio.value, 10) : -1;
+
+        const allCompanions = [p1, p2, p3, p4, p5];
+        const companions = allCompanions.filter((p, i) => p !== '' && i !== meIndex);
 
         scorecard.startNewRound(courseName, sequence, companions);
 
@@ -1698,8 +1710,9 @@ function renderCompanionGroupsList() {
 
         const playersDiv = document.createElement('div');
         playersDiv.style.cssText = 'font-size: 13px; color: #666; display: flex; flex-wrap: wrap; gap: 6px;';
-        group.players.forEach(p => {
-            playersDiv.innerHTML += `<span style="background: #e3f2fd; color: #1e88e5; padding: 4px 10px; border-radius: 16px; font-weight: 500;">${p}</span>`;
+        group.players.forEach((p, i) => {
+            const isMe = (i === (group.mainPlayerIndex || 0));
+            playersDiv.innerHTML += `<span style="background: ${isMe ? '#ffecb3' : '#e3f2fd'}; color: ${isMe ? '#f57c00' : '#1e88e5'}; padding: 4px 10px; border-radius: 16px; font-weight: 500;">${p} ${isMe ? '(Me)' : ''}</span>`;
         });
 
         const actionsDiv = document.createElement('div');
@@ -1715,6 +1728,8 @@ function renderCompanionGroupsList() {
             document.getElementById('settings-player-3').value = group.players[2] || '';
             document.getElementById('settings-player-4').value = group.players[3] || '';
             document.getElementById('settings-player-5').value = group.players[4] || '';
+            const radio = document.querySelector(`input[name="settings-me"][value="${group.mainPlayerIndex || 0}"]`);
+            if (radio) radio.checked = true;
         };
 
         const delBtn = document.createElement('button');
@@ -1760,7 +1775,24 @@ if (btnAddCompanion) {
             return;
         }
 
-        const newGroup = { name: nameInput, players: players };
+        const mainPlayerRadio = document.querySelector('input[name="settings-me"]:checked');
+        let mainIndex = mainPlayerRadio ? parseInt(mainPlayerRadio.value, 10) : 0;
+
+        // Adjust mainIndex if the selected radio button corresponds to an empty input
+        // Since players array only contains non-empty inputs, we need to map the radio button index to the players array index
+        let actualPlayerCount = 0;
+        let finalMainIndex = 0;
+        const allInputs = [p1, p2, p3, p4, p5];
+        for (let i = 0; i < allInputs.length; i++) {
+            if (allInputs[i] !== '') {
+                if (i === mainIndex) {
+                    finalMainIndex = actualPlayerCount;
+                }
+                actualPlayerCount++;
+            }
+        }
+
+        const newGroup = { name: nameInput, players: players, mainPlayerIndex: finalMainIndex };
         const groups = getCompanionGroups();
 
         // Check if group exists
@@ -1785,6 +1817,8 @@ if (btnClearCompanion) {
         document.getElementById('settings-player-3').value = '';
         document.getElementById('settings-player-4').value = '';
         document.getElementById('settings-player-5').value = '';
+        const radio = document.querySelector('input[name="settings-me"][value="0"]');
+        if (radio) radio.checked = true;
     });
 }
 
