@@ -140,9 +140,10 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    /* Use safe area at bottom, adjust max-height to ensure button is visible */
-    padding-bottom: calc(15px + env(safe-area-inset-bottom));
-    flex-shrink: 0;
+    flex: 1;
+    /* Stretch to fill any remaining space in the container */
+    margin-bottom: -1px;
+    /* Remove slight gap */
     max-height: 45vh;
     overflow-y: auto;
 }
@@ -574,7 +575,8 @@ body {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-around;
-    padding-top: 5px; /* Added top padding to expand blue hit area upwards */
+    padding-top: 5px;
+    /* Added top padding to expand blue hit area upwards */
     padding-bottom: calc(10px + env(safe-area-inset-bottom));
     z-index: 9999;
 }
@@ -588,7 +590,8 @@ body {
     align-items: center;
     justify-content: center;
     color: #757575;
-    padding: 15px 0 10px 0; /* Increased top padding for larger hit area */
+    padding: 15px 0 10px 0;
+    /* Increased top padding for larger hit area */
     cursor: pointer;
     transition: color 0.2s, background-color 0.2s;
 }
