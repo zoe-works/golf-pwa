@@ -141,7 +141,10 @@ async function init() {
             } else if (targetId === 'view-history') {
                 if (typeof window.renderHistoryList === 'function') window.renderHistoryList();
             } else if (targetId === 'view-settings') {
-                if (typeof window.renderSettingsUI === 'function') window.renderSettingsUI();
+                if (typeof window.renderSettingsUI === 'function') {
+                    window.renderSettingsUI();
+                    if (typeof renderCompanionGroupsList === 'function') renderCompanionGroupsList();
+                }
             }
         });
     });
@@ -337,8 +340,41 @@ async function init() {
         }
 
         populateHalfSelectors(modalSelect.value);
+
+        // Populate Companion Groups
+        const compSelect = document.getElementById('modal-companion-group');
+        compSelect.innerHTML = '<option value="">-- Select Saved Group --</option>';
+        const groups = getCompanionGroups();
+        groups.forEach((g, idx) => {
+            const opt = document.createElement('option');
+            opt.value = idx;
+            opt.innerText = g.name;
+            compSelect.appendChild(opt);
+        });
+        document.getElementById('start-player-1').value = '';
+        document.getElementById('start-player-2').value = '';
+        document.getElementById('start-player-3').value = '';
+
         document.getElementById('start-round-modal').classList.remove('hidden');
     }
+
+    document.getElementById('modal-companion-group').addEventListener('change', (e) => {
+        const val = e.target.value;
+        const p1 = document.getElementById('start-player-1');
+        const p2 = document.getElementById('start-player-2');
+        const p3 = document.getElementById('start-player-3');
+        p1.value = ''; p2.value = ''; p3.value = '';
+
+        if (val !== '') {
+            const groups = getCompanionGroups();
+            const group = groups[val];
+            if (group) {
+                if (group.players[0]) p1.value = group.players[0];
+                if (group.players[1]) p2.value = group.players[1];
+                if (group.players[2]) p3.value = group.players[2];
+            }
+        }
+    });
 
     document.getElementById('modal-course-select').addEventListener('change', (e) => {
         populateHalfSelectors(e.target.value);
@@ -394,7 +430,14 @@ async function init() {
         await loadCourse(courseUrl, sequence);
 
         const courseName = document.getElementById('modal-course-select').options[document.getElementById('modal-course-select').selectedIndex].text;
-        scorecard.startNewRound(courseName, sequence);
+
+        // Collect companions
+        const p1 = document.getElementById('start-player-1').value.trim();
+        const p2 = document.getElementById('start-player-2').value.trim();
+        const p3 = document.getElementById('start-player-3').value.trim();
+        const companions = [p1, p2, p3].filter(p => p !== '');
+
+        scorecard.startNewRound(courseName, sequence, companions);
 
         // Ensure club selector is ready for the new round
         renderClubSelector();
@@ -908,6 +951,42 @@ function showHoleModal() {
     document.getElementById('pen-count').innerText = autoPens.toString();
     document.getElementById('hole-memo').value = aggregatedMemo.join('\n');
 
+    // Dynamic Companion Scores
+    const compContainer = document.getElementById('companion-scores-container');
+    compContainer.innerHTML = '';
+    const companions = scorecard.roundData.companions || [];
+
+    if (companions.length > 0) {
+        companions.forEach((compName, idx) => {
+            const compScore = (holeData && holeData.companionScores && holeData.companionScores[compName]) || 0;
+            const html = `
+                <div class="input-group">
+                    <label>${compName} Score</label>
+                    <div class="stepper">
+                        <button type="button" class="stepper-btn comp-btn-minus" data-idx="${idx}">-</button>
+                        <span id="comp-score-${idx}" class="stepper-val comp-score-val">${compScore}</span>
+                        <button type="button" class="stepper-btn comp-btn-plus" data-idx="${idx}">+</button>
+                    </div>
+                </div>
+            `;
+            compContainer.innerHTML += html;
+        });
+
+        // Add event listeners for new companion steppers
+        compContainer.querySelectorAll('.comp-btn-minus').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = e.target.dataset.idx;
+                updateStepper(`comp-score-${idx}`, -1);
+            });
+        });
+        compContainer.querySelectorAll('.comp-btn-plus').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = e.target.dataset.idx;
+                updateStepper(`comp-score-${idx}`, 1);
+            });
+        });
+    }
+
     document.getElementById('hole-modal').classList.remove('hidden');
 }
 
@@ -925,8 +1004,18 @@ function finalizeHole() {
     const pens = parseInt(document.getElementById('pen-count').innerText, 10);
     const memo = document.getElementById('hole-memo').value;
 
+    // Collect companion scores
+    const companions = scorecard.roundData.companions || [];
+    const compScores = {};
+    companions.forEach((compName, idx) => {
+        const spanEl = document.getElementById(`comp-score-${idx}`);
+        if (spanEl) {
+            compScores[compName] = parseInt(spanEl.innerText, 10) || 0;
+        }
+    });
+
     // Override hole_score with manually set value
-    scorecard.finishHole(putts, pens, memo);
+    scorecard.finishHole(putts, pens, memo, compScores);
     const holeData = scorecard.getHoleData();
     if (holeData) holeData.hole_score = score;
     scorecard.saveRoundData();
@@ -959,30 +1048,59 @@ function showScorecardModal(historyRoundData = null) {
 
     document.getElementById('btn-save-round').style.display = 'block';
 
+    const companions = rd.companions || [];
+    let compHeaders = '';
+    companions.forEach(c => {
+        compHeaders += `<th>${c}</th>`;
+    });
+
     let html = `
-        <table class="score-table">
+        <table class="score-table" style="font-size: 12px;">
             <thead>
                 <tr>
-                    <th>Hole</th><th>Par</th><th>Score</th><th>Putts</th><th>Pena</th>
+                    <th>Hole</th><th>Par</th><th>Score</th><th>Putts</th><th>Pena</th>${compHeaders}
                 </tr>
             </thead>
             <tbody>
     `;
 
     const sequence = rd.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
+
+    // Tally companion totals
+    const compTotals = {};
+    companions.forEach(c => compTotals[c] = 0);
+
     for (const hNum of sequence) {
         const h = rd.holes[hNum];
         if (h && h.hole_score > 0) {
+            let compCells = '';
+            companions.forEach(c => {
+                const s = (h.companionScores && h.companionScores[c]) ? h.companionScores[c] : 0;
+                compTotals[c] += s;
+                compCells += `<td>${s > 0 ? s : '-'}</td>`;
+            });
+
             html += `
                 <tr data-hole="${hNum}">
                     <td>${hNum}</td>
                     <td>${h.par}</td>
-                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 45px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
-                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
-                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 35px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 35px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    ${compCells}
                 </tr>
             `;
         }
+    }
+
+    let compTotalsHtml = '';
+    if (companions.length > 0) {
+        compTotalsHtml = `<div style="margin-top: 10px; font-size: 13px;"><strong>Companions:</strong> `;
+        const t = [];
+        companions.forEach(c => {
+            t.push(`${c}: ${compTotals[c]}`);
+        });
+        compTotalsHtml += t.join(' | ') + `</div>`;
     }
 
     html += `
@@ -990,7 +1108,8 @@ function showScorecardModal(historyRoundData = null) {
         </table>
         <div style="margin-top: 15px; text-align: center;">
             <strong>Total Score: ${rd.summary.total_score}</strong><br>
-            (Putts: ${rd.summary.total_putts} | Pen: ${rd.summary.total_penalties})
+            <span style="font-size: 12px; color: #555;">(Putts: ${rd.summary.total_putts} | Pen: ${rd.summary.total_penalties})</span>
+            ${compTotalsHtml}
         </div>
     `;
 
@@ -1522,6 +1641,109 @@ document.getElementById('btn-save-settings').addEventListener('click', () => {
     alert('Settings saved!');
 });
 
+// --- COMPANION GROUPS SETTINGS ---
+function getCompanionGroups() {
+    const saved = localStorage.getItem('golf-pwa-companion-groups');
+    return saved ? JSON.parse(saved) : [];
+}
+
+function saveCompanionGroups(groups) {
+    localStorage.setItem('golf-pwa-companion-groups', JSON.stringify(groups));
+    renderCompanionGroupsList();
+}
+
+function renderCompanionGroupsList() {
+    const listEl = document.getElementById('settings-groups-list');
+    if (!listEl) return;
+
+    const groups = getCompanionGroups();
+    listEl.innerHTML = '';
+
+    groups.forEach((group, index) => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+
+        const infoDiv = document.createElement('div');
+        infoDiv.innerHTML = `<strong>${group.name}</strong><br><small>${group.players.join(', ')}</small>`;
+
+        const actionsDiv = document.createElement('div');
+
+        const loadBtn = document.createElement('button');
+        loadBtn.className = 'btn-small btn-primary mr-5';
+        loadBtn.innerText = 'Edit';
+        loadBtn.onclick = () => {
+            document.getElementById('settings-group-name').value = group.name;
+            document.getElementById('settings-player-1').value = group.players[0] || '';
+            document.getElementById('settings-player-2').value = group.players[1] || '';
+            document.getElementById('settings-player-3').value = group.players[2] || '';
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-small btn-secondary danger';
+        delBtn.innerText = 'Delete';
+        delBtn.onclick = () => {
+            if (confirm('Delete this group?')) {
+                const newGroups = [...groups];
+                newGroups.splice(index, 1);
+                saveCompanionGroups(newGroups);
+            }
+        };
+
+        actionsDiv.appendChild(loadBtn);
+        actionsDiv.appendChild(delBtn);
+
+        li.appendChild(infoDiv);
+        li.appendChild(actionsDiv);
+
+        listEl.appendChild(li);
+    });
+}
+
+const btnAddCompanion = document.getElementById('btn-add-companion-group');
+if (btnAddCompanion) {
+    btnAddCompanion.addEventListener('click', () => {
+        const nameInput = document.getElementById('settings-group-name').value.trim();
+        const p1 = document.getElementById('settings-player-1').value.trim();
+        const p2 = document.getElementById('settings-player-2').value.trim();
+        const p3 = document.getElementById('settings-player-3').value.trim();
+
+        if (!nameInput) {
+            alert('Please enter a Group Name.');
+            return;
+        }
+
+        const players = [p1, p2, p3].filter(p => p !== '');
+        if (players.length === 0) {
+            alert('Please enter at least one player name.');
+            return;
+        }
+
+        const newGroup = { name: nameInput, players: players };
+        const groups = getCompanionGroups();
+
+        // Check if group exists
+        const existingIndex = groups.findIndex(g => g.name === nameInput);
+        if (existingIndex >= 0) {
+            groups[existingIndex] = newGroup;
+        } else {
+            groups.push(newGroup);
+        }
+
+        saveCompanionGroups(groups);
+        document.getElementById('btn-clear-companion-inputs').click();
+    });
+}
+
+const btnClearCompanion = document.getElementById('btn-clear-companion-inputs');
+if (btnClearCompanion) {
+    btnClearCompanion.addEventListener('click', () => {
+        document.getElementById('settings-group-name').value = '';
+        document.getElementById('settings-player-1').value = '';
+        document.getElementById('settings-player-2').value = '';
+        document.getElementById('settings-player-3').value = '';
+    });
+}
+
 function renderClubSelector() {
     const container = document.getElementById('club-grid-container');
     const clubs = getSavedClubs();
@@ -1569,11 +1791,13 @@ window.renderHistoryList = function () {
         const li = document.createElement('li');
         li.className = 'history-item';
 
+        const compText = (round.companions && round.companions.length > 0) ? `<div style="font-size: 11px; color: #888; margin-top: 2px;">With: ${round.companions.join(', ')}</div>` : '';
         const infoDiv = document.createElement('div');
         infoDiv.className = 'history-info';
         infoDiv.innerHTML = `
             <div class="history-date">${dateStr}</div>
             <div class="history-course">${round.course_name || 'Golf Course'}</div>
+            ${compText}
         `;
 
         const scoreDiv = document.createElement('div');

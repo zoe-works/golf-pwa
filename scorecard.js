@@ -8,11 +8,12 @@ export class ScorecardManager {
         this.bindEvents();
     }
 
-    createNewRound(holeSequence = []) {
+    createNewRound(holeSequence = [], companions = []) {
         return {
             round_id: 'Round_' + new Date().toISOString(),
             date: new Date().toISOString(),
             holeSequence: holeSequence,
+            companions: companions,
             holes: {},
             summary: {
                 total_score: 0,
@@ -36,8 +37,8 @@ export class ScorecardManager {
         this.updateSummary();
     }
 
-    startNewRound(courseName, holesArray) {
-        this.roundData = this.createNewRound(holesArray);
+    startNewRound(courseName, holesArray, companions = []) {
+        this.roundData = this.createNewRound(holesArray, companions);
         this.roundData.course_name = courseName;
         this.currentHole = holesArray[0] || 1;
         this.currentShotNum = 1;
@@ -134,10 +135,11 @@ export class ScorecardManager {
         }
     }
 
-    finishHole(putts, penalties, overallMemo) {
+    finishHole(putts, penalties, overallMemo, compScores = {}) {
         const hole = this.roundData.holes[this.currentHole];
         hole.putts = putts;
         hole.penalties = penalties;
+        hole.companionScores = compScores;
 
         let combinedMemo = "";
         hole.shots.forEach(s => {
