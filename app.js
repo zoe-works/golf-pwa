@@ -724,9 +724,6 @@ function showShotModal(shotNum) {
     });
 
     // Navigation arrows visibility
-    const hd = scorecard.getHoleData();
-    const totalShots = hd && hd.shots ? hd.shots.length : 0;
-
     // Show Prev if not Shot 1
     if (shotNum > 1) {
         document.getElementById('btn-shot-prev').classList.remove('visibility-hidden');
@@ -734,9 +731,8 @@ function showShotModal(shotNum) {
         document.getElementById('btn-shot-prev').classList.add('visibility-hidden');
     }
 
-    // Show Next if editing an old shot OR if we just recorded the current latest shot
-    // (This allows "flowing" through the recording process)
-    if (shotNum <= totalShots) {
+    // Show Next if we are not on the absolute latest "next" shot
+    if (shotNum < scorecard.currentShotNum) {
         document.getElementById('btn-shot-next').classList.remove('visibility-hidden');
     } else {
         document.getElementById('btn-shot-next').classList.add('visibility-hidden');
