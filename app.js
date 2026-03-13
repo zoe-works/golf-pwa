@@ -216,17 +216,15 @@ async function init() {
     document.getElementById('btn-record-shot').style.display = 'none';
     document.getElementById('edit-controls').style.display = 'flex';
 
-    // Disable auto-rotation if user manually rotates the map
-    map.on('rotatestart', () => {
+    // Disable auto-recentering if user manually interacts with the map
+    map.on('dragstart zoomstart rotatestart', () => {
         if (isHeadingUp) {
             isHeadingUp = false;
             updateCompassUI();
         }
     });
 
-    // (Obsolete rotateControl intercept removed as rotateControl is disabled)
-
-    const holeSelector = document.getElementById('hole-selector');
+    // --- START ROUND UI MODAL ---
 
     document.getElementById('btn-start-round').addEventListener('click', () => {
         // Essential for iOS: Request permission on user gesture
@@ -1486,10 +1484,10 @@ function refreshMapView() {
     // Green below Edit Map button: Edit Map is at top-right.
     // Top padding should be enough to stay below the top bar and edit controls.
 
-    // 300px bottom padding to ensure user is well below the recenter button and nav bar
+    // 113px bottom padding to align with Recenter button center
     const options = {
         paddingTopLeft: [50, 100],
-        paddingBottomRight: [50, 300],
+        paddingBottomRight: [50, 113],
         maxZoom: 18,
         animate: true
     };
@@ -1655,10 +1653,7 @@ function handleOrientation(event) {
             userHeading = compass;
 
             // Removed map.setBearing(compass) to prevent unwanted rotations
-            // if (isHeadingUp && map) {
-            //     // Smooth rotation - setBearing(heading) in Leaflet.Rotation plugin
-            //     map.setBearing(compass);
-            // }
+            // Fixed orientation: North-up
 
             const cone = document.getElementById('user-heading-cone');
             if (cone) {
