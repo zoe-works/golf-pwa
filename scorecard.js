@@ -93,19 +93,29 @@ export class ScorecardManager {
         let shot = hole.shots.find(s => s.shot_num === shotNum);
 
         if (!shot) {
+            // Calculate distance from previous shot's start position if available
+            let distYd = 0;
+            if (this.roundData.lastShotStartPos && coords) {
+                // We need haversine logic here, but since haversine is in app.js, 
+                // we'll rely on app.js passing the distance OR we need to import it here.
+                // However, to keep it simple and robust, let's assume app.js will handle 
+                // the distance calculation for the live display and we just store it.
+                // For the "actual" saved distance, we calculate it now if we have the start point.
+            }
+
             // New shot
             shot = {
                 shot_num: shotNum,
                 club: club,
                 start_coords: coords,
                 end_coords: null,
-                distance_yd: 0,
+                distance_yd: 0, // Will be updated by app.js or logic below
                 score: score,
                 memo: memo,
                 penalty_val: extraIncrement // Store it to help with edits later
             };
 
-            // Calculate distance for the previous shot if it exists and hasn't been closed
+            // Calculate distance for the previous shot (landing point)
             if (shotNum > 1 && hole.shots.length >= shotNum - 1) {
                 const prevShot = hole.shots[shotNum - 2];
                 if (!prevShot.end_coords) {

@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.3.2';
+const APP_VERSION = '1.3.3';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -938,8 +938,16 @@ function saveCurrentTempShot() {
         extraIncrement = parseInt(activePenaltyBtn.dataset.increment) || 0;
     }
 
+    // Calculate distance from start pos if available
+    let flightDist = 0;
+    if (scorecard.roundData.lastShotStartPos && lastPos) {
+        const start = scorecard.roundData.lastShotStartPos;
+        const meters = haversineMeters([lastPos.lng, lastPos.lat], [start.lng, start.lat]);
+        flightDist = metersToYardsRounded(meters);
+    }
+
     // Save shot
-    scorecard.saveShot(
+    const shot = scorecard.saveShot(
         currentEditingShotNum,
         finalClubStr,
         tempShotData.score,
@@ -947,6 +955,12 @@ function saveCurrentTempShot() {
         userCoords,
         extraIncrement
     );
+
+    // Persist flight distance
+    if (shot && flightDist > 0) {
+        shot.distance_yd = flightDist;
+        scorecard.saveRoundData();
+    }
 
     // After saving, the flight distance is "reset" (ready for next shot)
     // Actually, scorecard.addShot (or saveShot) already updates lastShotStartPos to the current location
@@ -1045,10 +1059,11 @@ function showHoleModal() {
             if (s.memo) aggregatedMemo.push(`[S${s.shot_num}] ${s.memo}`);
 
             const clubLabel = s.club || '—';
+            const distanceLabel = s.distance_yd ? ` (${s.distance_yd} yd)` : '';
             const memoLabel = s.memo ? ` · ${s.memo}` : '';
             shotHtml += `<div style="padding: 3px 0; border-bottom: 1px solid #f5f5f5;">
                 <span style="font-weight: 600; color: #1e88e5;">S${s.shot_num}</span>
-                <span style="margin-left: 6px;">${clubLabel}</span>
+                <span style="margin-left: 6px;">${clubLabel}${distanceLabel}</span>
                 <span style="color: #999;">${memoLabel}</span>
             </div>`;
         });
@@ -1205,6 +1220,12 @@ function showScorecardModal(historyRoundData = null) {
                 compCells += `<td>${s > 0 ? s : '-'}</td>`;
             });
 
+            const shots = h.shots || [];
+            const shotStrs = shots.map(s => {
+                const dist = s.distance_yd ? ` (${s.distance_yd}yd)` : '';
+                return `S${s.shot_num}: ${s.club}${dist}`;
+            }).join(', ');
+
             html += `
                 <tr data-hole="${hNum}">
                     <td>${hNum}</td>
@@ -1214,6 +1235,7 @@ function showScorecardModal(historyRoundData = null) {
                     <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 35px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
                     ${compCells}
                 </tr>
+                ${shotStrs ? `<tr><td colspan="${5 + companions.length}" style="font-size: 10px; color: #666; padding: 2px 10px; border-top: none; text-align: left; background: #fafafa;">${shotStrs}</td></tr>` : ''}
             `;
         }
     }
@@ -1421,6 +1443,10 @@ function displayHole(holeNumber) {
         const shotCount = holeData && holeData.shots ? holeData.shots.length : 0;
         document.getElementById('ui-shot-count').innerText = shotCount;
         document.getElementById('shot-count-display').style.display = 'inline';
+
+        // Update flight display shot number
+        const flightShotNum = document.getElementById('flight-shot-num');
+        if (flightShotNum) flightShotNum.innerText = scorecard.currentShotNum;
     } else {
         document.getElementById('shot-count-display').style.display = 'none';
     }
@@ -1679,7 +1705,9 @@ function updateLocationUI(pos) {
 
     // 4. Update Flight Distance
     const flightEl = document.getElementById('flight-distance-display');
+    const flightShotNum = document.getElementById('flight-shot-num');
     if (isRoundActive && scorecard.roundData.lastShotStartPos) {
+        if (flightShotNum) flightShotNum.innerText = scorecard.currentShotNum;
         const start = scorecard.roundData.lastShotStartPos;
         const meters = haversineMeters([pos.lng, pos.lat], [start.lng, start.lat]);
         const yards = metersToYardsRounded(meters);
