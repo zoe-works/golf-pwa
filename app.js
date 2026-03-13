@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.4.1';
+const APP_VERSION = '1.4.2';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -1374,16 +1374,30 @@ function showScorecardModal(historyRoundData = null) {
             startBtn.innerText = 'Start Round';
             startBtn.classList.remove('in-round');
 
-            // Reset hole selector
+            // Reset hole selector and hide it
             const hs = document.getElementById('hole-selector');
-            hs.innerHTML = '';
-            hs.value = '';
+            if (hs) {
+                hs.innerHTML = '';
+                hs.value = '';
+                hs.style.display = 'none';
+            }
 
             // Hide hole status and record shot button
             document.getElementById('hole-status').style.display = 'none';
             document.getElementById('btn-record-shot').style.display = 'none';
             document.getElementById('btn-start-shot').style.display = 'none';
             document.getElementById('flight-distance-display').classList.add('hidden');
+
+            // Clear Map Layers and Targets
+            holeTargets = {};
+            currentHoleLayers.clearLayers();
+            shotLayers.clearLayers();
+
+            // Clean up tap markers/lines
+            if (tapMarker) { map.removeLayer(tapMarker); tapMarker = null; }
+            if (tapLine) { map.removeLayer(tapLine); tapLine = null; }
+            if (tapLineB) { map.removeLayer(tapLineB); tapLineB = null; }
+            if (pinMarker) { map.removeLayer(pinMarker); pinMarker = null; }
 
             // Switch to History View
             const historyBtn = document.querySelector('.nav-btn[data-target="view-history"]');
