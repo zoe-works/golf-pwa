@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.2.1';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -2071,22 +2071,28 @@ async function resumeRound(ongoingRound) {
     scorecard.currentHole = ongoingRound.currentHole || 1;
     scorecard.currentShotNum = ongoingRound.currentShotNum || 1;
 
-    // 2. Update UI State
-    const startBtn = document.getElementById('btn-start-round');
-    startBtn.innerText = 'Round In Progress';
-    startBtn.classList.add('in-round');
-    document.getElementById('hole-selector').style.display = 'block';
-
-    // Switch to Play view
-    document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
-    document.getElementById('view-play').classList.remove('hidden');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-    // Look for nav button targeting view-play
+    // 2. Trigger view switch (Click the nav button to ensure map.invalidateSize() etc.)
     const playNav = document.querySelector('.nav-btn[data-target="view-play"]');
-    if (playNav) playNav.classList.add('active');
+    if (playNav) {
+        playNav.click();
+    } else {
+        // Fallback for manual switch
+        document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('view-play').classList.remove('hidden');
+        document.getElementById('view-play').classList.add('active');
+        setTimeout(() => map.invalidateSize(), 150);
+    }
 
-    // 3. Load map data
+    // 3. Update Round Progress UI
+    const startBtn = document.getElementById('btn-start-round');
+    if (startBtn) {
+        startBtn.innerText = 'Round In Progress';
+        startBtn.classList.add('in-round');
+    }
+    const holeSelector = document.getElementById('hole-selector');
+    if (holeSelector) holeSelector.style.display = 'block';
+
+    // 4. Load course and hole
     let targetUrl = 'data/prime_city.json';
     for (const [url, meta] of Object.entries(COURSE_METADATA)) {
         if (ongoingRound.course_name && ongoingRound.course_name.includes(meta.name)) {
@@ -2098,10 +2104,7 @@ async function resumeRound(ongoingRound) {
     await loadCourse(targetUrl, ongoingRound.holeSequence, scorecard.currentHole);
     drawShotTracks();
 
-    // 4. Start Tracking
-    if (!tracker) {
-        toggleTracking();
-    }
+    // 5. Orientation
     isHeadingUp = true;
     updateCompassUI();
 }
