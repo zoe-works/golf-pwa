@@ -224,7 +224,7 @@ async function init() {
         }
     });
 
-    // --- START ROUND UI MODAL ---
+    const holeSelector = document.getElementById('hole-selector');
 
     document.getElementById('btn-start-round').addEventListener('click', () => {
         // Essential for iOS: Request permission on user gesture
