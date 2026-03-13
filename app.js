@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.4.0';
+const APP_VERSION = '1.4.1';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -151,9 +151,11 @@ async function init() {
 
         // If we just marked a landing for shot X, store the distance
         if (prevState !== null && calculatedDist > 0) {
-            const hole = scorecard.roundData.holes[scorecard.currentHole];
+            const holeNum = scorecard.currentHole;
+            const hole = scorecard.roundData.holes[holeNum];
             if (hole) {
                 const shotIdx = prevState - 1;
+                // Check if shot already exists (might have club info from manual entry)
                 if (!hole.shots[shotIdx]) {
                     hole.shots[shotIdx] = {
                         shot_num: prevState,
@@ -165,8 +167,13 @@ async function init() {
                         memo: ''
                     };
                 } else {
+                    // Update existing shot with distance and landing point
                     hole.shots[shotIdx].distance_yd = calculatedDist;
                     hole.shots[shotIdx].end_coords = [lastPos.lng, lastPos.lat];
+                    // If start_coords was missing/null, fill it
+                    if (!hole.shots[shotIdx].start_coords) {
+                        hole.shots[shotIdx].start_coords = [startPoint.lng, startPoint.lat];
+                    }
                 }
                 scorecard.saveRoundData();
             }

@@ -118,32 +118,22 @@ export class ScorecardManager {
         let shot = hole.shots.find(s => s.shot_num === shotNum);
 
         if (!shot) {
-            // Calculate distance from previous shot's start position if available
-            let distYd = 0;
-            if (this.roundData.lastShotStartPos && coords) {
-                // We need haversine logic here, but since haversine is in app.js, 
-                // we'll rely on app.js passing the distance OR we need to import it here.
-                // However, to keep it simple and robust, let's assume app.js will handle 
-                // the distance calculation for the live display and we just store it.
-                // For the "actual" saved distance, we calculate it now if we have the start point.
-            }
-
             // New shot
             shot = {
                 shot_num: shotNum,
                 club: club,
                 start_coords: coords,
                 end_coords: null,
-                distance_yd: 0, // Will be updated by app.js or logic below
+                distance_yd: 0,
                 score: score,
                 memo: memo,
-                penalty_val: extraIncrement // Store it to help with edits later
+                penalty_val: extraIncrement
             };
 
             // Calculate distance for the previous shot (landing point)
             if (shotNum > 1 && hole.shots.length >= shotNum - 1) {
                 const prevShot = hole.shots[shotNum - 2];
-                if (!prevShot.end_coords) {
+                if (prevShot && !prevShot.end_coords) {
                     prevShot.end_coords = coords;
                 }
             }
@@ -158,24 +148,23 @@ export class ScorecardManager {
                 this.currentShotNum = shotNum + 1 + extraIncrement;
             }
         } else {
-            // Edit existing shot
+            // Merge into existing shot (e.g. distance was already recorded)
             const oldPenalty = shot.penalty_val || 0;
             shot.club = club;
             shot.score = score;
             shot.memo = memo;
             shot.penalty_val = extraIncrement;
 
+            // Only update start_coords if missing
+            if (!shot.start_coords && coords) {
+                shot.start_coords = coords;
+            }
+
             // Adjust hole penalties based on diff
             hole.penalties = (hole.penalties || 0) - oldPenalty + extraIncrement;
         }
 
         this.saveRoundData();
-
-        // Automatically set the next shot's start position to this shot's landing position (Auto-tracking)
-        if (coords && !shot.penalty_val) {
-            this.setShotStartPos(coords[1], coords[0]);
-        }
-
         return shot;
     }
 
