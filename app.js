@@ -27,6 +27,10 @@ const COURSE_METADATA = {
 const APP_VERSION = '1.5.1';
 
 async function init() {
+    // 0. Update Version in UI automatically
+    const versionText = document.getElementById('app-version-text');
+    if (versionText) versionText.innerText = APP_VERSION;
+
     // 1. Initialize Leaflet Map with Rotation
     map = L.map('map', {
         zoomControl: false,
