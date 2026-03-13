@@ -782,11 +782,24 @@ async function init() {
         startBtn.classList.add('in-round');
         document.getElementById('hole-selector').style.display = 'block';
 
+        // Switch to Play view automatically if restoring
+        document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('view-play').classList.remove('hidden');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-view="play"]').classList.add('active');
+
         await loadCourse(targetUrl, scorecard.roundData.holeSequence, scorecard.currentHole);
+
+        // Draw existing shots for the current hole
+        drawShotTracks();
 
         if (!tracker) {
             setTimeout(() => toggleTracking(), 500);
         }
+
+        // Default to follow mode if restoring
+        isHeadingUp = true;
+        updateCompassUI();
     }
 
     // Ensure club selector is populated correctly at startup

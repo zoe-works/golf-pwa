@@ -1,8 +1,10 @@
 export class ScorecardManager {
     constructor() {
         this.roundData = this.loadRoundData() || this.createNewRound();
-        this.currentHole = 1;
-        this.currentShotNum = 1;
+
+        // Restore state if available
+        this.currentHole = this.roundData.currentHole || 1;
+        this.currentShotNum = this.roundData.currentShotNum || 1;
 
         // Ensure UI elements exist before binding
         this.bindEvents();
@@ -19,7 +21,9 @@ export class ScorecardManager {
                 total_score: 0,
                 total_putts: 0,
                 total_penalties: 0
-            }
+            },
+            currentHole: 1,
+            currentShotNum: 1
         };
     }
 
@@ -33,6 +37,10 @@ export class ScorecardManager {
     }
 
     saveRoundData() {
+        // Persist current state into roundData before saving
+        this.roundData.currentHole = this.currentHole;
+        this.roundData.currentShotNum = this.currentShotNum;
+
         localStorage.setItem('golf_pwa_round_data', JSON.stringify(this.roundData));
         this.updateSummary();
     }
@@ -42,7 +50,6 @@ export class ScorecardManager {
         this.roundData.course_name = courseName;
         this.currentHole = holesArray[0] || 1;
         this.currentShotNum = 1;
-        this.updateSummary();
         this.saveRoundData();
     }
 
@@ -73,10 +80,6 @@ export class ScorecardManager {
     saveShot(shotNum, club, score, memo, coords, extraIncrement = 0) {
         const hole = this.roundData.holes[this.currentHole];
         let shot = hole.shots.find(s => s.shot_num === shotNum);
-
-        // If editing an existing shot, we might need to adjust total penalties
-        // For simplicity, let's just use the current selection's extraIncrement
-        // In a more complex system, we'd track penalty_score per shot object.
 
         if (!shot) {
             // New shot
@@ -118,9 +121,6 @@ export class ScorecardManager {
 
             // Adjust hole penalties based on diff
             hole.penalties = (hole.penalties || 0) - oldPenalty + extraIncrement;
-
-            // If this was the last shot, we might need to update currentShotNum
-            // But usually currentShotNum is already higher if new shots were added.
         }
 
         this.saveRoundData();
