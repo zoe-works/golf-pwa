@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.3.3';
+const APP_VERSION = '1.4.0';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -114,28 +114,91 @@ async function init() {
         }
     });
 
-    // START SHOT POSITIONING (Manual Map Selection)
+    // START SHOT POSITIONING (Manual Map Selection - Ver 1.4.0 Correction)
     map.on('contextmenu', (e) => {
         const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
         if (!isRoundActive) return;
 
-        if (confirm("Set this as Shot Start position?")) {
+        const stateName = scorecard.roundData.trackingState === null ? "S1 Start" : `S${scorecard.roundData.trackingState} Landing`;
+
+        if (confirm(`Set this as ${stateName} position?`)) {
             scorecard.setShotStartPos(e.latlng.lat, e.latlng.lng);
-            drawShotTracks(); // Redraw to show the start marker
+            drawShotTracks(); // Redraw to show the marker
+            updateLocationUI(lastPos);
         }
     });
 
-    // 3. Setup UI event listeners
-    document.getElementById('btn-start-shot')?.addEventListener('click', () => {
-        if (lastPos) {
-            scorecard.setShotStartPos(lastPos.lat, lastPos.lng);
-            drawShotTracks();
-            // Show feedback
-            const btn = document.getElementById('btn-start-shot');
-            btn.style.background = '#1e88e5';
-            setTimeout(() => { btn.style.background = '#43a047'; }, 500);
+    // --- Shot Distance Tracking Button logic (Sequential Ver 1.4.0) ---
+    const btnStartShot = document.getElementById('btn-start-shot');
+    let startShotTimer;
+
+    btnStartShot?.addEventListener('click', () => {
+        if (!lastPos) {
+            alert("No GPS signal. Please wait for location...");
+            return;
         }
+
+        const prevState = scorecard.roundData.trackingState;
+        const startPoint = scorecard.roundData.lastShotStartPos; // Point from X-1
+
+        let calculatedDist = 0;
+        if (prevState !== null && startPoint) {
+            const meters = haversineMeters([lastPos.lng, lastPos.lat], [startPoint.lng, startPoint.lat]);
+            calculatedDist = metersToYardsRounded(meters);
+        }
+
+        const newState = scorecard.advanceTracking(lastPos.lat, lastPos.lng);
+
+        // If we just marked a landing for shot X, store the distance
+        if (prevState !== null && calculatedDist > 0) {
+            const hole = scorecard.roundData.holes[scorecard.currentHole];
+            if (hole) {
+                const shotIdx = prevState - 1;
+                if (!hole.shots[shotIdx]) {
+                    hole.shots[shotIdx] = {
+                        shot_num: prevState,
+                        club: null,
+                        start_coords: [startPoint.lng, startPoint.lat],
+                        end_coords: [lastPos.lng, lastPos.lat],
+                        distance_yd: calculatedDist,
+                        score: 0,
+                        memo: ''
+                    };
+                } else {
+                    hole.shots[shotIdx].distance_yd = calculatedDist;
+                    hole.shots[shotIdx].end_coords = [lastPos.lng, lastPos.lat];
+                }
+                scorecard.saveRoundData();
+            }
+        }
+
+        drawShotTracks();
+        updateLocationUI(lastPos);
+
+        // Visual feedback
+        btnStartShot.style.background = '#1e88e5';
+        setTimeout(() => { btnStartShot.style.background = '#43a047'; }, 200);
     });
+
+    // Long press to reset
+    const handleLongPress = () => {
+        if (confirm("Reset all tracking points for this hole?")) {
+            scorecard.resetTracking();
+            drawShotTracks();
+            updateLocationUI(lastPos);
+        }
+    };
+
+    btnStartShot?.addEventListener('mousedown', () => {
+        startShotTimer = setTimeout(handleLongPress, 1000);
+    });
+    btnStartShot?.addEventListener('touchstart', (e) => {
+        // e.preventDefault(); // Prevent click after long press? Be careful with mobile interaction
+        startShotTimer = setTimeout(handleLongPress, 1000);
+    });
+    btnStartShot?.addEventListener('mouseup', () => clearTimeout(startShotTimer));
+    btnStartShot?.addEventListener('touchend', () => clearTimeout(startShotTimer));
+    btnStartShot?.addEventListener('mouseleave', () => clearTimeout(startShotTimer));
 
     // Bottom Navigation Logic
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -982,50 +1045,51 @@ function saveShotAndCloseModal() {
 function drawShotTracks() {
     shotLayers.clearLayers();
     const holeData = scorecard.getHoleData();
-    if (!holeData || !holeData.shots || holeData.shots.length === 0) return;
+    const trackingState = scorecard.roundData.trackingState;
+    const startPoint = scorecard.roundData.lastShotStartPos;
 
-    let points = [];
+    // 1. Draw recorded shots
+    if (holeData && holeData.shots) {
+        holeData.shots.forEach((shot) => {
+            if (!shot.start_coords) return;
+            const latlng = [shot.start_coords[1], shot.start_coords[0]];
 
-    holeData.shots.forEach((shot, index) => {
-        const latlng = [shot.start_coords[1], shot.start_coords[0]];
-        points.push(latlng);
+            const clubLabel = shot.club || `S${shot.shot_num}`;
+            const distTxt = shot.distance_yd ? ` (${shot.distance_yd}yd)` : '';
+            const popupText = `${clubLabel}${distTxt}`;
 
-        let label = `${shot.shot_num}`;
-        let popupText = `Shot ${shot.shot_num}: ${shot.club}`;
-        if (shot.distance_yd) popupText += `<br>Distance: ${shot.distance_yd} yd`;
-        if (shot.score !== undefined) popupText += `<br>Quality: ${shot.score}/100`;
-        if (shot.memo) popupText += `<br>Memo: ${shot.memo}`;
+            L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'shot-marker',
+                    html: `${shot.shot_num}`,
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                })
+            }).bindPopup(popupText).addTo(shotLayers);
 
-        L.marker(latlng, {
-            icon: L.divIcon({
-                className: 'shot-marker',
-                html: label,
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
-            })
-        }).bindPopup(popupText).addTo(shotLayers);
-    });
-
-    if (points.length > 1) {
-        L.polyline(points, {
-            color: '#2196F3',
-            weight: 3,
-            dashArray: '4, 6',
-            opacity: 0.7
-        }).addTo(shotLayers);
+            // If it has end coords, draw a line to it
+            if (shot.end_coords) {
+                const endLatlng = [shot.end_coords[1], shot.end_coords[0]];
+                L.polyline([latlng, endLatlng], {
+                    color: '#2196F3',
+                    weight: 3,
+                    dashArray: '4, 6',
+                    opacity: 0.7
+                }).addTo(shotLayers);
+            }
+        });
     }
 
-    // Draw the "Current Shot Start" indicator if it exists
-    if (scorecard.roundData.lastShotStartPos) {
-        const start = scorecard.roundData.lastShotStartPos;
-        L.circleMarker([start.lat, start.lng], {
+    // 2. Draw active tracking start point (if any)
+    if (trackingState !== null && startPoint) {
+        L.circleMarker([startPoint.lat, startPoint.lng], {
             radius: 8,
             fillColor: '#43a047',
             color: '#fff',
             weight: 2,
             opacity: 1,
             fillOpacity: 0.8
-        }).bindPopup("Current Shot Start").addTo(shotLayers);
+        }).bindPopup(`S${trackingState} Start Point`).addTo(shotLayers);
     }
 }
 
@@ -1703,16 +1767,26 @@ function updateLocationUI(pos) {
     // 3. Update Status
     updateGpsStatus('connected', `GPS: ±${Math.round(pos.accuracy)}m`);
 
-    // 4. Update Flight Distance
+    // 4. Update Shot Tracking Status (Sequential Ver 1.4.0)
     const flightEl = document.getElementById('flight-distance-display');
-    const flightShotNum = document.getElementById('flight-shot-num');
-    if (isRoundActive && scorecard.roundData.lastShotStartPos) {
-        if (flightShotNum) flightShotNum.innerText = scorecard.currentShotNum;
-        const start = scorecard.roundData.lastShotStartPos;
-        const meters = haversineMeters([pos.lng, pos.lat], [start.lng, start.lat]);
-        const yards = metersToYardsRounded(meters);
-        document.getElementById('flight-yards').innerText = yards;
+    const statusTextEl = document.getElementById('tracking-status-text');
+
+    if (isRoundActive) {
         flightEl.classList.remove('hidden');
+        const state = scorecard.roundData.trackingState;
+        const start = scorecard.roundData.lastShotStartPos;
+
+        if (state === null) {
+            statusTextEl.innerText = "Ready to track S1";
+        } else {
+            // We are currently tracking the flight of state X
+            let displayYards = 0;
+            if (start) {
+                const meters = haversineMeters([pos.lng, pos.lat], [start.lng, start.lat]);
+                displayYards = metersToYardsRounded(meters);
+            }
+            statusTextEl.innerText = `S${state} Tracking... (${displayYards} yd)`;
+        }
     } else {
         flightEl.classList.add('hidden');
     }

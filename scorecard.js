@@ -17,7 +17,8 @@ export class ScorecardManager {
             holeSequence: holeSequence,
             companions: companions,
             holes: {},
-            lastShotStartPos: null, // Track the starting point of the current shot for distance tracking
+            lastShotStartPos: null, // Track the starting point of the current shot
+            trackingState: null,    // null: Ready for S1, X: Currently tracking Shot X
             summary: {
                 total_score: 0,
                 total_putts: 0,
@@ -33,7 +34,31 @@ export class ScorecardManager {
         this.saveRoundData();
     }
 
+    advanceTracking(lat, lng) {
+        if (this.roundData.trackingState === null) {
+            // Start tracking S1
+            this.roundData.trackingState = 1;
+            this.roundData.lastShotStartPos = { lat, lng };
+        } else {
+            // End current shot tracking, start next shot's start point
+            const currentShotIdx = this.roundData.trackingState;
+            // Mark end of current shot and start of next
+            // (The calculation of distance will be done by app.js or we could provide a helper)
+            this.roundData.trackingState = currentShotIdx + 1;
+            this.roundData.lastShotStartPos = { lat, lng };
+        }
+        this.saveRoundData();
+        return this.roundData.trackingState;
+    }
+
+    resetTracking() {
+        this.roundData.trackingState = null;
+        this.roundData.lastShotStartPos = null;
+        this.saveRoundData();
+    }
+
     clearShotStartPos() {
+        this.roundData.trackingState = null;
         this.roundData.lastShotStartPos = null;
         this.saveRoundData();
     }
