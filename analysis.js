@@ -2,11 +2,19 @@
  * analysis.js - Handles data aggregation and Chart.js visualizations for Golf PWA
  */
 
+const STANDARD_CLUBS_ORDER = [
+    'Dr', '2w', '3w', '4w', '5w', '6w', '7w', '8w', '9w',
+    '1U', '2U', '3U', '4U', '5U', '6U', '7U', '8U', '9U',
+    '1I', '2I', '3I', '4I', '5I', '6I', '7I', '8I', '9I',
+    'PW', 'SW', 'LW', '50°', '52°', '54°', '56°', '58°', '60°', 'PT'
+];
+
 export class AnalysisManager {
     constructor(scorecardManager) {
         this.scorecard = scorecardManager;
         this.currentFilter = 'all'; // 'all' or 'last3'
         this.chart = null;
+        this.initialized = false;
     }
 
     init() {
@@ -16,14 +24,18 @@ export class AnalysisManager {
     }
 
     bindEvents() {
-        // Filter toggle
+        // Filter toggle in detail view
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                this.currentFilter = e.target.dataset.range;
+                const range = e.target.dataset.range;
 
-                // If we are in a detail view, refresh it
+                // Update UI: active class for all buttons with same range
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll(`.filter-btn[data-range="${range}"]`).forEach(b => b.classList.add('active'));
+
+                this.currentFilter = range;
+
+                // Refresh detail view if visible
                 const detailView = document.getElementById('analysis-detail');
                 if (!detailView.classList.contains('hidden')) {
                     const currentTitle = document.getElementById('analysis-detail-title').innerText;
@@ -140,12 +152,23 @@ export class AnalysisManager {
             });
         });
 
-        const labels = Object.keys(clubData).sort((a, b) => clubData[b].sum / clubData[b].count - clubData[a].sum / clubData[a].count);
+        const validClubs = Object.keys(clubData).filter(c => clubData[c].count > 0);
+
+        // Sort by standard order
+        const labels = validClubs.sort((a, b) => {
+            const idxA = STANDARD_CLUBS_ORDER.indexOf(a);
+            const idxB = STANDARD_CLUBS_ORDER.indexOf(b);
+            if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+            if (idxA === -1) return 1;
+            if (idxB === -1) return -1;
+            return idxA - idxB;
+        });
+
         const data = labels.map(l => Math.round(clubData[l].sum / clubData[l].count));
 
         statsEl.innerHTML = `<div class="stat-summary-grid">
             <div class="stat-item"><span class="stat-val">${labels.length}</span><span class="stat-label-small">Clubs Tracked</span></div>
-            <div class="stat-item"><span class="stat-val">${data[0] || 0}y</span><span class="stat-label-small">Max Average (${labels[0] || '-'})</span></div>
+            <div class="stat-item"><span class="stat-val">${data.length > 0 ? Math.max(...data) : 0}y</span><span class="stat-label-small">Max Avg Distance</span></div>
         </div>`;
 
         return {
@@ -160,7 +183,7 @@ export class AnalysisManager {
                 }]
             },
             options: {
-                indexAxis: 'y',
+                indexAxis: 'y', // Left alignment for club names
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } }
             }
@@ -223,10 +246,14 @@ export class AnalysisManager {
         const labels = ['Par 3', 'Par 4', 'Par 5'];
         const data = [3, 4, 5].map(p => parStats[p].count > 0 ? (parStats[p].sum / parStats[p].count).toFixed(1) : 0);
 
-        statsEl.innerHTML = `<div class="stat-summary-grid">
-            <div class="stat-item"><span class="stat-val">+${(data[0] - 3).toFixed(1)}</span><span class="stat-label-small">Avg Over (P3)</span></div>
-            <div class="stat-item"><span class="stat-val">+${(data[1] - 4).toFixed(1)}</span><span class="stat-label-small">Avg Over (P4)</span></div>
-        </div>`;
+        const summaries = [3, 4, 5].map((p, i) => {
+            const avg = data[i];
+            const diff = avg > 0 ? (avg - p).toFixed(1) : '--';
+            const prefix = (avg > 0 && diff >= 0) ? '+' : '';
+            return `<div class="stat-item"><span class="stat-val">${prefix}${diff}</span><span class="stat-label-small">Avg P${p} Diff</span></div>`;
+        });
+
+        statsEl.innerHTML = `<div class="stat-summary-grid">${summaries.join('')}</div>`;
 
         return {
             type: 'bar',
@@ -268,7 +295,7 @@ export class AnalysisManager {
 
         statsEl.innerHTML = `<div class="stat-summary-grid">
             <div class="stat-item"><span class="stat-val">${totalShots}</span><span class="stat-label-small">Total Shots</span></div>
-            <div class="stat-item"><span class="stat-val">${Math.round(totalShots / history.length)}</span><span class="stat-label-small">Shots/Round</span></div>
+            <div class="stat-item"><span class="stat-val">${history.length > 0 ? Math.round(totalShots / history.length) : 0}</span><span class="stat-label-small">Shots/Round</span></div>
         </div>`;
 
         return {
@@ -295,7 +322,7 @@ export class AnalysisManager {
             Object.values(round.holes).forEach(h => {
                 if (h.shots) {
                     h.shots.forEach(s => {
-                        if (s.club && s.score) {
+                        if (s.club && typeof s.score === 'number') {
                             if (!ratings[s.club]) ratings[s.club] = { sum: 0, count: 0 };
                             ratings[s.club].sum += s.score;
                             ratings[s.club].count += 1;
@@ -305,16 +332,27 @@ export class AnalysisManager {
             });
         });
 
-        const labels = Object.keys(ratings).sort((a, b) => ratings[b].sum / ratings[b].count - ratings[a].sum / ratings[a].count);
+        const validClubs = Object.keys(ratings).filter(c => ratings[c].count > 0);
+
+        // Sort by standard order
+        const labels = validClubs.sort((a, b) => {
+            const idxA = STANDARD_CLUBS_ORDER.indexOf(a);
+            const idxB = STANDARD_CLUBS_ORDER.indexOf(b);
+            if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+            if (idxA === -1) return 1;
+            if (idxB === -1) return -1;
+            return idxA - idxB;
+        });
+
         const data = labels.map(l => Math.round(ratings[l].sum / ratings[l].count));
 
         statsEl.innerHTML = `<div class="stat-summary-grid">
-             <div class="stat-item"><span class="stat-val">${labels[0] || '-'}</span><span class="stat-label-small">Confidence Club</span></div>
-             <div class="stat-item"><span class="stat-val">${data[0] || 0}</span><span class="stat-label-small">Avg Rating</span></div>
+             <div class="stat-item"><span class="stat-val">${labels.length}</span><span class="stat-label-small">Clubs Rated</span></div>
+             <div class="stat-item"><span class="stat-val">${data.length > 0 ? Math.round(data.reduce((a, b) => a + b, 0) / data.length) : 0}</span><span class="stat-label-small">Avg Rating</span></div>
         </div>`;
 
         return {
-            type: 'bar',
+            type: 'bar', // Bar is better for comparing different clubs
             data: {
                 labels: labels,
                 datasets: [{
@@ -327,7 +365,10 @@ export class AnalysisManager {
             },
             options: {
                 maintainAspectRatio: false,
-                scales: { y: { min: 0, max: 100 } }
+                scales: {
+                    y: { min: 0, max: 100 },
+                    x: { ticks: { font: { size: 10 } } }
+                }
             }
         };
     }
@@ -354,14 +395,13 @@ export class AnalysisManager {
             });
 
             if (playedHoles > 0) {
-                // Normalize to 18H if they played fewer (though likely 18 or 9)
                 avgPutts.push(parseFloat((roundPutts / playedHoles * 18).toFixed(1)));
                 threePuttRate.push(Math.round((threePuttHoles / playedHoles) * 100));
             }
         });
 
-        const avgP = (avgPutts.reduce((a, b) => a + b, 0) / avgPutts.length).toFixed(1);
-        const avg3P = Math.round(threePuttRate.reduce((a, b) => a + b, 0) / threePuttRate.length);
+        const avgP = avgPutts.length > 0 ? (avgPutts.reduce((a, b) => a + b, 0) / avgPutts.length).toFixed(1) : '--';
+        const avg3P = threePuttRate.length > 0 ? Math.round(threePuttRate.reduce((a, b) => a + b, 0) / threePuttRate.length) : '--';
 
         statsEl.innerHTML = `<div class="stat-summary-grid">
             <div class="stat-item"><span class="stat-val">${avgP}</span><span class="stat-label-small">Avg Putts /18H</span></div>

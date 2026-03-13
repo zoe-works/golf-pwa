@@ -159,7 +159,7 @@
                     <!-- App Version Display -->
                     <div class="version-display"
                         style="margin-top: 30px; font-size: 12px; color: #999; text-align: center;">
-                        Version <span id="app-version-text">1.4.4</span>
+                        Version <span id="app-version-text">1.5.1</span>
                     </div>
                 </div>
             </div>
@@ -277,13 +277,6 @@
 
             <!-- Analysis Dashboard -->
             <div id="analysis-dashboard" class="analysis-menu">
-                <div class="analysis-filter mb-15">
-                    <div class="filter-toggle">
-                        <button class="filter-btn active" data-range="all">All</button>
-                        <button class="filter-btn" data-range="last3">Last 3</button>
-                    </div>
-                </div>
-
                 <div class="analysis-grid">
                     <button class="analysis-card" data-view="dist">
                         <span class="card-icon">📏</span>
@@ -298,7 +291,7 @@
                         <span class="card-title">Par Analysis</span>
                     </button>
                     <button class="analysis-card" data-view="usage">
-                        <span class="card-icon">🔄</span>
+                        <span class="card-icon">🏌️</span>
                         <span class="card-title">Club Usage</span>
                     </button>
                     <button class="analysis-card" data-view="rating">
@@ -314,7 +307,16 @@
 
             <!-- Detail Analysis Views -->
             <div id="analysis-detail" class="hidden">
-                <button id="btn-back-analysis" class="btn-secondary btn-small mb-15">&larr; Back to Dashboard</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <button id="btn-back-analysis" class="btn-secondary btn-small" style="margin-bottom: 0;">&larr;
+                        Back</button>
+
+                    <div class="filter-toggle" style="width: 160px;">
+                        <button class="filter-btn active" data-range="all">All</button>
+                        <button class="filter-btn" data-range="last3">L3</button>
+                    </div>
+                </div>
+
                 <h3 id="analysis-detail-title">Analysis Detail</h3>
 
                 <div class="chart-container"
