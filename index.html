@@ -146,326 +146,332 @@
                         </div>
                         <span style="font-size: 24px; color: #1e88e5;">&rarr;</span>
                     </button>
+                    <!-- App Version Display -->
+                    <div class="version-display"
+                        style="margin-top: 30px; font-size: 12px; color: #999; text-align: center;">
+                        Version <span id="app-version-text">1.1.1</span>
+                    </div>
+                </div>
+
+                <!-- Club Settings Sub-page -->
+                <div id="settings-clubs-page" class="settings-group hidden" style="padding-bottom: 24px;">
+                    <button id="btn-back-clubs" class="btn-secondary btn-small mb-15"
+                        style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
+                    <h3 style="position: relative; top: 4px; margin-bottom: 4px;">My Clubs</h3>
+                    <p class="subtitle">Select the clubs you carry in your bag.</p>
+                    <div id="settings-club-grid" class="club-grid club-grid-5 mb-20">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button id="btn-save-settings" class="btn-primary w-100" style="margin-top: 24px;">Save
+                        Settings</button>
+                </div>
+
+                <!-- Group Registration Sub-page -->
+                <div id="settings-groups-page" class="settings-group hidden" style="padding-bottom: 24px;">
+                    <button id="btn-back-groups" class="btn-secondary btn-small mb-15"
+                        style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
+                    <h3 style="margin-bottom: 4px;">Saved Companion Groups</h3>
+                    <p class="subtitle mt-5 mb-15 text-center" style="font-size: 13px;">Save people you often play with
+                        (up
+                        to 5 per group).</p>
+
+                    <div
+                        style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                        <div class="input-group">
+                            <label style="font-weight: bold; color: #1e88e5;">Group Name</label>
+                            <input type="text" id="settings-group-name"
+                                placeholder="e.g., Company Team, Weekend Friends" class="modal-input">
+                        </div>
+                        <p style="font-size: 11px; color: #666; margin-bottom: 5px;">Select the radio button to indicate
+                            which player is you.</p>
+                        <div class="input-group mt-10">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <label>Player 1</label>
+                                <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                        name="settings-me" value="0"> Me</label>
+                            </div>
+                            <input type="text" id="settings-player-1" placeholder="Name" class="modal-input">
+                        </div>
+                        <div class="input-group mt-10">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <label>Player 2</label>
+                                <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                        name="settings-me" value="1"> Me</label>
+                            </div>
+                            <input type="text" id="settings-player-2" placeholder="Name (Optional)" class="modal-input">
+                        </div>
+                        <div class="input-group mt-10">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <label>Player 3</label>
+                                <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                        name="settings-me" value="2"> Me</label>
+                            </div>
+                            <input type="text" id="settings-player-3" placeholder="Name (Optional)" class="modal-input">
+                        </div>
+                        <div class="input-group mt-10">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <label>Player 4</label>
+                                <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                        name="settings-me" value="3"> Me</label>
+                            </div>
+                            <input type="text" id="settings-player-4" placeholder="Name (Optional)" class="modal-input">
+                        </div>
+                        <div class="input-group mt-10">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <label>Player 5</label>
+                                <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
+                                        name="settings-me" value="4"> Me</label>
+                            </div>
+                            <input type="text" id="settings-player-5" placeholder="Name (Optional)" class="modal-input">
+                        </div>
+
+                        <div class="flex-row gap-10 mt-20">
+                            <button id="btn-add-companion-group" class="btn-primary flex-1">Save Group</button>
+                            <button id="btn-clear-companion-inputs" class="btn-secondary flex-1">Clear Inputs</button>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-bottom: 10px; color: #555;">Saved Groups:</h4>
+
+                    <ul id="settings-groups-list" class="history-list mt-15">
+                        <!-- Populated by JS -->
+                    </ul>
                 </div>
             </div>
 
-            <!-- App Version Display -->
-            <div class="version-display"
-                style="margin-top: 30px; margin-bottom: 20px; font-size: 12px; color: #999; text-align: center;">
-                Version <span id="app-version-text">1.1.0</span>
-            </div>
+            <!-- Global Bottom Navigation -->
+            <nav id="bottom-nav" class="bottom-nav">
+                <button class="nav-btn active" data-target="view-play">
+                    <span class="nav-icon">🏌️</span>
+                    <span class="nav-text">Play</span>
+                </button>
+                <button class="nav-btn" data-target="view-history">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">History</span>
+                </button>
+                <button class="nav-btn" data-target="view-settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </button>
+            </nav>
 
-            <!-- Club Settings Sub-page -->
-            <div id="settings-clubs-page" class="settings-group hidden" style="padding-bottom: 24px;">
-                <button id="btn-back-clubs" class="btn-secondary btn-small mb-15"
-                    style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
-                <h3 style="position: relative; top: 4px; margin-bottom: 4px;">My Clubs</h3>
-                <p class="subtitle">Select the clubs you carry in your bag.</p>
-                <div id="settings-club-grid" class="club-grid club-grid-5 mb-20">
-                    <!-- Populated by JS -->
+            <!-- Shot Recording Modal -->
+            <div id="club-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header mb-5">
+                        <h3 class="mt-0 text-left"><strong>Record shot <span id="shot-number-display">1</span></strong>
+                        </h3>
+                        <div class="header-flex">
+                            <button id="btn-shot-prev" class="icon-btn visibility-hidden">&larr;</button>
+                            <button id="btn-shot-next" class="icon-btn visibility-hidden">&rarr;</button>
+                        </div>
+                    </div>
+                    <p class="subtitle mt-0 text-left">Select club</p>
+
+                    <div class="club-grid club-grid-5" id="club-grid-container">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="club-grid mt-8 club-grid-3">
+                        <button class="penalty-btn danger" data-penalty="Penalty" data-increment="1">Pena +1</button>
+                        <button class="penalty-btn danger" data-penalty="OB" data-increment="1">OB +1</button>
+                        <button class="penalty-btn danger" data-penalty="Playing-4" data-increment="2">Playing 4
+                            +2</button>
+                    </div>
+
+                    <div class="input-group mt-15 no-border-bottom pb-5">
+                        <label>Shot-Self-Scoring</label>
+                        <div class="stepper">
+                            <button id="btn-shot-score-minus" class="stepper-btn">-</button>
+                            <span id="shot-score-val" class="stepper-val">50</span>
+                            <button id="btn-shot-score-plus" class="stepper-btn">+</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group no-border-bottom">
+                        <textarea id="shot-memo-input" rows="2" placeholder="Shot memo..."></textarea>
+                    </div>
+
+                    <div class="modal-actions mt-15">
+                        <button id="btn-save-shot" class="btn-primary">Save</button>
+                        <button id="btn-cancel-shot" class="btn-secondary">Cancel</button>
+                    </div>
                 </div>
-                <button id="btn-save-settings" class="btn-primary w-100" style="margin-top: 24px;">Save
-                    Settings</button>
             </div>
 
-            <!-- Group Registration Sub-page -->
-            <div id="settings-groups-page" class="settings-group hidden" style="padding-bottom: 24px;">
-                <button id="btn-back-groups" class="btn-secondary btn-small mb-15"
-                    style="width: auto; padding: 6px 15px;">&larr; Back to Menu</button>
-                <h3 style="margin-bottom: 4px;">Saved Companion Groups</h3>
-                <p class="subtitle mt-5 mb-15 text-center" style="font-size: 13px;">Save people you often play with (up
-                    to 5 per group).</p>
+            <!-- Hole Completion Modal -->
+            <div id="hole-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h3>Hole <span id="hole-modal-num">1</span> Result</h3>
 
-                <div
-                    style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <div id="hole-shot-details" class="mb-12"></div>
+
                     <div class="input-group">
-                        <label style="font-weight: bold; color: #1e88e5;">Group Name</label>
-                        <input type="text" id="settings-group-name" placeholder="e.g., Company Team, Weekend Friends"
-                            class="modal-input">
-                    </div>
-                    <p style="font-size: 11px; color: #666; margin-bottom: 5px;">Select the radio button to indicate
-                        which player is you.</p>
-                    <div class="input-group mt-10">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <label>Player 1</label>
-                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
-                                    name="settings-me" value="0"> Me</label>
+                        <label>Score</label>
+                        <div class="stepper">
+                            <button id="btn-score-minus" class="stepper-btn">-</button>
+                            <span id="hole-score-count" class="stepper-val">4</span>
+                            <button id="btn-score-plus" class="stepper-btn">+</button>
                         </div>
-                        <input type="text" id="settings-player-1" placeholder="Name" class="modal-input">
                     </div>
-                    <div class="input-group mt-10">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <label>Player 2</label>
-                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
-                                    name="settings-me" value="1"> Me</label>
+
+                    <div class="input-group">
+                        <label>Putts</label>
+                        <div class="stepper">
+                            <button id="btn-putt-minus" class="stepper-btn">-</button>
+                            <span id="putt-count" class="stepper-val">2</span>
+                            <button id="btn-putt-plus" class="stepper-btn">+</button>
                         </div>
-                        <input type="text" id="settings-player-2" placeholder="Name (Optional)" class="modal-input">
                     </div>
-                    <div class="input-group mt-10">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <label>Player 3</label>
-                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
-                                    name="settings-me" value="2"> Me</label>
+
+                    <div class="input-group">
+                        <label>Penalties</label>
+                        <div class="stepper">
+                            <button id="btn-pen-minus" class="stepper-btn">-</button>
+                            <span id="pen-count" class="stepper-val">0</span>
+                            <button id="btn-pen-plus" class="stepper-btn">+</button>
                         </div>
-                        <input type="text" id="settings-player-3" placeholder="Name (Optional)" class="modal-input">
-                    </div>
-                    <div class="input-group mt-10">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <label>Player 4</label>
-                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
-                                    name="settings-me" value="3"> Me</label>
-                        </div>
-                        <input type="text" id="settings-player-4" placeholder="Name (Optional)" class="modal-input">
-                    </div>
-                    <div class="input-group mt-10">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <label>Player 5</label>
-                            <label style="font-size: 12px; color: #1e88e5; cursor: pointer;"><input type="radio"
-                                    name="settings-me" value="4"> Me</label>
-                        </div>
-                        <input type="text" id="settings-player-5" placeholder="Name (Optional)" class="modal-input">
                     </div>
 
-                    <div class="flex-row gap-10 mt-20">
-                        <button id="btn-add-companion-group" class="btn-primary flex-1">Save Group</button>
-                        <button id="btn-clear-companion-inputs" class="btn-secondary flex-1">Clear Inputs</button>
+                    <div class="input-group">
+                        <label>Memo / Evaluation</label>
+                        <textarea id="hole-memo" rows="2" placeholder="Great drive, poor putting..."></textarea>
                     </div>
-                </div>
 
-                <h4 style="margin-bottom: 10px; color: #555;">Saved Groups:</h4>
-
-                <ul id="settings-groups-list" class="history-list mt-15">
-                    <!-- Populated by JS -->
-                </ul>
-            </div>
-        </div>
-
-        <!-- Global Bottom Navigation -->
-        <nav id="bottom-nav" class="bottom-nav">
-            <button class="nav-btn active" data-target="view-play">
-                <span class="nav-icon">🏌️</span>
-                <span class="nav-text">Play</span>
-            </button>
-            <button class="nav-btn" data-target="view-history">
-                <span class="nav-icon">📋</span>
-                <span class="nav-text">History</span>
-            </button>
-            <button class="nav-btn" data-target="view-settings">
-                <span class="nav-icon">⚙️</span>
-                <span class="nav-text">Settings</span>
-            </button>
-        </nav>
-
-        <!-- Shot Recording Modal -->
-        <div id="club-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="modal-header mb-5">
-                    <h3 class="mt-0 text-left"><strong>Record shot <span id="shot-number-display">1</span></strong></h3>
-                    <div class="header-flex">
-                        <button id="btn-shot-prev" class="icon-btn visibility-hidden">&larr;</button>
-                        <button id="btn-shot-next" class="icon-btn visibility-hidden">&rarr;</button>
+                    <div id="companion-scores-container" class="mt-15 mb-15">
+                        <!-- Populated dynamically if companions exist -->
                     </div>
-                </div>
-                <p class="subtitle mt-0 text-left">Select club</p>
 
-                <div class="club-grid club-grid-5" id="club-grid-container">
-                    <!-- Populated by JS -->
-                </div>
-                <div class="club-grid mt-8 club-grid-3">
-                    <button class="penalty-btn danger" data-penalty="Penalty" data-increment="1">Pena +1</button>
-                    <button class="penalty-btn danger" data-penalty="OB" data-increment="1">OB +1</button>
-                    <button class="penalty-btn danger" data-penalty="Playing-4" data-increment="2">Playing 4
-                        +2</button>
-                </div>
-
-                <div class="input-group mt-15 no-border-bottom pb-5">
-                    <label>Shot-Self-Scoring</label>
-                    <div class="stepper">
-                        <button id="btn-shot-score-minus" class="stepper-btn">-</button>
-                        <span id="shot-score-val" class="stepper-val">50</span>
-                        <button id="btn-shot-score-plus" class="stepper-btn">+</button>
+                    <div class="modal-actions">
+                        <button id="btn-save-hole" class="btn-primary">Save & Next</button>
+                        <button id="btn-cancel-hole" class="btn-secondary">Cancel</button>
                     </div>
-                </div>
-
-                <div class="input-group no-border-bottom">
-                    <textarea id="shot-memo-input" rows="2" placeholder="Shot memo..."></textarea>
-                </div>
-
-                <div class="modal-actions mt-15">
-                    <button id="btn-save-shot" class="btn-primary">Save</button>
-                    <button id="btn-cancel-shot" class="btn-secondary">Cancel</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Hole Completion Modal -->
-        <div id="hole-modal" class="modal hidden">
-            <div class="modal-content">
-                <h3>Hole <span id="hole-modal-num">1</span> Result</h3>
-
-                <div id="hole-shot-details" class="mb-12"></div>
-
-                <div class="input-group">
-                    <label>Score</label>
-                    <div class="stepper">
-                        <button id="btn-score-minus" class="stepper-btn">-</button>
-                        <span id="hole-score-count" class="stepper-val">4</span>
-                        <button id="btn-score-plus" class="stepper-btn">+</button>
+            <!-- Full Scorecard / Export Modal -->
+            <div id="scorecard-modal" class="modal hidden">
+                <div class="modal-content full-height">
+                    <div class="modal-header">
+                        <h3>Scorecard</h3>
+                        <button id="btn-close-scorecard" class="close-btn">&times;</button>
                     </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Putts</label>
-                    <div class="stepper">
-                        <button id="btn-putt-minus" class="stepper-btn">-</button>
-                        <span id="putt-count" class="stepper-val">2</span>
-                        <button id="btn-putt-plus" class="stepper-btn">+</button>
+                    <div id="scorecard-body" class="scorecard-scrollable">
+                        <!-- Dynamic table goes here -->
                     </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Penalties</label>
-                    <div class="stepper">
-                        <button id="btn-pen-minus" class="stepper-btn">-</button>
-                        <span id="pen-count" class="stepper-val">0</span>
-                        <button id="btn-pen-plus" class="stepper-btn">+</button>
+                    <div class="modal-actions gap-10 header-flex">
+                        <button id="btn-save-round" class="btn-primary flex-2">Save Results</button>
+                        <button id="btn-export-ai" class="btn-secondary flex-1">Copy AI Text</button>
                     </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Memo / Evaluation</label>
-                    <textarea id="hole-memo" rows="2" placeholder="Great drive, poor putting..."></textarea>
-                </div>
-
-                <div id="companion-scores-container" class="mt-15 mb-15">
-                    <!-- Populated dynamically if companions exist -->
-                </div>
-
-                <div class="modal-actions">
-                    <button id="btn-save-hole" class="btn-primary">Save & Next</button>
-                    <button id="btn-cancel-hole" class="btn-secondary">Cancel</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Full Scorecard / Export Modal -->
-        <div id="scorecard-modal" class="modal hidden">
-            <div class="modal-content full-height">
-                <div class="modal-header">
-                    <h3>Scorecard</h3>
-                    <button id="btn-close-scorecard" class="close-btn">&times;</button>
-                </div>
-                <div id="scorecard-body" class="scorecard-scrollable">
-                    <!-- Dynamic table goes here -->
-                </div>
-                <div class="modal-actions gap-10 header-flex">
-                    <button id="btn-save-round" class="btn-primary flex-2">Save Results</button>
-                    <button id="btn-export-ai" class="btn-secondary flex-1">Copy AI Text</button>
-                </div>
-            </div>
-        </div>
+            <!-- Start Round Modal -->
+            <div id="start-round-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h3 class="mt-0 mb-20">Start New Round</h3>
 
-        <!-- Start Round Modal -->
-        <div id="start-round-modal" class="modal hidden">
-            <div class="modal-content">
-                <h3 class="mt-0 mb-20">Start New Round</h3>
+                    <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <label>Golf Course</label>
+                        <select id="modal-course-select" class="modal-select">
+                            <option value="data/prime_city.json">Prime City Golf Club</option>
+                            <option value="data/bangsai.json">Bangsai Country Club</option>
+                            <option value="data/silverlake.json">Silverlake Links Golf Club</option>
+                            <option value="data/lakewood.json">Lakewood Country Club</option>
+                        </select>
+                    </div>
 
-                <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                    <label>Golf Course</label>
-                    <select id="modal-course-select" class="modal-select">
-                        <option value="data/prime_city.json">Prime City Golf Club</option>
-                        <option value="data/bangsai.json">Bangsai Country Club</option>
-                        <option value="data/silverlake.json">Silverlake Links Golf Club</option>
-                        <option value="data/lakewood.json">Lakewood Country Club</option>
-                    </select>
-                </div>
+                    <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <label>First Half (Starting Holes)</label>
+                        <select id="modal-first-half" class="modal-select">
+                            <!-- Populated dynamically based on course -->
+                        </select>
+                    </div>
 
-                <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                    <label>First Half (Starting Holes)</label>
-                    <select id="modal-first-half" class="modal-select">
-                        <!-- Populated dynamically based on course -->
-                    </select>
-                </div>
+                    <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <label>Second Half (Finishing Holes)</label>
+                        <select id="modal-second-half" class="modal-select">
+                            <!-- Populated dynamically based on course -->
+                        </select>
+                    </div>
 
-                <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                    <label>Second Half (Finishing Holes)</label>
-                    <select id="modal-second-half" class="modal-select">
-                        <!-- Populated dynamically based on course -->
-                    </select>
-                </div>
+                    <div class="divider" style="border-top: 1px solid #ddd; margin: 15px 0;"></div>
 
-                <div class="divider" style="border-top: 1px solid #ddd; margin: 15px 0;"></div>
+                    <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <label>Companions (Optional)</label>
+                        <select id="modal-companion-group" class="modal-select mb-8">
+                            <option value="">-- Select Group --</option>
+                            <!-- Populated dynamically from settings -->
+                        </select>
 
-                <div class="input-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                    <label>Companions (Optional)</label>
-                    <select id="modal-companion-group" class="modal-select mb-8">
-                        <option value="">-- Select Group --</option>
-                        <!-- Populated dynamically from settings -->
-                    </select>
-
-                    <p style="font-size: 11px; color: #666; margin-bottom: 5px; width: 100%;">Select the radio button to
-                        indicate which player is you.</p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%;">
-                        <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
-                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
-                                    type="radio" name="start-me" value="0"> Me</label>
-                            <input type="text" id="start-player-1" placeholder="P1 Name" class="modal-input"
-                                style="width: 100%;">
-                        </div>
-                        <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
-                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
-                                    type="radio" name="start-me" value="1"> Me</label>
-                            <input type="text" id="start-player-2" placeholder="P2 Name" class="modal-input"
-                                style="width: 100%;">
-                        </div>
-                        <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
-                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
-                                    type="radio" name="start-me" value="2"> Me</label>
-                            <input type="text" id="start-player-3" placeholder="P3 Name" class="modal-input"
-                                style="width: 100%;">
-                        </div>
-                        <div style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
-                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
-                                    type="radio" name="start-me" value="3"> Me</label>
-                            <input type="text" id="start-player-4" placeholder="P4 Name" class="modal-input"
-                                style="width: 100%;">
-                        </div>
-                        <div style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
-                            <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
-                                    type="radio" name="start-me" value="4"> Me</label>
-                            <input type="text" id="start-player-5" placeholder="P5 Name" class="modal-input"
-                                style="width: 100%;">
+                        <p style="font-size: 11px; color: #666; margin-bottom: 5px; width: 100%;">Select the radio
+                            button to
+                            indicate which player is you.</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%;">
+                            <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
+                                <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                        type="radio" name="start-me" value="0"> Me</label>
+                                <input type="text" id="start-player-1" placeholder="P1 Name" class="modal-input"
+                                    style="width: 100%;">
+                            </div>
+                            <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
+                                <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                        type="radio" name="start-me" value="1"> Me</label>
+                                <input type="text" id="start-player-2" placeholder="P2 Name" class="modal-input"
+                                    style="width: 100%;">
+                            </div>
+                            <div style="flex: 1 1 calc(33% - 8px); min-width: 80px;">
+                                <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                        type="radio" name="start-me" value="2"> Me</label>
+                                <input type="text" id="start-player-3" placeholder="P3 Name" class="modal-input"
+                                    style="width: 100%;">
+                            </div>
+                            <div style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
+                                <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                        type="radio" name="start-me" value="3"> Me</label>
+                                <input type="text" id="start-player-4" placeholder="P4 Name" class="modal-input"
+                                    style="width: 100%;">
+                            </div>
+                            <div style="flex: 1 1 calc(50% - 8px); min-width: 80px;">
+                                <label style="font-size: 11px; color: #1e88e5; display:block; margin-bottom:2px;"><input
+                                        type="radio" name="start-me" value="4"> Me</label>
+                                <input type="text" id="start-player-5" placeholder="P5 Name" class="modal-input"
+                                    style="width: 100%;">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="modal-actions mt-20">
-                    <button id="btn-confirm-start" class="btn-primary">Start</button>
-                    <button id="btn-cancel-start" class="btn-secondary">Cancel</button>
+                    <div class="modal-actions mt-20">
+                        <button id="btn-confirm-start" class="btn-primary">Start</button>
+                        <button id="btn-cancel-start" class="btn-secondary">Cancel</button>
+                    </div>
                 </div>
             </div>
+
         </div>
 
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(registration => {
-                    console.log('SW registered: ', registration);
-                }).catch(registrationError => {
-                    console.log('SW registration failed: ', registrationError);
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js').then(registration => {
+                        console.log('SW registered: ', registration);
+                    }).catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
                 });
-            });
-        }
-    </script>
-    <script type="module" src="distance.js"></script>
-    <script type="module" src="geolocation.js"></script>
-    <script type="module" src="scorecard.js"></script>
-    <script type="module" src="app.js"></script>
+            }
+        </script>
+        <script type="module" src="distance.js"></script>
+        <script type="module" src="geolocation.js"></script>
+        <script type="module" src="scorecard.js"></script>
+        <script type="module" src="app.js"></script>
 </body>
 
 </html>

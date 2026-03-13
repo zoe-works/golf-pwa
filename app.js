@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
