@@ -1452,10 +1452,48 @@ function displayHole(holeNumber) {
     }
 
     if (bounds.isValid()) {
-        setTimeout(() => {
-            map.fitBounds(bounds, { padding: [70, 70], maxZoom: 18 });
-        }, 200);
+        refreshMapView();
     }
+}
+
+function refreshMapView() {
+    if (!map) return;
+
+    let bounds = L.latLngBounds();
+    let hasPoint = false;
+
+    // 1. Include user position
+    if (lastPos) {
+        bounds.extend([lastPos.lat, lastPos.lng]);
+        hasPoint = true;
+    }
+
+    // 2. Include green center
+    if (holeTargets && holeTargets['green_center']) {
+        const pinCoords = holeTargets['green_center'];
+        bounds.extend([pinCoords[1], pinCoords[0]]);
+        hasPoint = true;
+    }
+
+    if (!hasPoint) return;
+
+    // Fixed orientation: North-up
+    map.setBearing(0);
+
+    // Padding requirements:
+    // User at bottom-center: need large bottom padding.
+    // Recenter button is at bottom: 85px + 56px = 141px.
+    // Green below Edit Map button: Edit Map is at top-right.
+    // Top padding should be enough to stay below the top bar and edit controls.
+
+    const options = {
+        paddingTopLeft: [50, 100], // [left, top] - top 100px to be below Edit Map
+        paddingBottomRight: [50, 180], // [right, bottom] - bottom 180px to be below Recenter button
+        maxZoom: 18,
+        animate: true
+    };
+
+    map.fitBounds(bounds, options);
 }
 
 // Global tracker instance
@@ -1546,13 +1584,13 @@ function updateLocationUI(pos) {
         }
     }
 
-    if (isFirstFix || isHeadingUp) {
-        if (isHeadingUp) {
-            map.panTo(latlng);
-        } else {
-            map.setView(latlng, 17);
-        }
+    if (isFirstFix) {
+        refreshMapView();
         isFirstFix = false;
+    } else if (isHeadingUp) {
+        // HeadingUp mode in this app means "Follow User"
+        // We always refresh map view to keep both User and Green in frame with padding
+        refreshMapView();
     }
 
     // 2. Calculate Distances (only during active round)

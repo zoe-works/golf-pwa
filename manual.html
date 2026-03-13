@@ -1,483 +1,479 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golf Dist - ユーザーマニュアル</title>
+    <title>Golf Distance PWA - User Manual</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --accent: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f0f4f3;
-            color: #1a1a2e;
-            line-height: 1.8;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 50px;
         }
 
-        /* ===== COVER ===== */
-        .cover {
-            background: linear-gradient(135deg, #0f4c3a 0%, #1a7a5c 40%, #2da87a 100%);
-            color: white;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
             text-align: center;
-            padding: 80px 30px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            color: white;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        .cover-icon {
-            font-size: 64px;
-            margin-bottom: 12px;
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
-        .cover h1 {
-            font-size: 42px;
-            font-weight: 900;
-            letter-spacing: 2px;
-        }
-
-        .cover .divider {
-            width: 60px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.5);
-            margin: 16px auto;
-            border-radius: 2px;
-        }
-
-        .cover .subtitle {
-            font-size: 20px;
-            font-weight: 300;
+        header p {
+            font-size: 1.1rem;
             opacity: 0.9;
         }
 
-        .cover .pills {
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 28px;
-        }
-
-        .cover .pill {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 6px 16px;
+        nav {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            margin: -20px auto 40px;
+            padding: 10px;
             border-radius: 20px;
-            font-size: 13px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: fit-content;
         }
 
-        .cover .ver {
-            margin-top: 40px;
-            font-size: 12px;
-            opacity: 0.5;
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
 
-        /* ===== CONTAINER ===== */
-        .container {
-            max-width: 680px;
-            margin: 0 auto;
-            padding: 0 16px;
+        nav a:hover {
+            background: var(--primary);
+            color: white;
         }
 
-        /* ===== SECTION ===== */
-        .section {
-            padding: 40px 0;
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
         }
 
-        .section+.section {
-            border-top: 1px solid #dce8e3;
-        }
-
-        .section-head {
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 28px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid #2da87a;
+            gap: 10px;
         }
 
-        .section-num {
-            background: linear-gradient(135deg, #0f4c3a, #2da87a);
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.5rem;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: var(--primary);
             color: white;
-            width: 44px;
-            height: 44px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            font-weight: 900;
-            flex-shrink: 0;
-        }
-
-        .section-head h2 {
-            font-size: 24px;
             font-weight: 700;
-            color: #0f4c3a;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            margin-top: 4px;
         }
 
-        .section-head small {
-            display: block;
-            font-size: 12px;
-            color: #888;
-            font-weight: 400;
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
         }
 
-        /* ===== STEP ===== */
-        .step {
-            background: #fff;
-            border-radius: 14px;
-            padding: 22px;
-            margin-bottom: 22px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        .step-description {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .img-container {
+            background: #f1f5f9;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
             position: relative;
         }
 
-        .step-badge {
-            position: absolute;
-            top: -10px;
-            left: 18px;
-            background: #2da87a;
-            color: white;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .step h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a3a2e;
-            margin-bottom: 8px;
-            padding-left: 16px;
-        }
-
-        .step p {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 12px;
-        }
-
-        .step ul {
-            font-size: 14px;
-            color: #555;
-            padding-left: 20px;
-            margin-bottom: 12px;
-        }
-
-        .step ul li {
-            margin-bottom: 4px;
-        }
-
-        .step img {
-            display: block;
-            margin: 0 auto;
-            max-width: 280px;
+        .img-container img {
             width: 100%;
-            border-radius: 12px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .step .img-row {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .step .img-row img {
-            max-width: 220px;
-        }
-
-        /* ===== NOTE BOX ===== */
-        .note {
-            background: #e8f5e9;
-            border-left: 4px solid #2da87a;
-            padding: 14px 18px;
-            border-radius: 0 10px 10px 0;
-            margin: 18px 0;
-            font-size: 13px;
-            color: #2e7d58;
-        }
-
-        .note.warn {
-            background: #fff3e0;
-            border-left-color: #ff9800;
-            color: #e65100;
-        }
-
-        .note strong {
             display: block;
-            margin-bottom: 2px;
+            transition: transform 0.5s ease;
         }
 
-        /* ===== FLOW ===== */
-        .flow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex-wrap: wrap;
+        .img-container:hover img {
+            transform: scale(1.02);
+        }
+
+        .caption {
+            font-size: 0.8rem;
+            padding: 10px;
+            background: white;
+            color: var(--text-light);
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
             margin: 20px 0;
+            font-size: 0.95rem;
         }
 
-        .flow-chip {
-            background: linear-gradient(135deg, #0f4c3a, #2da87a);
-            color: white;
-            padding: 7px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .flow-arr {
-            color: #2da87a;
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        /* ===== URL BOX ===== */
-        .url-box {
-            background: #1a1a2e;
-            color: #4ade80;
-            padding: 14px 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 15px;
+        footer {
             text-align: center;
-            margin: 16px 0;
-            word-break: break-all;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 80px;
+            padding: 40px;
+            border-top: 1px solid #e2e8f0;
         }
 
-        /* ===== FOOTER ===== */
-        .footer {
-            text-align: center;
-            padding: 30px;
-            font-size: 12px;
-            color: #aaa;
+        @media print {
+
+            nav,
+            .highlight-box,
+            footer {
+                display: none !important;
+            }
+
+            header {
+                padding: 40px 20px;
+                border-radius: 0;
+            }
+
+            section {
+                page-break-inside: avoid;
+                margin-bottom: 40px;
+            }
+
+            .step-card {
+                box-shadow: none;
+                border: 1px solid #e2e8f0;
+            }
+
+            body {
+                padding-bottom: 0;
+                background: white;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
         }
 
-        .footer .emoji {
-            font-size: 28px;
-            margin-bottom: 8px;
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .step-card {
+                padding: 20px;
+            }
+
+            nav {
+                width: 90%;
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- COVER -->
-    <div class="cover">
-        <div class="cover-icon">⛳</div>
-        <h1>Golf Dist</h1>
-        <div class="divider"></div>
-        <p class="subtitle">ユーザーマニュアル</p>
-        <div class="pills">
-            <span class="pill">📍 GPS距離計測</span>
-            <span class="pill">📝 ショット記録</span>
-            <span class="pill">📊 スコア管理</span>
-            <span class="pill">👥 同伴者スコア</span>
-        </div>
-        <p class="ver">Version 1.0 — 2026年3月</p>
-    </div>
+    <header>
+        <h1>Golf Distance PWA</h1>
+        <p>Complete User Guide & Setup Manual</p>
+    </header>
 
     <div class="container">
+        <nav>
+            <a href="#features">Features</a>
+            <a href="#install">Installation</a>
+            <a href="#settings">Settings</a>
+            <a href="#flow">Round Flow</a>
+        </nav>
 
-        <!-- ===== SECTION 1: INSTALL ===== -->
-        <div class="section">
-            <div class="section-head">
-                <div class="section-num">1</div>
-                <div>
-                    <h2>インストール</h2><small>Safariからホーム画面に追加</small>
+        <!-- Section 0: Core Features -->
+        <section id="features">
+            <h2>What can this app do?</h2>
+
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-title">1. Precise Distance Measurement</div>
+                </div>
+                <p class="step-description">Always know the distance to the <strong>Green Center</strong>. You can also
+                    tap anywhere on the map to measure the distance to a specific point (3-point measurement).</p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8716.PNG" alt="Distance Measurement">
+                        <p class="caption">Distance to Green & Point Tapping</p>
+                    </div>
                 </div>
             </div>
 
-            <p style="font-size:15px; margin-bottom:12px;">
-                このアプリはPWA（Progressive Web App）です。以下のURLをSafariで開き、ホーム画面に追加してお使いください。
-            </p>
-
-            <div class="url-box">https://zoe-works.github.io/golf-pwa/</div>
-
-            <div class="step">
-                <div class="step-badge">1</div>
-                <h3>Safariで共有ボタンをタップ</h3>
-                <p>上記URLをSafariで開き、画面下部中央の <strong>共有ボタン（□↑）</strong> をタップします。</p>
-                <img src="manual_images/00a_safari_share.png" alt="Safari共有ボタン">
-            </div>
-
-            <div class="step">
-                <div class="step-badge">2</div>
-                <h3>「ホーム画面に追加」を選択</h3>
-                <p>メニューから <strong>「ホーム画面に追加」</strong> を探してタップします。</p>
-                <img src="manual_images/00b_safari_add.png" alt="ホーム画面に追加">
-            </div>
-
-            <div class="step">
-                <div class="step-badge">3</div>
-                <h3>「追加」をタップ</h3>
-                <p>アプリ名を確認し、右上の <strong>「追加」</strong> をタップ。ホーム画面にアイコンが表示されます。</p>
-                <img src="manual_images/00c_safari_confirm.png" alt="追加確認">
-            </div>
-
-            <div class="note">
-                <strong>💡 ポイント</strong>
-                ホーム画面から起動すると、Safariのアドレスバーなしのフルスクリーン表示になります。
-            </div>
-        </div>
-
-        <!-- ===== SECTION 2: CLUB SETTINGS ===== -->
-        <div class="section">
-            <div class="section-head">
-                <div class="section-num">2</div>
-                <div>
-                    <h2>クラブ設定</h2><small>初回のみ・Settings画面</small>
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-title">2. Shot Tracking & Self-Scoring</div>
                 </div>
-            </div>
-
-            <p style="font-size: 15px; margin-bottom: 12px;">
-                バッグに入っているクラブをあらかじめ登録しておくと、ショット記録時にそれらが選択肢として表示されます。
-            </p>
-
-            <div class="flow">
-                <span class="flow-chip">⚙️ Settings</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-chip">🏌️ CLUB SETTINGS</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-chip">✅ 使うクラブを選択</span>
-            </div>
-
-            <div class="step">
-                <div class="step-badge">1</div>
-                <h3>Settingsタブを開く</h3>
-                <p>画面下のナビゲーションバーから <strong>Settings</strong> をタップし、<strong>CLUB SETTINGS</strong> をタップします。</p>
-                <img src="manual_images/02_settings_menu.png" alt="Settings画面">
-            </div>
-
-            <div class="step">
-                <div class="step-badge">2</div>
-                <h3>クラブを選択して保存</h3>
-                <p>使用するクラブをタップして選択します。選択後 <strong>Save Settings</strong> をタップして保存します。</p>
-                <img src="manual_images/03_club_settings.png" alt="クラブ設定">
-            </div>
-
-            <div class="note">
-                <strong>💾 保存について</strong>
-                設定はローカルに保存されます。ブラウザを閉じても消えません。設定はいつでも変更可能です。
-            </div>
-        </div>
-
-        <!-- ===== SECTION 3: ROUND FLOW ===== -->
-        <div class="section">
-            <div class="section-head">
-                <div class="section-num">3</div>
-                <div>
-                    <h2>ラウンドの流れ</h2><small>開始 → 記録 → ホールアウト → 完了</small>
-                </div>
-            </div>
-
-            <div class="flow">
-                <span class="flow-chip">▶️ Start</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-chip">📝 ショット記録</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-chip">🏁 Hole Out</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-chip">🔁 次のホール</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-chip">📊 スコアカード</span>
-            </div>
-
-            <!-- 3-1: Start Round -->
-            <div class="step">
-                <div class="step-badge">1</div>
-                <h3>ラウンドを開始する</h3>
-                <p>Play画面の左上にある <strong>Start Round</strong> ボタンをタップ。コース・日付を確認して <strong>Start Round</strong> をタップします。
+                <p class="step-description">Record every shot with the club used. Easy-to-tap buttons for
+                    <strong>Penalties, OB, and Playing 4</strong> ensure accurate recording even during a busy round.
                 </p>
-                <div class="img-row">
-                    <img src="manual_images/01_play_initial.png" alt="Play画面">
-                    <img src="manual_images/04_start_round.png" alt="Start Round モーダル">
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8717.PNG" alt="Shot Recording">
+                        <p class="caption">Advanced Shot Entry</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="note">
-                <strong>👥 同伴者の追加</strong>
-                あらかじめSettings → COMPANION GROUPSでグループを登録しておくと、ラウンド開始時に「Select Group」で素早く同伴者を追加できます。
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number"></div>
+                    <div class="step-title">3. Automatic Score Aggregation</div>
+                </div>
+                <p class="step-description">The app automatically calculates your score, putts, and penalties for each
+                    hole and the entire round. View your progress instantly on the <strong>Scorecard</strong>.</p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8719.PNG" alt="Score Aggregation">
+                        <p class="caption">Real-time Scorecard</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: Installation -->
+        <section id="install">
+            <h2>Add to Home Screen (iOS)</h2>
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Open URL in Safari</div>
+                </div>
+                <p class="step-description">Access the app URL using the Safari browser on your iPhone. Tap the
+                    <strong>Share</strong> button at the bottom center.
+                </p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8706.PNG" alt="Open in Safari">
+                        <p class="caption">1. Safari Browser View</p>
+                    </div>
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8707.PNG" alt="Share Menu">
+                        <p class="caption">2. Tap the Share Icon</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- 3-2: Active Play -->
-            <div class="step">
-                <div class="step-badge">2</div>
-                <h3>プレイ中の画面</h3>
-                <p>ラウンド中は地図上にグリーン・ハザードの距離がリアルタイムで表示されます。画面下部の <strong>Hole 1 | Par 4</strong> でホール情報を確認できます。</p>
-                <img src="manual_images/05_active_round.png" alt="ラウンド中画面">
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Select "Add to Home Screen"</div>
+                </div>
+                <p class="step-description">Scroll down in the share menu and select <strong>"Add to Home
+                        Screen"</strong>. Review the name and tap <strong>Add</strong>.</p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8708.PNG" alt="Add Dialog">
+                        <p class="caption">3. Confirm Installation</p>
+                    </div>
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8709.PNG" alt="Home Screen Icon">
+                        <p class="caption">4. Icon on Home Screen</p>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <strong>Tip:</strong> Launching from the Home Screen allows the app to run in "Full Screen" mode
+                    without browser toolbars.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Club Settings -->
+        <section id="settings">
+            <h2>Club Configuration</h2>
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Manage Your Bag</div>
+                </div>
+                <p class="step-description">Go to the <strong>Settings</strong> tab and select <strong>CLUB
+                        SETTINGS</strong>. Check the clubs you currently carry to customize the recording interface.</p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8711.PNG" alt="Settings Menu">
+                        <p class="caption">Settings Menu</p>
+                    </div>
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8712.PNG" alt="Club Selection">
+                        <p class="caption">Select Your Clubs</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Round Flow -->
+        <section id="flow">
+            <h2>Recording Your Round</h2>
+
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Start a New Round</div>
+                </div>
+                <p class="step-description">Tap <strong>"Start Round"</strong> on the Play screen. Select your golf
+                    course and starting hole.</p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8713.PNG" alt="Play Screen">
+                        <p class="caption">Initial Play Screen</p>
+                    </div>
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8715.PNG" alt="Start Modal">
+                        <p class="caption">Setup Your Round</p>
+                    </div>
+                </div>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8714.PNG" alt="Motion Sensor Request">
+                        <p class="caption">Allow Sensors (Required for GPS/Compass)</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- 3-3: Shot Record -->
-            <div class="step">
-                <div class="step-badge">3</div>
-                <h3>ショットを記録する（📝ボタン）</h3>
-                <p>ショットごとに右下の赤い <strong>📝ボタン</strong> をタップしてメモを記録します。</p>
-                <ul>
-                    <li><strong>クラブ選択</strong>：使用したクラブをタップ</li>
-                    <li><strong>ペナルティ</strong>：OBやペナルティがあれば選択</li>
-                    <li><strong>メモ</strong>：ショートコメント（任意）</li>
-                </ul>
-                <img src="manual_images/06_shot_record.png" alt="ショット記録">
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Recording Shots & Progress</div>
+                </div>
+                <p class="step-description">Tap the <strong>Red Pencil Button</strong> to record a shot. Once you finish
+                    a hole, tap <strong>Hole Out</strong>.</p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8716.PNG" alt="Active Map">
+                        <p class="caption">Active Map with Distance Markers</p>
+                    </div>
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8717.PNG" alt="Record Shot">
+                        <p class="caption">Select Club & Penalties</p>
+                    </div>
+                </div>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8718.PNG" alt="Hole Out modal">
+                        <p class="caption">Enter Putts & Score</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="note warn">
-                <strong>⚠️ ショット記録は任意</strong>
-                必ず毎ショット記録する必要はありません。省略してHole Outでスコアだけ入力することも可能です。
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Final Scorecard & History</div>
+                </div>
+                <p class="step-description">Upon finishing the final hole, the <strong>Scorecard</strong> will be
+                    displayed. Save the results to view them anytime in the <strong>History</strong> tab.</p>
+                <div class="image-grid">
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8719.PNG" alt="Final Scorecard">
+                        <p class="caption">Full Round Summary</p>
+                    </div>
+                    <div class="img-container">
+                        <img src="manual_images/IMG_8720.PNG" alt="History tab">
+                        <p class="caption">Saved in History</p>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <!-- 3-4: Hole Out -->
-            <div class="step">
-                <div class="step-badge">4</div>
-                <h3>Hole Out（ホール終了）</h3>
-                <p>ホールが終わったら画面上部の <strong>Hole out</strong> ボタンをタップ。スコア情報を確認・修正します。</p>
-                <ul>
-                    <li><strong>Putts</strong>：パット数を調整</li>
-                    <li><strong>Pena</strong>：ペナルティ数を調整</li>
-                    <li><strong>Memo</strong>：ホールの振り返り（任意）</li>
-                </ul>
-                <p>同伴者がいる場合は、同伴者のスコアも入力できます。</p>
-                <p>確認後 <strong>Save & Next</strong> で次のホールへ進みます。</p>
-                <img src="manual_images/07_holeout.png" alt="Hole Out">
-            </div>
-
-            <!-- 3-5: Last Hole & Scorecard -->
-            <div class="step" style="border: 2px solid #2da87a; background: #f6fcf8;">
-                <div class="step-badge" style="background: #0f4c3a;">5</div>
-                <h3>🏁 最終ホール → スコアカード</h3>
-                <p>最終ホールで Hole Out 後、<strong>Round finish</strong> をタップするとラウンドが完了し、全ホールのスコアカードが自動表示されます。</p>
-                <p style="margin-top: 8px;"><strong>Save Results</strong> をタップすると履歴に保存され、<strong>History</strong>
-                    タブからいつでも確認できます。</p>
-                <img src="manual_images/08_scorecard.png" alt="スコアカード">
-            </div>
-
-            <div class="note">
-                <strong>📚 History（履歴）タブ</strong>
-                保存済みのラウンドは History タブで一覧表示されます。各ラウンドをタップするとスコアカードの詳細が確認できます。ベストスコアと直近3ラウンド平均も表示されます。
-            </div>
-        </div>
-
-    </div><!-- /container -->
-
-    <div class="footer">
-        <div class="emoji">⛳ 🏌️ 🏆</div>
-        <p><strong>Good Luck & Enjoy Your Round!</strong></p>
-        <p style="margin-top: 4px;">Golf Dist でスコアアップを目指しましょう</p>
+        <footer>
+            <p>&copy; 2026 Golf Distance PWA. All rights reserved.</p>
+        </footer>
     </div>
 
 </body>
