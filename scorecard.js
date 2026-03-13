@@ -228,6 +228,16 @@ export class ScorecardManager {
         // Sort descending by date
         history.sort((a, b) => new Date(b.date) - new Date(a.date));
         localStorage.setItem('golf-round-history', JSON.stringify(history));
+
+        // Clear temporary ongoing round data
+        this.clearTemporaryRound();
+    }
+
+    clearTemporaryRound() {
+        localStorage.removeItem('golf_pwa_round_data');
+        this.roundData = this.createNewRound();
+        this.currentHole = 1;
+        this.currentShotNum = 1;
     }
 
     updateHistoryRound(updatedRound) {

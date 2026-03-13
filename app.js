@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.1.2';
+const APP_VERSION = '1.2.0';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -760,7 +760,7 @@ async function init() {
         }
     });
 
-    // Initialize to default state (we won't auto-load course now since Start Round does it)
+    // Initialize to default state
     if (!scorecard.roundData.holeSequence || scorecard.roundData.holeSequence.length === 0) {
         // Just load something so map isn't blank
         await loadCourse('data/prime_city.json');
@@ -1937,7 +1937,41 @@ window.renderHistoryList = function () {
     const history = scorecard.getHistory();
     listEl.innerHTML = '';
 
-    if (history.length === 0) {
+    // Check for ongoing round in storage
+    const ongoingDataRaw = localStorage.getItem('golf_pwa_round_data');
+    if (ongoingDataRaw) {
+        const ongoingRound = JSON.parse(ongoingDataRaw);
+        if (ongoingRound.holeSequence && ongoingRound.holeSequence.length > 0) {
+            const li = document.createElement('li');
+            li.className = 'history-item ongoing';
+            li.style.border = '2px solid #1e88e5';
+
+            const d = new Date(ongoingRound.date);
+            const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            li.innerHTML = `
+                <div class="history-item-content">
+                    <div class="history-info">
+                        <div class="history-date">${dateStr} <span class="badge" style="background:#1e88e5; color:#white; border-radius:4px; padding:2px 6px; font-size:10px; margin-left:5px; vertical-align:middle; display:inline-block; line-height:1;">ONGOING</span> </div>
+                        <div class="history-course">${ongoingRound.course_name || 'Golf Course'}</div>
+                    </div>
+                    <div class="history-score-badge">
+                        <span class="history-score-val">${ongoingRound.summary.total_score || '--'}</span>
+                        <span class="history-score-label">Score</span>
+                    </div>
+                </div>
+            `;
+
+            li.onclick = () => {
+                if (confirm('Resume this round?')) {
+                    resumeRound(ongoingRound);
+                }
+            };
+            listEl.appendChild(li);
+        }
+    }
+
+    if (history.length === 0 && !ongoingDataRaw) {
         listEl.innerHTML = '<li style="text-align: center; margin-top: 50px; color: #999;">No saved rounds yet. Go play!</li>';
         return;
     }
@@ -1991,7 +2025,7 @@ window.renderHistoryList = function () {
 
         li.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
-            currentX = startX; // Reset currentX on tap!
+            currentX = startX;
             isSwiping = true;
             itemContent.style.transition = 'none';
         }, { passive: true });
@@ -2030,6 +2064,47 @@ window.renderHistoryList = function () {
         listEl.appendChild(li);
     });
 };
+
+async function resumeRound(ongoingRound) {
+    // 1. Sync scorecard memory
+    scorecard.roundData = ongoingRound;
+    scorecard.currentHole = ongoingRound.currentHole || 1;
+    scorecard.currentShotNum = ongoingRound.currentShotNum || 1;
+
+    // 2. Update UI State
+    const startBtn = document.getElementById('btn-start-round');
+    startBtn.innerText = 'Round In Progress';
+    startBtn.classList.add('in-round');
+    document.getElementById('hole-selector').style.display = 'block';
+
+    // Switch to Play view
+    document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+    document.getElementById('view-play').classList.remove('hidden');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    // Look for nav button targeting view-play
+    const playNav = document.querySelector('.nav-btn[data-target="view-play"]');
+    if (playNav) playNav.classList.add('active');
+
+    // 3. Load map data
+    let targetUrl = 'data/prime_city.json';
+    for (const [url, meta] of Object.entries(COURSE_METADATA)) {
+        if (ongoingRound.course_name && ongoingRound.course_name.includes(meta.name)) {
+            targetUrl = url;
+            break;
+        }
+    }
+
+    await loadCourse(targetUrl, ongoingRound.holeSequence, scorecard.currentHole);
+    drawShotTracks();
+
+    // 4. Start Tracking
+    if (!tracker) {
+        toggleTracking();
+    }
+    isHeadingUp = true;
+    updateCompassUI();
+}
 
 // Boot up
 document.addEventListener('DOMContentLoaded', init);
