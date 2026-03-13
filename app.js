@@ -182,7 +182,7 @@ async function init() {
             isHeadingUp = false;
         } else {
             isHeadingUp = true;
-            if (userHeading !== null) map.setBearing(userHeading);
+            // Bearing logic removed per user request (Fixed Orientation)
         }
         updateCompassUI();
 
@@ -1486,9 +1486,10 @@ function refreshMapView() {
     // Green below Edit Map button: Edit Map is at top-right.
     // Top padding should be enough to stay below the top bar and edit controls.
 
+    // 300px bottom padding to ensure user is well below the recenter button and nav bar
     const options = {
-        paddingTopLeft: [50, 100], // [left, top] - top 100px to be below Edit Map
-        paddingBottomRight: [50, 180], // [right, bottom] - bottom 180px to be below Recenter button
+        paddingTopLeft: [50, 100],
+        paddingBottomRight: [50, 300],
         maxZoom: 18,
         animate: true
     };
@@ -1561,11 +1562,7 @@ function updateLocationUI(pos) {
         userMarker.setLatLng(latlng);
         const cone = document.getElementById('user-heading-cone');
         if (cone) {
-            if (isHeadingUp) {
-                cone.style.transform = `rotate(0deg)`; // Cone always points up in heading-up mode
-            } else {
-                cone.style.transform = `rotate(${userHeading !== null ? userHeading : 0}deg)`; // Cone rotates with user heading in north-up mode
-            }
+            cone.style.transform = `rotate(${userHeading !== null ? userHeading : 0}deg)`;
         }
     }
 
@@ -1657,10 +1654,11 @@ function handleOrientation(event) {
         if (compass !== null && compass !== undefined) {
             userHeading = compass;
 
-            if (isHeadingUp && map) {
-                // Smooth rotation - setBearing(heading) in Leaflet.Rotation plugin
-                map.setBearing(compass);
-            }
+            // Removed map.setBearing(compass) to prevent unwanted rotations
+            // if (isHeadingUp && map) {
+            //     // Smooth rotation - setBearing(heading) in Leaflet.Rotation plugin
+            //     map.setBearing(compass);
+            // }
 
             const cone = document.getElementById('user-heading-cone');
             if (cone) {
