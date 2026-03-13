@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.4.2';
+const APP_VERSION = '1.4.4';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -1698,7 +1698,7 @@ function toggleTracking() {
 function updateLocationUI(pos) {
     // Early return for filtered GPS fixes
     if (pos.status === 'low_accuracy') {
-        updateGpsStatus('connecting', `Low Accuracy (±${Math.round(pos.accuracy)}m)`);
+        updateGpsStatus('connecting', `Low Accuracy (±${metersToYardsRounded(pos.accuracy)}y)`);
         return;
     } else if (pos.status === 'unstable') {
         updateGpsStatus('connecting', `Unstable Signal (Speed Jump)`);
@@ -1786,7 +1786,7 @@ function updateLocationUI(pos) {
     }
 
     // 3. Update Status
-    updateGpsStatus('connected', `GPS: ±${Math.round(pos.accuracy)}m`);
+    updateGpsStatus('connected', `GPS: ±${metersToYardsRounded(pos.accuracy)}y`);
 
     // 4. Update Shot Tracking Status (Sequential Ver 1.4.0)
     const flightEl = document.getElementById('flight-distance-display');
