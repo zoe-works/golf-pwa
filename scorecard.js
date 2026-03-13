@@ -17,6 +17,7 @@ export class ScorecardManager {
             holeSequence: holeSequence,
             companions: companions,
             holes: {},
+            lastShotStartPos: null, // Track the starting point of the current shot for distance tracking
             summary: {
                 total_score: 0,
                 total_putts: 0,
@@ -25,6 +26,16 @@ export class ScorecardManager {
             currentHole: 1,
             currentShotNum: 1
         };
+    }
+
+    setShotStartPos(lat, lng) {
+        this.roundData.lastShotStartPos = { lat, lng };
+        this.saveRoundData();
+    }
+
+    clearShotStartPos() {
+        this.roundData.lastShotStartPos = null;
+        this.saveRoundData();
     }
 
     loadRoundData() {
@@ -124,6 +135,12 @@ export class ScorecardManager {
         }
 
         this.saveRoundData();
+
+        // Automatically set the next shot's start position to this shot's landing position (Auto-tracking)
+        if (coords && !shot.penalty_val) {
+            this.setShotStartPos(coords[1], coords[0]);
+        }
+
         return shot;
     }
 
@@ -154,6 +171,7 @@ export class ScorecardManager {
         hole.memo = combinedMemo.trim();
         hole.hole_score = hole.shots.length + putts + penalties;
 
+        this.clearShotStartPos();
         this.saveRoundData();
     }
 

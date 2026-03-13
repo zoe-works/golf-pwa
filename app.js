@@ -114,7 +114,28 @@ async function init() {
         }
     });
 
+    // START SHOT POSITIONING (Manual Map Selection)
+    map.on('contextmenu', (e) => {
+        const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
+        if (!isRoundActive) return;
+
+        if (confirm("Set this as Shot Start position?")) {
+            scorecard.setShotStartPos(e.latlng.lat, e.latlng.lng);
+            drawShotTracks(); // Redraw to show the start marker
+        }
+    });
+
     // 3. Setup UI event listeners
+    document.getElementById('btn-start-shot')?.addEventListener('click', () => {
+        if (lastPos) {
+            scorecard.setShotStartPos(lastPos.lat, lastPos.lng);
+            drawShotTracks();
+            // Show feedback
+            const btn = document.getElementById('btn-start-shot');
+            btn.style.background = '#1e88e5';
+            setTimeout(() => { btn.style.background = '#43a047'; }, 500);
+        }
+    });
 
     // Bottom Navigation Logic
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -927,6 +948,9 @@ function saveCurrentTempShot() {
         extraIncrement
     );
 
+    // After saving, the flight distance is "reset" (ready for next shot)
+    // Actually, scorecard.addShot (or saveShot) already updates lastShotStartPos to the current location
+
     drawShotTracks();
 
     // Update live shot count on the main UI
@@ -975,6 +999,19 @@ function drawShotTracks() {
             dashArray: '4, 6',
             opacity: 0.7
         }).addTo(shotLayers);
+    }
+
+    // Draw the "Current Shot Start" indicator if it exists
+    if (scorecard.roundData.lastShotStartPos) {
+        const start = scorecard.roundData.lastShotStartPos;
+        L.circleMarker([start.lat, start.lng], {
+            radius: 8,
+            fillColor: '#43a047',
+            color: '#fff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.8
+        }).bindPopup("Current Shot Start").addTo(shotLayers);
     }
 }
 
@@ -1523,12 +1560,15 @@ function toggleTracking() {
         tracker.stop();
         tracker = null;
         fabShot.style.display = 'none';
+        document.getElementById('btn-start-shot').style.display = 'none';
+        document.getElementById('flight-distance-display').classList.add('hidden');
         updateGpsStatus('disconnected', 'Tracking stopped');
     } else {
         // START
         const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
         if (isRoundActive) {
             fabShot.style.display = 'flex';
+            document.getElementById('btn-start-shot').style.display = 'flex';
         }
 
         tracker = new GeolocationTracker(
@@ -1633,6 +1673,18 @@ function updateLocationUI(pos) {
 
     // 3. Update Status
     updateGpsStatus('connected', `GPS: ±${Math.round(pos.accuracy)}m`);
+
+    // 4. Update Flight Distance
+    const flightEl = document.getElementById('flight-distance-display');
+    if (isRoundActive && scorecard.roundData.lastShotStartPos) {
+        const start = scorecard.roundData.lastShotStartPos;
+        const meters = haversineMeters([pos.lng, pos.lat], [start.lng, start.lat]);
+        const yards = metersToYardsRounded(meters);
+        document.getElementById('flight-yards').innerText = yards;
+        flightEl.classList.remove('hidden');
+    } else {
+        flightEl.classList.add('hidden');
+    }
 }
 
 // Orientation / Compass handling
