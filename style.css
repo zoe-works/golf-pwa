@@ -595,7 +595,7 @@ body {
     align-items: center;
     justify-content: center;
     color: #757575;
-    padding: 15px 0 10px 0;
+    padding: 5px 0 10px 0;
     /* Increased top padding for larger hit area */
     cursor: pointer;
     transition: color 0.2s, background-color 0.2s;
