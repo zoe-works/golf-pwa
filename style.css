@@ -447,7 +447,7 @@ body {
 
 /* Record Shot FAB */
 .btn-record-shot {
-    bottom: calc(150px + env(safe-area-inset-bottom));
+    bottom: calc(215px + env(safe-area-inset-bottom));
     right: 12px;
     background-color: #f44336;
     font-size: 24px;
@@ -459,7 +459,7 @@ body {
 
 /* Recenter FAB (Now also Compass) */
 .btn-recenter {
-    bottom: calc(85px + env(safe-area-inset-bottom));
+    bottom: calc(150px + env(safe-area-inset-bottom));
     right: 12px;
     background-color: white;
     color: #444;
@@ -1263,4 +1263,42 @@ textarea {
     border-radius: 8px;
     border: 1px solid #ddd;
     font-size: 16px;
+}
+/* Shot Distance Tracking & UI Refinements */
+.btn-start-shot {
+    position: absolute;
+    bottom: calc(85px + env(safe-area-inset-bottom));
+    right: 12px;
+    background: #43a047; /* Green for start */
+    color: white;
+    font-size: 24px;
+    display: none; /* Managed by JS */
+}
+
+.flight-distance-box {
+    position: absolute;
+    top: 75px; 
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    min-width: 120px;
+    backdrop-filter: blur(4px);
+}
+
+.flight-distance-box .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+.flight-distance-box .value {
+    font-size: 18px;
+    font-weight: 700;
 }

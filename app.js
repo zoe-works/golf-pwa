@@ -23,7 +23,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.2.1';
+const APP_VERSION = '1.3.2';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -1289,6 +1289,8 @@ function showScorecardModal(historyRoundData = null) {
             // Hide hole status and record shot button
             document.getElementById('hole-status').style.display = 'none';
             document.getElementById('btn-record-shot').style.display = 'none';
+            document.getElementById('btn-start-shot').style.display = 'none';
+            document.getElementById('flight-distance-display').classList.add('hidden');
 
             // Switch to History View
             const historyBtn = document.querySelector('.nav-btn[data-target="view-history"]');
@@ -1410,6 +1412,7 @@ function displayHole(holeNumber) {
 
     document.getElementById('hole-status').style.display = isRoundActive ? 'flex' : 'none';
     document.getElementById('btn-record-shot').style.display = isRoundActive ? 'flex' : 'none';
+    document.getElementById('btn-start-shot').style.display = isRoundActive ? 'flex' : 'none';
     document.getElementById('edit-controls').style.display = 'flex';
 
     // Show live shot count in hole status
