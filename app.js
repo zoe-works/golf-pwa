@@ -24,7 +24,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.5.4';
+const APP_VERSION = '1.5.5';
 
 async function init() {
     // 0. Update Version in UI automatically
