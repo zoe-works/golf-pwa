@@ -981,7 +981,7 @@ function showHoleModal() {
         shotHtml += '<div style="font-weight: 600; margin-bottom: 6px; color: #333;">Shots Recorded:</div>';
         holeData.shots.forEach(s => {
             if (s.club) {
-                if (s.club.includes('PT')) autoPutts++;
+                // 'PT' shots are no longer auto-counted as putts per user request
                 if (s.club.includes('Playing-4') || s.club.includes('OB-Forward')) {
                     autoPens += 2;
                 } else if (s.club.includes('OB')) {
