@@ -1,6 +1,7 @@
 import { haversineMeters, metersToYardsRounded } from './distance.js';
 import { GeolocationTracker } from './geolocation.js';
 import { ScorecardManager } from './scorecard.js';
+import { AnalysisManager } from './analysis.js';
 
 let map;
 let userMarker;
@@ -23,7 +24,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.4.4';
+const APP_VERSION = '1.5.0';
 
 async function init() {
     // 1. Initialize Leaflet Map with Rotation
@@ -231,6 +232,10 @@ async function init() {
             if (targetId === 'view-play') {
                 setTimeout(() => map.invalidateSize(), 50);
                 if (!tracker) toggleTracking();
+            } else if (targetId === 'view-analysis') {
+                if (typeof window.renderAnalysisUI === 'function') {
+                    window.renderAnalysisUI();
+                }
             } else if (targetId === 'view-history') {
                 if (typeof window.renderHistoryList === 'function') window.renderHistoryList();
             } else if (targetId === 'view-settings') {
@@ -2286,6 +2291,12 @@ async function resumeRound(ongoingRound) {
     isHeadingUp = true;
     updateCompassUI();
 }
+
+// --- Analysis Integration ---
+let analysis = new AnalysisManager(scorecard);
+window.renderAnalysisUI = () => {
+    analysis.init();
+};
 
 // Boot up
 document.addEventListener('DOMContentLoaded', init);

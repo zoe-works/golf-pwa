@@ -1264,20 +1264,23 @@ textarea {
     border: 1px solid #ddd;
     font-size: 16px;
 }
+
 /* Shot Distance Tracking & UI Refinements */
 .btn-start-shot {
     position: absolute;
     bottom: calc(85px + env(safe-area-inset-bottom));
     right: 12px;
-    background: #43a047; /* Green for start */
+    background: #43a047;
+    /* Green for start */
     color: white;
     font-size: 24px;
-    display: none; /* Managed by JS */
+    display: none;
+    /* Managed by JS */
 }
 
 .flight-distance-box {
     position: absolute;
-    top: 75px; 
+    top: 75px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.75);
@@ -1301,4 +1304,153 @@ textarea {
 .flight-distance-box .value {
     font-size: 18px;
     font-weight: 700;
+}
+
+/* -------------------------------------
+   ANALYSIS VIEW STYLES
+------------------------------------- */
+
+.analysis-menu {
+    padding: 15px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 5px;
+}
+
+.analysis-card {
+    background: white;
+    border: none;
+    border-radius: 16px;
+    padding: 24px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.analysis-card:active {
+    transform: scale(0.96);
+    background: #f8f9fa;
+}
+
+.card-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Analysis Filter Toggle */
+.analysis-filter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.filter-toggle {
+    display: flex;
+    background: #e0e0e0;
+    padding: 4px;
+    border-radius: 25px;
+    width: 200px;
+}
+
+.filter-btn {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn.active {
+    background: white;
+    color: #1e88e5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Detail View */
+#analysis-detail {
+    padding: 20px;
+    animation: slideInUp 0.3s ease-out;
+}
+
+#analysis-detail h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #333;
+}
+
+.chart-container {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+/* Stat Summary Boxes for Detail */
+.stat-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.stat-item {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.stat-val {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e88e5;
+    margin-bottom: 2px;
+}
+
+.stat-label-small {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
