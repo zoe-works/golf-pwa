@@ -71,7 +71,8 @@ export class AnalysisManager {
             'Par Analysis': 'par',
             'Club Usage': 'usage',
             'Shot Rating': 'rating',
-            'Putting': 'putt'
+            'Putting': 'putt',
+            'FW Keep': 'fw'
         };
         return map[title] || null;
     }
@@ -126,6 +127,9 @@ export class AnalysisManager {
                 break;
             case 'putt':
                 chartConfig = this.preparePutterChart(history, titleEl, statsEl);
+                break;
+            case 'fw':
+                chartConfig = this.prepareFWKeepChart(history, titleEl, statsEl);
                 break;
         }
 
@@ -433,6 +437,81 @@ export class AnalysisManager {
                 scales: {
                     y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Putts' } },
                     y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '%' }, min: 0, max: 100 }
+                }
+            }
+        };
+    }
+
+    prepareFWKeepChart(history, titleEl, statsEl) {
+        titleEl.innerText = "FW Keep Analysis";
+        const clubStats = {}; // { club: { total: 0, kept: 0 } }
+        let totalTShots = 0;
+        let totalKept = 0;
+
+        history.forEach(round => {
+            Object.values(round.holes).forEach(hole => {
+                if (hole.shots) {
+                    // T-Shot is usually shot_num === 1
+                    const tShot = hole.shots.find(s => s.shot_num === 1);
+                    if (tShot && tShot.club) {
+                        if (!clubStats[tShot.club]) clubStats[tShot.club] = { total: 0, kept: 0 };
+                        clubStats[tShot.club].total++;
+                        totalTShots++;
+                        if (tShot.fw_keep) {
+                            clubStats[tShot.club].kept++;
+                            totalKept++;
+                        }
+                    }
+                }
+            });
+        });
+
+        const validClubs = Object.keys(clubStats).filter(c => clubStats[c].total > 0);
+        const labels = validClubs.sort((a, b) => {
+            const idxA = STANDARD_CLUBS_ORDER.indexOf(a);
+            const idxB = STANDARD_CLUBS_ORDER.indexOf(b);
+            if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+            if (idxA === -1) return 1;
+            if (idxB === -1) return -1;
+            return idxA - idxB;
+        });
+
+        const data = labels.map(l => Math.round((clubStats[l].kept / clubStats[l].total) * 100));
+        const overallRate = totalTShots > 0 ? Math.round((totalKept / totalTShots) * 100) : 0;
+
+        statsEl.innerHTML = `<div class="stat-summary-grid">
+            <div class="stat-item"><span class="stat-val">${overallRate}%</span><span class="stat-label-small">Overall T-Shot Keep</span></div>
+            <div class="stat-item"><span class="stat-val">${totalTShots}</span><span class="stat-label-small">Total T-Shots</span></div>
+        </div>`;
+
+        return {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'FW Keep %',
+                    data: data,
+                    backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                    borderColor: '#4caf50',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: { min: 0, max: 100, title: { display: true, text: 'Success Rate (%)' } },
+                    x: { ticks: { font: { size: 10 } } }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const club = context.label;
+                                const stats = clubStats[club];
+                                return `${context.parsed.y}% (${stats.kept}/${stats.total})`;
+                            }
+                        }
+                    }
                 }
             }
         };
