@@ -18,13 +18,14 @@ let shotLayers = L.layerGroup(); // Layer to hold shot markers and lines
 let scorecard = new ScorecardManager();
 let currentEditingShotNum = 1;
 let tempShotData = { club: null, penalties: [], score: 50, memo: '' };
+let historyFilter = 'all'; // 'all' or 'last3'
 
 const COURSE_METADATA = {
     'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.6.1';
+const APP_VERSION = '1.7.0';
 
 async function init() {
     // 0. Update Version in UI automatically
@@ -251,6 +252,17 @@ async function init() {
                     if (typeof renderCompanionGroupsList === 'function') renderCompanionGroupsList();
                 }
             }
+        });
+    });
+
+    // History filter toggle logic
+    document.querySelectorAll('.history-filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const range = e.target.dataset.range;
+            document.querySelectorAll('.history-filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            historyFilter = range;
+            window.renderHistoryList();
         });
     });
 
@@ -2114,8 +2126,9 @@ window.renderHistoryList = function () {
     const bestEl = document.getElementById('stat-best-score');
     const avgEl = document.getElementById('stat-avg-score');
 
-    bestEl.parentElement.innerHTML = `<span class="stat-label">Best</span><span id="stat-best-score">${scorecard.getBestScore()}</span>`;
-    avgEl.parentElement.innerHTML = `<span class="stat-label">Avg</span><span id="stat-avg-score">${scorecard.getAverageScore()}</span>`;
+    const limit = historyFilter === 'last3' ? 3 : null;
+    bestEl.innerText = scorecard.getBestScore(limit);
+    avgEl.innerText = scorecard.getAverageScore(limit);
 
     // Re-get elements after innerHTML update
     const newBestEl = document.getElementById('stat-best-score');

@@ -299,8 +299,11 @@ export class ScorecardManager {
         localStorage.setItem('golf-round-history', JSON.stringify(newHistory));
     }
 
-    getBestScore() {
-        const history = this.getHistory();
+    getBestScore(limit = null) {
+        let history = this.getHistory();
+        if (limit && history.length > 0) {
+            history = history.slice(0, limit);
+        }
         let best = Infinity;
         history.forEach(round => {
             const sequence = round.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
@@ -316,8 +319,8 @@ export class ScorecardManager {
         return best === Infinity ? '--' : best;
     }
 
-    getAverageScore() {
-        const history = this.getHistory();
+    getAverageScore(limit = null) {
+        let history = this.getHistory();
         // Filter strictly 18-hole rounds
         const fullRounds = history.filter(round => {
             const sequence = round.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
@@ -330,8 +333,8 @@ export class ScorecardManager {
 
         if (fullRounds.length === 0) return '--';
 
-        // Take up to last 3
-        const recent = fullRounds.slice(0, 3);
+        // Take limit if provided
+        const recent = limit ? fullRounds.slice(0, limit) : fullRounds;
         const sum = recent.reduce((acc, r) => acc + r.summary.total_score, 0);
         return Math.round(sum / recent.length);
     }
