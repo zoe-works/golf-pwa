@@ -669,12 +669,16 @@ body {
     background: #f5f5f5;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 12px 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 15px;
     font-weight: bold;
     color: #333;
     cursor: pointer;
     transition: all 0.2s ease;
+    line-height: 1.1;
 }
 
 .club-btn:active {
@@ -695,6 +699,7 @@ body {
     background: #e3f2fd !important;
     color: #1e88e5 !important;
     border-color: #bbdefb !important;
+    font-size: 11px !important;
 }
 
 .fw-keep-btn:active {

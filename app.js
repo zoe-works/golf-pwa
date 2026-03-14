@@ -25,7 +25,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.8.0';
+const APP_VERSION = '1.8.1';
 
 async function init() {
     // 0. Update Version in UI automatically
@@ -618,8 +618,8 @@ async function init() {
 
     // Club selection using Event Delegation (since buttons are dynamically generated)
     document.getElementById('club-grid-container').addEventListener('click', (e) => {
-        if (e.target.classList.contains('club-btn')) {
-            document.querySelectorAll('#club-grid-container .club-btn').forEach(b => b.classList.remove('selected'));
+        if (e.target.classList.contains('club-btn') && !e.target.classList.contains('fw-keep-btn')) {
+            document.querySelectorAll('#club-grid-container .club-btn:not(.fw-keep-btn)').forEach(b => b.classList.remove('selected'));
             e.target.classList.add('selected');
             tempShotData.club = e.target.dataset.club;
         } else if (e.target.classList.contains('fw-keep-btn')) {
