@@ -444,35 +444,48 @@ export class AnalysisManager {
 
     prepareTShotChart(history, titleEl, statsEl) {
         titleEl.innerText = "T-Shot Analysis";
-        const clubStats = {}; // { club: { total: 0, kept: 0, penalty: 0, ob: 0 } }
+        const clubStats = {}; // { club: { total: 0, kept: 0, penalty: 0, ob: 0, rough: 0 } }
         let totalTShots = 0;
         let totalKept = 0;
         let totalPenalty = 0;
         let totalOB = 0;
+        let totalRough = 0;
 
         history.forEach(round => {
             Object.values(round.holes).forEach(hole => {
                 if (hole.shots) {
                     const tShot = hole.shots.find(s => s.shot_num === 1);
-                    if (tShot && tShot.club) {
-                        if (!clubStats[tShot.club]) clubStats[tShot.club] = { total: 0, kept: 0, penalty: 0, ob: 0 };
-                        clubStats[tShot.club].total++;
+                    // Filter: Only count if a club was actually selected
+                    if (tShot && tShot.club && tShot.club.trim() !== "" && !tShot.club.includes('(')) {
+                        const clubName = tShot.club;
+                        if (!clubStats[clubName]) clubStats[clubName] = { total: 0, kept: 0, penalty: 0, ob: 0, rough: 0 };
+                        
+                        clubStats[clubName].total++;
                         totalTShots++;
 
-                        if (tShot.fw_keep) {
-                            clubStats[tShot.club].kept++;
-                            totalKept++;
-                        }
+                        let isOB = false;
+                        let isPena = false;
 
                         if (tShot.penalty_types && Array.isArray(tShot.penalty_types)) {
-                            if (tShot.penalty_types.includes('Penalty')) {
-                                clubStats[tShot.club].penalty++;
-                                totalPenalty++;
-                            }
                             if (tShot.penalty_types.includes('OB') || tShot.penalty_types.includes('Playing-4')) {
-                                clubStats[tShot.club].ob++;
-                                totalOB++;
+                                isOB = true;
+                            } else if (tShot.penalty_types.includes('Penalty')) {
+                                isPena = true;
                             }
+                        }
+
+                        if (isOB) {
+                            clubStats[clubName].ob++;
+                            totalOB++;
+                        } else if (isPena) {
+                            clubStats[clubName].penalty++;
+                            totalPenalty++;
+                        } else if (tShot.fw_keep) {
+                            clubStats[clubName].kept++;
+                            totalKept++;
+                        } else {
+                            clubStats[clubName].rough++;
+                            totalRough++;
                         }
                     }
                 }
@@ -490,21 +503,24 @@ export class AnalysisManager {
         });
 
         const fwData = labels.map(l => Math.round((clubStats[l].kept / clubStats[l].total) * 100));
+        const roughData = labels.map(l => Math.round((clubStats[l].rough / clubStats[l].total) * 100));
         const penData = labels.map(l => Math.round((clubStats[l].penalty / clubStats[l].total) * 100));
         const obData = labels.map(l => Math.round((clubStats[l].ob / clubStats[l].total) * 100));
 
         const overallStats = totalTShots > 0 ? {
             fw: Math.round((totalKept / totalTShots) * 100),
+            rough: Math.round((totalRough / totalTShots) * 100),
             pen: Math.round((totalPenalty / totalTShots) * 100),
             ob: Math.round((totalOB / totalTShots) * 100)
-        } : { fw: 0, pen: 0, ob: 0 };
+        } : { fw: 0, rough: 0, pen: 0, ob: 0 };
 
         statsEl.innerHTML = `<div class="stat-summary-grid">
-            <div class="stat-item"><span class="stat-val">${overallStats.fw}%</span><span class="stat-label-small">Overall FW Keep</span></div>
-            <div class="stat-item"><span class="stat-val">${overallStats.ob}%</span><span class="stat-label-small">Overall OB Rate</span></div>
-            <div class="stat-item"><span class="stat-val">${overallStats.pen}%</span><span class="stat-label-small">Penalty Rate</span></div>
-            <div class="stat-item"><span class="stat-val">${totalTShots}</span><span class="stat-label-small">Total T-Shots</span></div>
-        </div>`;
+            <div class="stat-item"><span class="stat-val">${overallStats.fw}%</span><span class="stat-label-small">FW Keep</span></div>
+            <div class="stat-item"><span class="stat-val">${overallStats.rough}%</span><span class="stat-label-small">Rough</span></div>
+            <div class="stat-item"><span class="stat-val">${overallStats.ob}%</span><span class="stat-label-small">OB Rate</span></div>
+            <div class="stat-item"><span class="stat-val">${overallStats.pen}%</span><span class="stat-label-small">Pena Rate</span></div>
+        </div>
+        <p style="text-align:center; font-size:12px; color:#666; margin-top:10px;">Total Tracked T-Shots: ${totalTShots}</p>`;
 
         return {
             type: 'bar',
@@ -512,33 +528,40 @@ export class AnalysisManager {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'FW Keep %',
+                        label: 'FW Keep',
                         data: fwData,
-                        backgroundColor: 'rgba(76, 175, 80, 0.7)',
-                        borderColor: '#4caf50',
-                        borderWidth: 1
+                        backgroundColor: '#4caf50',
                     },
                     {
-                        label: 'Pena %',
+                        label: 'Rough',
+                        data: roughData,
+                        backgroundColor: '#fff176',
+                    },
+                    {
+                        label: 'Pena',
                         data: penData,
-                        backgroundColor: 'rgba(255, 152, 0, 0.7)',
-                        borderColor: '#f57c00',
-                        borderWidth: 1
+                        backgroundColor: '#ff9800',
                     },
                     {
-                        label: 'OB %',
+                        label: 'OB',
                         data: obData,
-                        backgroundColor: 'rgba(244, 67, 54, 0.7)',
-                        borderColor: '#d32f2f',
-                        borderWidth: 1
+                        backgroundColor: '#f44336',
                     }
                 ]
             },
             options: {
                 maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                },
                 scales: {
-                    y: { min: 0, max: 100, title: { display: true, text: 'Rate (%)' } },
-                    x: { ticks: { font: { size: 10 } } }
+                    x: { stacked: true },
+                    y: { 
+                        stacked: true, 
+                        min: 0, 
+                        max: 100, 
+                        title: { display: true, text: 'Distribution (%)' } 
+                    }
                 }
             }
         };
