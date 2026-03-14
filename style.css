@@ -1370,6 +1370,14 @@ textarea {
 .card-icon {
     font-size: 32px;
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon svg {
+    width: 1em;
+    height: 1em;
 }
 
 .card-title {
