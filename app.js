@@ -625,6 +625,12 @@ async function init() {
         } else if (e.target.classList.contains('fw-keep-btn')) {
             e.target.classList.toggle('selected');
             tempShotData.fw_keep = e.target.classList.contains('selected');
+
+            // Mutual exclusivity: FW Keep ON clears penalties
+            if (tempShotData.fw_keep) {
+                tempShotData.penalties = [];
+                document.querySelectorAll('.penalty-btn').forEach(b => b.classList.remove('selected'));
+            }
         }
     });
 
@@ -639,6 +645,10 @@ async function init() {
             } else {
                 // Select (Clear others first)
                 tempShotData.penalties = [thisPenalty];
+
+                // Mutual exclusivity: Penalty ON clears FW Keep
+                tempShotData.fw_keep = false;
+                document.querySelectorAll('.fw-keep-btn').forEach(b => b.classList.remove('selected'));
             }
 
             // Update UI for all penalty buttons
