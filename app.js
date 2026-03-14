@@ -17,7 +17,7 @@ let shotLayers = L.layerGroup(); // Layer to hold shot markers and lines
 
 let scorecard = new ScorecardManager();
 let currentEditingShotNum = 1;
-let tempShotData = { club: null, penalties: [], score: 50, memo: '' };
+let tempShotData = { club: null, penalties: [], score: 50, memo: '', fw_keep: false };
 let historyFilter = 'all'; // 'all' or 'last3'
 
 const COURSE_METADATA = {
@@ -25,7 +25,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.7.4';
+const APP_VERSION = '1.8.0';
 
 async function init() {
     // 0. Update Version in UI automatically
@@ -622,6 +622,9 @@ async function init() {
             document.querySelectorAll('#club-grid-container .club-btn').forEach(b => b.classList.remove('selected'));
             e.target.classList.add('selected');
             tempShotData.club = e.target.dataset.club;
+        } else if (e.target.classList.contains('fw-keep-btn')) {
+            e.target.classList.toggle('selected');
+            tempShotData.fw_keep = e.target.classList.contains('selected');
         }
     });
 
@@ -668,9 +671,10 @@ async function init() {
     document.getElementById('btn-save-shot').addEventListener('click', () => {
         const hasClub = !!tempShotData.club;
         const hasPenalty = tempShotData.penalties && tempShotData.penalties.length > 0;
+        const hasFWKeep = !!tempShotData.fw_keep;
 
-        if (!hasClub && !hasPenalty) {
-            alert("Please select a club or penalty.");
+        if (!hasClub && !hasPenalty && !hasFWKeep) {
+            alert("Please select a club, penalty, or FW keep.");
             return;
         }
         saveShotAndCloseModal();
@@ -684,9 +688,10 @@ async function init() {
     function shouldAutoSaveCurrentShot() {
         const hasClub = !!tempShotData.club;
         const hasPenalty = tempShotData.penalties && tempShotData.penalties.length > 0;
+        const hasFWKeep = !!tempShotData.fw_keep;
         const hd = scorecard.getHoleData();
         const isExistingShot = hd && hd.shots && hd.shots.find(s => s.shot_num === currentEditingShotNum);
-        return hasClub || hasPenalty || isExistingShot;
+        return hasClub || hasPenalty || hasFWKeep || isExistingShot;
     }
 
     // Shot Navigation
@@ -952,7 +957,8 @@ function showShotModal(shotNum) {
         club: baseClub,
         penalties: parsedPenalties,
         score: existingShot ? existingShot.score : 50,
-        memo: existingShot ? existingShot.memo : ''
+        memo: existingShot ? existingShot.memo : '',
+        fw_keep: existingShot ? !!existingShot.fw_keep : false
     };
 
     // Update UI
@@ -972,6 +978,15 @@ function showShotModal(shotNum) {
     // Update Penalty Selection UI
     document.querySelectorAll('.penalty-btn').forEach(b => {
         if (tempShotData.penalties.includes(b.dataset.penalty)) {
+            b.classList.add('selected');
+        } else {
+            b.classList.remove('selected');
+        }
+    });
+
+    // Update FW Keep UI
+    document.querySelectorAll('.fw-keep-btn').forEach(b => {
+        if (tempShotData.fw_keep) {
             b.classList.add('selected');
         } else {
             b.classList.remove('selected');
@@ -1046,7 +1061,8 @@ function saveCurrentTempShot() {
         tempShotData.score,
         tempShotData.memo,
         userCoords,
-        extraIncrement
+        extraIncrement,
+        tempShotData.fw_keep
     );
 
     // Persist flight distance
@@ -2115,6 +2131,12 @@ function renderClubSelector() {
             btn.innerText = club;
             container.appendChild(btn);
         });
+
+        // Add FW Keep Button
+        const fwBtn = document.createElement('button');
+        fwBtn.className = 'club-btn fw-keep-btn';
+        fwBtn.innerText = 'FW Keep';
+        container.appendChild(fwBtn);
     }
 }
 

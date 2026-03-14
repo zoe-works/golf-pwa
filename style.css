@@ -688,6 +688,26 @@ body {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* FW Keep Button Specific Styles */
+.fw-keep-btn {
+    grid-row: 3;
+    grid-column: 5;
+    background: #e3f2fd !important;
+    color: #1e88e5 !important;
+    border-color: #bbdefb !important;
+}
+
+.fw-keep-btn:active {
+    background: #bbdefb !important;
+}
+
+.fw-keep-btn.selected {
+    background: #90caf9 !important;
+    color: #0d47a1 !important;
+    border-color: #64b5f6 !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .club-btn.danger {
     grid-column: span 2;
     background: #ffebee;
