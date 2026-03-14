@@ -113,7 +113,7 @@ export class ScorecardManager {
 
     // --- Actions ---
 
-    saveShot(shotNum, club, score, memo, coords, extraIncrement = 0, fwKeep = false) {
+    saveShot(shotNum, club, score, memo, coords, extraIncrement = 0, fwKeep = false, penaltyTypes = []) {
         const hole = this.roundData.holes[this.currentHole];
         let shot = hole.shots.find(s => s.shot_num === shotNum);
 
@@ -128,7 +128,8 @@ export class ScorecardManager {
                 score: score,
                 memo: memo,
                 penalty_val: extraIncrement,
-                fw_keep: fwKeep
+                fw_keep: fwKeep,
+                penalty_types: penaltyTypes
             };
 
             // Calculate distance for the previous shot (landing point)
@@ -156,6 +157,7 @@ export class ScorecardManager {
             shot.memo = memo;
             shot.penalty_val = extraIncrement;
             shot.fw_keep = fwKeep;
+            shot.penalty_types = penaltyTypes;
 
             // Only update start_coords if missing
             if (!shot.start_coords && coords) {

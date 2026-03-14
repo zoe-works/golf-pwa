@@ -25,7 +25,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.9.0';
+const APP_VERSION = '1.10.0';
 
 async function init() {
     // 0. Update Version in UI automatically
@@ -1001,6 +1001,12 @@ function showShotModal(shotNum) {
         } else {
             b.classList.remove('selected');
         }
+        // FW Keep is only for T-Shot (Shot 1)
+        if (shotNum === 1) {
+            b.classList.remove('hidden');
+        } else {
+            b.classList.add('hidden');
+        }
     });
 
     // Navigation arrows visibility
@@ -1072,7 +1078,8 @@ function saveCurrentTempShot() {
         tempShotData.memo,
         userCoords,
         extraIncrement,
-        tempShotData.fw_keep
+        tempShotData.fw_keep,
+        tempShotData.penalties
     );
 
     // Persist flight distance

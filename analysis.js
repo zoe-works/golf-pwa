@@ -72,7 +72,7 @@ export class AnalysisManager {
             'Club Usage': 'usage',
             'Shot Rating': 'rating',
             'Putting': 'putt',
-            'FW Keep': 'fw'
+            'T-Shot Analysis': 'fw'
         };
         return map[title] || null;
     }
@@ -129,7 +129,7 @@ export class AnalysisManager {
                 chartConfig = this.preparePutterChart(history, titleEl, statsEl);
                 break;
             case 'fw':
-                chartConfig = this.prepareFWKeepChart(history, titleEl, statsEl);
+                chartConfig = this.prepareTShotChart(history, titleEl, statsEl);
                 break;
         }
 
@@ -442,24 +442,37 @@ export class AnalysisManager {
         };
     }
 
-    prepareFWKeepChart(history, titleEl, statsEl) {
-        titleEl.innerText = "FW Keep Analysis";
-        const clubStats = {}; // { club: { total: 0, kept: 0 } }
+    prepareTShotChart(history, titleEl, statsEl) {
+        titleEl.innerText = "T-Shot Analysis";
+        const clubStats = {}; // { club: { total: 0, kept: 0, penalty: 0, ob: 0 } }
         let totalTShots = 0;
         let totalKept = 0;
+        let totalPenalty = 0;
+        let totalOB = 0;
 
         history.forEach(round => {
             Object.values(round.holes).forEach(hole => {
                 if (hole.shots) {
-                    // T-Shot is usually shot_num === 1
                     const tShot = hole.shots.find(s => s.shot_num === 1);
                     if (tShot && tShot.club) {
-                        if (!clubStats[tShot.club]) clubStats[tShot.club] = { total: 0, kept: 0 };
+                        if (!clubStats[tShot.club]) clubStats[tShot.club] = { total: 0, kept: 0, penalty: 0, ob: 0 };
                         clubStats[tShot.club].total++;
                         totalTShots++;
+
                         if (tShot.fw_keep) {
                             clubStats[tShot.club].kept++;
                             totalKept++;
+                        }
+
+                        if (tShot.penalty_types && Array.isArray(tShot.penalty_types)) {
+                            if (tShot.penalty_types.includes('Penalty')) {
+                                clubStats[tShot.club].penalty++;
+                                totalPenalty++;
+                            }
+                            if (tShot.penalty_types.includes('OB') || tShot.penalty_types.includes('Playing-4')) {
+                                clubStats[tShot.club].ob++;
+                                totalOB++;
+                            }
                         }
                     }
                 }
@@ -476,11 +489,20 @@ export class AnalysisManager {
             return idxA - idxB;
         });
 
-        const data = labels.map(l => Math.round((clubStats[l].kept / clubStats[l].total) * 100));
-        const overallRate = totalTShots > 0 ? Math.round((totalKept / totalTShots) * 100) : 0;
+        const fwData = labels.map(l => Math.round((clubStats[l].kept / clubStats[l].total) * 100));
+        const penData = labels.map(l => Math.round((clubStats[l].penalty / clubStats[l].total) * 100));
+        const obData = labels.map(l => Math.round((clubStats[l].ob / clubStats[l].total) * 100));
+
+        const overallStats = totalTShots > 0 ? {
+            fw: Math.round((totalKept / totalTShots) * 100),
+            pen: Math.round((totalPenalty / totalTShots) * 100),
+            ob: Math.round((totalOB / totalTShots) * 100)
+        } : { fw: 0, pen: 0, ob: 0 };
 
         statsEl.innerHTML = `<div class="stat-summary-grid">
-            <div class="stat-item"><span class="stat-val">${overallRate}%</span><span class="stat-label-small">Overall T-Shot Keep</span></div>
+            <div class="stat-item"><span class="stat-val">${overallStats.fw}%</span><span class="stat-label-small">Overall FW Keep</span></div>
+            <div class="stat-item"><span class="stat-val">${overallStats.ob}%</span><span class="stat-label-small">Overall OB Rate</span></div>
+            <div class="stat-item"><span class="stat-val">${overallStats.pen}%</span><span class="stat-label-small">Penalty Rate</span></div>
             <div class="stat-item"><span class="stat-val">${totalTShots}</span><span class="stat-label-small">Total T-Shots</span></div>
         </div>`;
 
@@ -488,30 +510,35 @@ export class AnalysisManager {
             type: 'bar',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'FW Keep %',
-                    data: data,
-                    backgroundColor: 'rgba(76, 175, 80, 0.7)',
-                    borderColor: '#4caf50',
-                    borderWidth: 1
-                }]
+                datasets: [
+                    {
+                        label: 'FW Keep %',
+                        data: fwData,
+                        backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                        borderColor: '#4caf50',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pena %',
+                        data: penData,
+                        backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                        borderColor: '#f57c00',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'OB %',
+                        data: obData,
+                        backgroundColor: 'rgba(244, 67, 54, 0.7)',
+                        borderColor: '#d32f2f',
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
                 maintainAspectRatio: false,
                 scales: {
-                    y: { min: 0, max: 100, title: { display: true, text: 'Success Rate (%)' } },
+                    y: { min: 0, max: 100, title: { display: true, text: 'Rate (%)' } },
                     x: { ticks: { font: { size: 10 } } }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => {
-                                const club = context.label;
-                                const stats = clubStats[club];
-                                return `${context.parsed.y}% (${stats.kept}/${stats.total})`;
-                            }
-                        }
-                    }
                 }
             }
         };
