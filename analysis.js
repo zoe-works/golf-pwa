@@ -25,13 +25,13 @@ export class AnalysisManager {
 
     bindEvents() {
         // Filter toggle in detail view
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        document.querySelectorAll('#analysis-detail .filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const range = e.target.dataset.range;
 
                 // Update UI: active class for all buttons with same range
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll(`.filter-btn[data-range="${range}"]`).forEach(b => b.classList.add('active'));
+                document.querySelectorAll('#analysis-detail .filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll(`#analysis-detail .filter-btn[data-range="${range}"]`).forEach(b => b.classList.add('active'));
 
                 this.currentFilter = range;
 
