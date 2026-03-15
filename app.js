@@ -25,7 +25,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.11.4';
+const APP_VERSION = '1.12.0';
 
 async function init() {
     // 0. Update Version in UI automatically
@@ -1321,19 +1321,18 @@ function showScorecardModal(historyRoundData = null) {
 
     const body = document.getElementById('scorecard-body');
 
-    document.getElementById('btn-save-round').style.display = 'block';
-
     const companions = rd.companions || [];
-    let compHeaders = '';
-    companions.forEach(c => {
-        compHeaders += `<th>${c}</th>`;
-    });
 
     let html = `
-        <table class="score-table" style="font-size: 12px;">
+        <table class="score-table">
             <thead>
                 <tr>
-                    <th>Hole</th><th>Par</th><th>Score</th><th>Putts</th><th>Pena</th>${compHeaders}
+                    <th>H</th>
+                    <th>P</th>
+                    <th>Sc</th>
+                    <th>Pt</th>
+                    <th>Pn</th>
+                    ${companions.map(c => `<th>${c.substring(0, 2)}</th>`).join('')}
                 </tr>
             </thead>
             <tbody>
@@ -1341,19 +1340,53 @@ function showScorecardModal(historyRoundData = null) {
 
     const sequence = rd.holeSequence || Array.from({ length: 18 }, (_, i) => i + 1);
 
-    // Tally companion totals
+    // Tally totals
+    const totals = { par: 0, score: 0, putts: 0, pens: 0 };
     const compTotals = {};
     companions.forEach(c => compTotals[c] = 0);
 
-    for (const hNum of sequence) {
+    // Subtotals for Half
+    const subHalf = { par: 0, score: 0, putts: 0, pens: 0 };
+    const compSubHalf = {};
+    companions.forEach(c => compSubHalf[c] = 0);
+
+    const renderTotalRow = (label, stats, cStats) => {
+        let compCells = '';
+        companions.forEach(c => {
+            compCells += `<td style="font-weight:bold; background:#f0f7ff;">${cStats[c]}</td>`;
+        });
+        return `
+            <tr style="font-weight: bold; background: #f0f7ff;">
+                <td colspan="1">${label}</td>
+                <td>${stats.par}</td>
+                <td>${stats.score}</td>
+                <td>${stats.putts}</td>
+                <td>${stats.pens}</td>
+                ${compCells}
+            </tr>
+        `;
+    };
+
+    sequence.forEach((hNum, index) => {
         const h = rd.holes[hNum];
-        if (h && h.hole_score > 0) {
+        if (h) {
             let compCells = '';
-            companions.forEach(c => {
+            companions.forEach((c, cIdx) => {
                 const s = (h.companionScores && h.companionScores[c]) ? h.companionScores[c] : 0;
                 compTotals[c] += s;
-                compCells += `<td>${s > 0 ? s : '-'}</td>`;
+                compSubHalf[c] += s;
+                compCells += `<td><input type="number" class="edit-comp-score" data-comp="${c}" value="${s}" min="0" max="20" style="width: 30px; text-align: center; border: 1px solid #eee; border-radius: 4px; padding: 2px; font-size: 12px;"></td>`;
             });
+
+            totals.par += (h.par || 0);
+            totals.score += (h.hole_score || 0);
+            totals.putts += (h.putts || 0);
+            totals.pens += (h.penalties || 0);
+
+            subHalf.par += (h.par || 0);
+            subHalf.score += (h.hole_score || 0);
+            subHalf.putts += (h.putts || 0);
+            subHalf.pens += (h.penalties || 0);
 
             const shots = h.shots || [];
             const shotStrs = shots.map(s => {
@@ -1363,36 +1396,35 @@ function showScorecardModal(historyRoundData = null) {
 
             html += `
                 <tr data-hole="${hNum}">
-                    <td>${hNum}</td>
+                    <td style="font-weight:bold;">${hNum}</td>
                     <td>${h.par}</td>
-                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
-                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 35px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
-                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 35px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-score" value="${h.hole_score}" min="1" max="20" style="width: 35px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-putts" value="${h.putts}" min="0" max="10" style="width: 30px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
+                    <td><input type="number" class="edit-pens" value="${h.penalties}" min="0" max="10" style="width: 30px; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 4px;"></td>
                     ${compCells}
                 </tr>
                 ${shotStrs ? `<tr><td colspan="${5 + companions.length}" style="font-size: 10px; color: #666; padding: 2px 10px; border-top: none; text-align: left; background: #fafafa;">${shotStrs}</td></tr>` : ''}
             `;
         }
-    }
 
-    let compTotalsHtml = '';
-    if (companions.length > 0) {
-        compTotalsHtml = `<div style="margin-top: 10px; font-size: 13px;"><strong>Companions:</strong> `;
-        const t = [];
-        companions.forEach(c => {
-            t.push(`${c}: ${compTotals[c]}`);
-        });
-        compTotalsHtml += t.join(' | ') + `</div>`;
+        // Halfway (9 holes) total - Only for 18-hole rounds
+        if (sequence.length === 18 && index === 8) {
+            html += renderTotalRow('OUT', subHalf, compSubHalf);
+            // Reset subHalf
+            subHalf.par = 0; subHalf.score = 0; subHalf.putts = 0; subHalf.pens = 0;
+            companions.forEach(c => compSubHalf[c] = 0);
+        }
+    });
+
+    // Final Total Row
+    if (sequence.length === 18) {
+        html += renderTotalRow('IN', subHalf, compSubHalf);
     }
+    html += renderTotalRow('TOT', totals, compTotals);
 
     html += `
             </tbody>
         </table>
-        <div style="margin-top: 15px; text-align: center;">
-            <strong>Total Score: ${rd.summary.total_score}</strong><br>
-            <span style="font-size: 12px; color: #555;">(Putts: ${rd.summary.total_putts} | Pen: ${rd.summary.total_penalties})</span>
-            ${compTotalsHtml}
-        </div>
     `;
 
     body.innerHTML = html;
@@ -1402,17 +1434,24 @@ function showScorecardModal(historyRoundData = null) {
     const saveBtn = document.getElementById('btn-save-round');
     saveBtn.innerText = isReadonly ? 'Update History' : 'Save Results';
     saveBtn.onclick = () => {
-        const rows = body.querySelectorAll('tbody tr');
+        const rows = body.querySelectorAll('tbody tr[data-hole]');
         rows.forEach(row => {
             const hNum = row.dataset.hole;
             const scoreInp = row.querySelector('.edit-score');
             const puttsInp = row.querySelector('.edit-putts');
             const pensInp = row.querySelector('.edit-pens');
+            const compInps = row.querySelectorAll('.edit-comp-score');
 
             if (scoreInp && rd.holes[hNum]) {
-                rd.holes[hNum].hole_score = parseInt(scoreInp.value, 10);
-                rd.holes[hNum].putts = parseInt(puttsInp.value, 10);
-                rd.holes[hNum].penalties = parseInt(pensInp.value, 10);
+                rd.holes[hNum].hole_score = parseInt(scoreInp.value, 10) || 0;
+                rd.holes[hNum].putts = parseInt(puttsInp.value, 10) || 0;
+                rd.holes[hNum].penalties = parseInt(pensInp.value, 10) || 0;
+
+                // Companion scores
+                if (!rd.holes[hNum].companionScores) rd.holes[hNum].companionScores = {};
+                compInps.forEach(inp => {
+                    rd.holes[hNum].companionScores[inp.dataset.comp] = parseInt(inp.value, 10) || 0;
+                });
             }
         });
 
