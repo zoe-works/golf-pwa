@@ -25,7 +25,7 @@ const COURSE_METADATA = {
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
 };
 
-const APP_VERSION = '1.11.3';
+const APP_VERSION = '1.11.4';
 
 async function init() {
     // 0. Update Version in UI automatically
@@ -170,19 +170,27 @@ async function init() {
                         end_coords: [lastPos.lng, lastPos.lat],
                         distance_yd: calculatedDist,
                         score: 0,
-                        memo: ''
+                        memo: '',
+                        fw_keep: false,
+                        penalty_types: []
                     };
                 } else {
-                    // Update existing shot with distance and landing point
-                    hole.shots[shotIdx].distance_yd = calculatedDist;
+                    // Update existing shot's coords if they were missing
+                    if (!hole.shots[shotIdx].start_coords) hole.shots[shotIdx].start_coords = [startPoint.lng, startPoint.lat];
                     hole.shots[shotIdx].end_coords = [lastPos.lng, lastPos.lat];
-                    // If start_coords was missing/null, fill it
-                    if (!hole.shots[shotIdx].start_coords) {
-                        hole.shots[shotIdx].start_coords = [startPoint.lng, startPoint.lat];
-                    }
+                    hole.shots[shotIdx].distance_yd = calculatedDist;
                 }
                 scorecard.saveRoundData();
             }
+        }
+
+        // If we just marked a new start point, ensure currentShotNum reflects it
+        const hd = scorecard.getHoleData();
+        if (hd && hd.shots) {
+            const maxTracked = hd.shots.length > 0 ? Math.max(...hd.shots.map(s => s.shot_num)) : 0;
+            const totalPena = hd.penalties || 0;
+            // Next shot is max of (current number) or (tracked + pena + 1)
+            scorecard.currentShotNum = Math.max(scorecard.currentShotNum, maxTracked + 1 + totalPena);
         }
 
         drawShotTracks();
