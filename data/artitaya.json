@@ -1,0 +1,546 @@
+{
+  "type": "FeatureCollection",
+  "name": "Artitaya Country Club",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-1",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-2",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-3",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-4",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-5",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-6",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-7",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-8",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Mango-9",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-1",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-2",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-3",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-4",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-5",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-6",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-7",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-8",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Friend-9",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-1",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-2",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-3",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-4",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-5",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-6",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-7",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-8",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Arirang-9",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-1",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-2",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-3",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-4",
+        "par": 5,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-5",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-6",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-7",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-8",
+        "par": 3,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "Eucalyptus-9",
+        "par": 4,
+        "kind": "green_center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9226951114077,
+          14.170327733861868
+        ]
+      }
+    }
+  ]
+}

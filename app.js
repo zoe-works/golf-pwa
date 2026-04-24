@@ -22,7 +22,8 @@ let historyFilter = 'all'; // 'all' or 'last3'
 
 const COURSE_METADATA = {
     'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
-    'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' }
+    'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' },
+    'data/artitaya.json': { lat: 14.170, lng: 100.922, name: 'Artitaya Country Club' }
 };
 
 const APP_VERSION = '1.12.0';
@@ -407,6 +408,26 @@ async function init() {
             });
             firstHalf.value = 'LAKE';
             secondHalf.value = 'WOOD';
+        } else if (courseUrl.includes('artitaya')) {
+            const opts = [
+                { val: 'Mango', text: 'Mango Course' },
+                { val: 'Friend', text: 'Friend Course' },
+                { val: 'Arirang', text: 'Arirang Course' },
+                { val: 'Eucalyptus', text: 'Eucalyptus Course' }
+            ];
+            opts.forEach(opt => {
+                const optEl1 = document.createElement('option');
+                optEl1.value = opt.val;
+                optEl1.innerText = opt.text;
+                firstHalf.appendChild(optEl1);
+
+                const optEl2 = document.createElement('option');
+                optEl2.value = opt.val;
+                optEl2.innerText = opt.text;
+                secondHalf.appendChild(optEl2);
+            });
+            firstHalf.value = 'Mango';
+            secondHalf.value = 'Friend';
         } else {
             // Standard 18 holes
             const opts = [
@@ -553,7 +574,11 @@ async function init() {
             'C': 'A',
             'LAKE': 'WOOD',
             'WOOD': 'ROCK',
-            'ROCK': 'LAKE'
+            'ROCK': 'LAKE',
+            'Mango': 'Friend',
+            'Friend': 'Arirang',
+            'Arirang': 'Eucalyptus',
+            'Eucalyptus': 'Mango'
         };
 
         if (autoMap[first]) {
@@ -572,7 +597,7 @@ async function init() {
 
         // Build sequence
         let sequence = [];
-        if (courseUrl.includes('bangsai') || courseUrl.includes('lakewood')) {
+        if (courseUrl.includes('bangsai') || courseUrl.includes('lakewood') || courseUrl.includes('artitaya')) {
             for (let i = 1; i <= 9; i++) sequence.push(`${firstHalf}-${i}`);
             for (let i = 1; i <= 9; i++) sequence.push(`${secondHalf}-${i}`);
         } else {
