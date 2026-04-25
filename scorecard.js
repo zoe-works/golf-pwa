@@ -169,10 +169,14 @@ export class ScorecardManager {
         }
 
         // --- Recalculate the next expected shot number ---
-        // It should be (max shot_num recorded + total hole penalties) + 1
-        const maxShotNum = hole.shots.length > 0 ? Math.max(...hole.shots.map(s => s.shot_num)) : 0;
-        const totalPena = hole.penalties || 0;
-        this.currentShotNum = maxShotNum + 1 + totalPena;
+        let maxShotNum = 0;
+        let lastShotPenalty = 0;
+        if (hole.shots.length > 0) {
+            const highestShot = hole.shots.reduce((prev, current) => (prev.shot_num > current.shot_num) ? prev : current);
+            maxShotNum = highestShot.shot_num;
+            lastShotPenalty = highestShot.penalty_val || 0;
+        }
+        this.currentShotNum = maxShotNum + 1 + lastShotPenalty;
 
         this.saveRoundData();
         return shot;

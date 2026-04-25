@@ -188,10 +188,14 @@ async function init() {
         // If we just marked a new start point, ensure currentShotNum reflects it
         const hd = scorecard.getHoleData();
         if (hd && hd.shots) {
-            const maxTracked = hd.shots.length > 0 ? Math.max(...hd.shots.map(s => s.shot_num)) : 0;
-            const totalPena = hd.penalties || 0;
-            // Next shot is max of (current number) or (tracked + pena + 1)
-            scorecard.currentShotNum = Math.max(scorecard.currentShotNum, maxTracked + 1 + totalPena);
+            let maxTracked = 0;
+            let lastShotPenalty = 0;
+            if (hd.shots.length > 0) {
+                const highestShot = hd.shots.reduce((prev, current) => (prev.shot_num > current.shot_num) ? prev : current);
+                maxTracked = highestShot.shot_num;
+                lastShotPenalty = highestShot.penalty_val || 0;
+            }
+            scorecard.currentShotNum = Math.max(scorecard.currentShotNum, maxTracked + 1 + lastShotPenalty);
         }
 
         drawShotTracks();
