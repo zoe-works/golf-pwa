@@ -23,7 +23,8 @@ let historyFilter = 'all'; // 'all' or 'last3'
 const COURSE_METADATA = {
     'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' },
-    'data/artitaya.json': { lat: 14.170, lng: 100.922, name: 'Artitaya Country Club' }
+    'data/artitaya.json': { lat: 14.170, lng: 100.922, name: 'Artitaya Country Club' },
+    'data/flora_ville.json': { lat: 13.948, lng: 100.518, name: 'Flora Ville Golf' }
 };
 
 const APP_VERSION = '1.12.0';
