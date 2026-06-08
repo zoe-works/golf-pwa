@@ -374,7 +374,7 @@
       "type": "Feature",
       "properties": {
         "hole": "C-6",
-        "par": 4,
+        "par": 5,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
       },
