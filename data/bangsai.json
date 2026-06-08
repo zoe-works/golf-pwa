@@ -149,7 +149,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-10",
+        "hole": "B-1",
         "par": 5,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -165,7 +165,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-11",
+        "hole": "B-2",
         "par": 4,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -181,7 +181,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-12",
+        "hole": "B-3",
         "par": 3,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -197,7 +197,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-13",
+        "hole": "B-4",
         "par": 4,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -213,7 +213,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-14",
+        "hole": "B-5",
         "par": 5,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -229,7 +229,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-15",
+        "hole": "B-6",
         "par": 4,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -245,7 +245,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-16",
+        "hole": "B-7",
         "par": 3,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -261,7 +261,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-17",
+        "hole": "B-8",
         "par": 4,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
@@ -277,7 +277,7 @@
     {
       "type": "Feature",
       "properties": {
-        "hole": "B-18",
+        "hole": "B-9",
         "par": 4,
         "kind": "green_center",
         "description": "Green Center (Estimated)"
