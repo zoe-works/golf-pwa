@@ -21,6 +21,7 @@ let tempShotData = { club: null, penalties: [], score: 50, memo: '', fw_keep: fa
 let historyFilter = 'all'; // 'all' or 'last3'
 
 const COURSE_METADATA = {
+    'data/pinehurst.json': { lat: 14.045, lng: 100.600, name: 'Pinehurst Golf Club' },
     'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' },
     'data/artitaya.json': { lat: 14.170, lng: 100.922, name: 'Artitaya Country Club' },
@@ -433,6 +434,25 @@ async function init() {
             });
             firstHalf.value = 'Mango';
             secondHalf.value = 'Friend';
+        } else if (courseUrl.includes('pinehurst')) {
+            const opts = [
+                { val: 'South', text: 'South Course' },
+                { val: 'West', text: 'West Course' },
+                { val: 'North', text: 'North Course' }
+            ];
+            opts.forEach(opt => {
+                const optEl1 = document.createElement('option');
+                optEl1.value = opt.val;
+                optEl1.innerText = opt.text;
+                firstHalf.appendChild(optEl1);
+
+                const optEl2 = document.createElement('option');
+                optEl2.value = opt.val;
+                optEl2.innerText = opt.text;
+                secondHalf.appendChild(optEl2);
+            });
+            firstHalf.value = 'South';
+            secondHalf.value = 'West';
         } else {
             // Standard 18 holes
             const opts = [
@@ -583,7 +603,10 @@ async function init() {
             'Mango': 'Friend',
             'Friend': 'Arirang',
             'Arirang': 'Eucalyptus',
-            'Eucalyptus': 'Mango'
+            'Eucalyptus': 'Mango',
+            'South': 'West',
+            'West': 'North',
+            'North': 'South'
         };
 
         if (autoMap[first]) {
@@ -602,7 +625,7 @@ async function init() {
 
         // Build sequence
         let sequence = [];
-        if (courseUrl.includes('bangsai') || courseUrl.includes('lakewood') || courseUrl.includes('artitaya')) {
+        if (courseUrl.includes('bangsai') || courseUrl.includes('lakewood') || courseUrl.includes('artitaya') || courseUrl.includes('pinehurst')) {
             for (let i = 1; i <= 9; i++) sequence.push(`${firstHalf}-${i}`);
             for (let i = 1; i <= 9; i++) sequence.push(`${secondHalf}-${i}`);
         } else {

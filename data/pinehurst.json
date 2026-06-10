@@ -1,0 +1,438 @@
+{
+  "type": "FeatureCollection",
+  "name": "Pinehurst Golf Club",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-1",
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-2",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-3",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-4",
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-5",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-6",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-7",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-8",
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "South-9",
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-1",
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-2",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-3",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-4",
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-5",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-6",
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-7",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-8",
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "West-9",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-1",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-2",
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-3",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-4",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-5",
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-6",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-7",
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-8",
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": "North-9",
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.599807,
+          14.045165
+        ]
+      }
+    }
+  ]
+}
