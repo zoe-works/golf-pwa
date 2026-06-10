@@ -1624,7 +1624,7 @@ async function loadCourse(url, holeSequence = null, targetHole = null) {
             holeSequence.forEach(hNum => {
                 const opt = document.createElement('option');
                 opt.value = hNum;
-                opt.innerText = String(hNum).match(/^[A-Z]+-/) ? hNum : `Hole ${hNum}`;
+                opt.innerText = String(hNum).match(/^[A-Za-z]+-/) ? hNum : `Hole ${hNum}`;
                 holeSelector.appendChild(opt);
             });
 
@@ -1668,7 +1668,7 @@ function displayHole(holeNumber) {
 
     // Set score state
     scorecard.setHole(holeNumber, holePar);
-    document.getElementById('ui-current-hole').innerText = String(holeNumber).match(/^[A-Z]+-/) ? holeNumber : `Hole ${holeNumber}`;
+    document.getElementById('ui-current-hole').innerText = String(holeNumber).match(/^[A-Za-z]+-/) ? holeNumber : `Hole ${holeNumber}`;
     document.getElementById('ui-current-par').innerText = holePar;
 
     const isRoundActive = document.getElementById('btn-start-round').classList.contains('in-round');
