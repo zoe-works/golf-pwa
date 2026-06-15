@@ -234,24 +234,27 @@ export class ScorecardManager {
         };
     }
 
-    generateExportText() {
-        let text = `[Round Report: ${new Date(this.roundData.date).toLocaleDateString()}]\n`;
-        text += `Total: ${this.roundData.summary.total_score} (Putts: ${this.roundData.summary.total_putts}, Penalties: ${this.roundData.summary.total_penalties})\n\n`;
+    generateExportText(rd = this.roundData) {
+        if (!rd || !rd.summary) return "";
+        let text = `以下のゴルフのラウンドデータを分析し、次回のラウンドに向けたアドバイスをください。\n\n`;
+        text += `[ラウンド情報]\n日付: ${new Date(rd.date).toLocaleDateString()}\n`;
+        if (rd.course_name) text += `コース: ${rd.course_name}\n`;
+        text += `トータルスコア: ${rd.summary.total_score} (パット数: ${rd.summary.total_putts}, ペナルティ: ${rd.summary.total_penalties})\n\n`;
 
-        for (const hNum of (this.roundData.holeSequence || [])) {
-            const h = this.roundData.holes[hNum];
+        text += `[ホール詳細]\n`;
+        for (const hNum of (rd.holeSequence || [])) {
+            const h = rd.holes[hNum];
             if (h) {
-                text += `${hNum}H (Par ${h.par}): ${h.hole_score} (Putts: ${h.putts}, Pen: ${h.penalties})\n`;
+                text += `・${hNum}H (Par ${h.par}): スコア ${h.hole_score} (パット: ${h.putts}, ペナルティ: ${h.penalties})\n`;
 
                 const clubLog = h.shots.map(s => {
                     let d = s.distance_yd ? `${s.distance_yd}yd` : '';
-                    let sc = s.score !== undefined ? `[${s.score}]` : '';
+                    let sc = s.score !== undefined ? `[${s.score}点]` : '';
                     return `${s.club}${d ? ' ' + d : ''}${sc}`;
                 }).join(' -> ');
 
-                if (clubLog) text += `  Shots: ${clubLog}\n`;
-                if (h.memo) text += `  Memo: ${h.memo}\n`;
-                text += '\n';
+                if (clubLog) text += `  使用クラブ・ショット: ${clubLog}\n`;
+                if (h.memo) text += `  メモ: ${h.memo}\n`;
             }
         }
         return text;

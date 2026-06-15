@@ -823,15 +823,7 @@ async function init() {
     });
 
     // Save Round logic moved to showScorecardModal's internal onclick handler to prevent duplicate event triggers
-    document.getElementById('btn-export-ai').addEventListener('click', () => {
-        const text = scorecard.generateExportText();
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Scorecard copied to clipboard! Paste into ChatGPT/Gemini.");
-        }).catch(err => {
-            console.error('Failed to copy text: ', err);
-            alert("Failed to copy. See console.");
-        });
-    });
+
 
     // Edit map toggle
     const btnEditToggle = document.getElementById('btn-edit-toggle');
@@ -1486,6 +1478,22 @@ function showScorecardModal(historyRoundData = null) {
     // Action button logic (Update History or Save Round)
     const saveBtn = document.getElementById('btn-save-round');
     saveBtn.innerText = isReadonly ? 'Update History' : 'Save Results';
+
+    const exportBtn = document.getElementById('btn-export-ai');
+    exportBtn.onclick = () => {
+        const text = scorecard.generateExportText(rd);
+        if (!text) {
+            alert("コピーするデータがありません。");
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            alert("AI分析用のテキストをコピーしました！ ChatGPTやGeminiに貼り付けてください。");
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            alert("コピーに失敗しました。");
+        });
+    };
+
     saveBtn.onclick = () => {
         const rows = body.querySelectorAll('tbody tr[data-hole]');
         rows.forEach(row => {
