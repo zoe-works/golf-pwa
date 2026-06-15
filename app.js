@@ -17,7 +17,7 @@ let shotLayers = L.layerGroup(); // Layer to hold shot markers and lines
 
 let scorecard = new ScorecardManager();
 let currentEditingShotNum = 1;
-let tempShotData = { club: null, penalties: [], score: 50, memo: '', fw_keep: false };
+let tempShotData = { club: null, penalties: [], score: 3, memo: '', fw_keep: false };
 let historyFilter = 'all'; // 'all' or 'last3'
 
 const COURSE_METADATA = {
@@ -723,14 +723,26 @@ async function init() {
         });
     });
 
-    // Score Stepper
-    document.getElementById('btn-shot-score-plus').addEventListener('click', () => {
-        tempShotData.score = Math.min(100, tempShotData.score + 10);
-        document.getElementById('shot-score-val').innerText = tempShotData.score;
-    });
-    document.getElementById('btn-shot-score-minus').addEventListener('click', () => {
-        tempShotData.score = Math.max(0, tempShotData.score - 10);
-        document.getElementById('shot-score-val').innerText = tempShotData.score;
+    // Score Rating Buttons
+    function updateRatingUI() {
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            if (parseInt(btn.dataset.score, 10) === tempShotData.score) {
+                btn.style.background = '#e3f2fd';
+                btn.style.borderColor = '#2196f3';
+                btn.style.fontWeight = 'bold';
+            } else {
+                btn.style.background = '#fff';
+                btn.style.borderColor = '#ccc';
+                btn.style.fontWeight = 'normal';
+            }
+        });
+    }
+
+    document.querySelectorAll('.rating-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            tempShotData.score = parseInt(e.target.dataset.score, 10);
+            updateRatingUI();
+        });
     });
 
     // Memo Input
@@ -1026,7 +1038,7 @@ function showShotModal(shotNum) {
 
     // Update UI
     document.getElementById('shot-number-display').innerText = shotNum;
-    document.getElementById('shot-score-val').innerText = tempShotData.score;
+    updateRatingUI();
     document.getElementById('shot-memo-input').value = tempShotData.memo || '';
 
     // Update Club Selection UI

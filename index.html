@@ -376,10 +376,12 @@
 
                 <div class="input-group mt-15 no-border-bottom pb-5">
                     <label>Shot-Self-Scoring</label>
-                    <div class="stepper">
-                        <button id="btn-shot-score-minus" class="stepper-btn">-</button>
-                        <span id="shot-score-val" class="stepper-val">50</span>
-                        <button id="btn-shot-score-plus" class="stepper-btn">+</button>
+                    <div class="rating-group" style="display: flex; gap: 5px; justify-content: space-between; width: 100%;">
+                        <button class="rating-btn" data-score="1" style="flex: 1; padding: 8px 2px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font-size: 11px;">Miss</button>
+                        <button class="rating-btn" data-score="2" style="flex: 1; padding: 8px 2px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font-size: 11px;">Poor</button>
+                        <button class="rating-btn" data-score="3" style="flex: 1; padding: 8px 2px; border: 1px solid #2196f3; border-radius: 4px; background: #e3f2fd; font-size: 11px; font-weight: bold;">OK</button>
+                        <button class="rating-btn" data-score="4" style="flex: 1; padding: 8px 2px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font-size: 11px;">Good</button>
+                        <button class="rating-btn" data-score="5" style="flex: 1; padding: 8px 2px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font-size: 11px;">Perfect</button>
                     </div>
                 </div>
 

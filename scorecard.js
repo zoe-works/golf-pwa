@@ -249,7 +249,8 @@ export class ScorecardManager {
 
                 const clubLog = h.shots.map(s => {
                     let d = s.distance_yd ? `${s.distance_yd}yd` : '';
-                    let sc = s.score !== undefined ? `[${s.score}点]` : '';
+                    const ratingMap = {1: 'Miss', 2: 'Poor', 3: 'OK', 4: 'Good', 5: 'Perfect'};
+                    let sc = s.score !== undefined ? `[${ratingMap[s.score] || s.score}]` : '';
                     return `${s.club}${d ? ' ' + d : ''}${sc}`;
                 }).join(' -> ');
 
