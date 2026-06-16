@@ -724,20 +724,6 @@ async function init() {
     });
 
     // Score Rating Buttons
-    function updateRatingUI() {
-        document.querySelectorAll('.rating-btn').forEach(btn => {
-            if (parseInt(btn.dataset.score, 10) === tempShotData.score) {
-                btn.style.background = '#e3f2fd';
-                btn.style.borderColor = '#2196f3';
-                btn.style.fontWeight = 'bold';
-            } else {
-                btn.style.background = '#fff';
-                btn.style.borderColor = '#ccc';
-                btn.style.fontWeight = 'normal';
-            }
-        });
-    }
-
     document.querySelectorAll('.rating-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             tempShotData.score = parseInt(e.target.dataset.score, 10);
@@ -1003,6 +989,20 @@ async function init() {
 }
 
 // --- SCORECARD UI LOGIC ---
+
+function updateRatingUI() {
+    document.querySelectorAll('.rating-btn').forEach(btn => {
+        if (parseInt(btn.dataset.score, 10) === tempShotData.score) {
+            btn.style.background = '#e3f2fd';
+            btn.style.borderColor = '#2196f3';
+            btn.style.fontWeight = 'bold';
+        } else {
+            btn.style.background = '#fff';
+            btn.style.borderColor = '#ccc';
+            btn.style.fontWeight = 'normal';
+        }
+    });
+}
 
 function showShotModal(shotNum) {
     // Allows testing/viewing modal indoors without GPS.
