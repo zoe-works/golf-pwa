@@ -299,6 +299,63 @@ async function init() {
         document.getElementById('settings-menu').classList.remove('hidden');
     });
 
+    // Backup Data
+    document.getElementById('btn-backup-data')?.addEventListener('click', () => {
+        const backupData = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            data: {}
+        };
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('golf-') || key.startsWith('golf_')) {
+                backupData.data[key] = localStorage.getItem(key);
+            }
+        }
+        
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+        a.download = `golf-pwa-backup-${dateStr}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // Restore Data
+    document.getElementById('btn-restore-data')?.addEventListener('click', () => {
+        document.getElementById('restore-file-input').click();
+    });
+
+    document.getElementById('restore-file-input')?.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                if (importedData.data && (importedData.version || Object.keys(importedData.data).length > 0)) {
+                    if (confirm('現在のデータがすべて上書きされます。よろしいですか？')) {
+                        for (const key in importedData.data) {
+                            localStorage.setItem(key, importedData.data[key]);
+                        }
+                        alert('データの復元が完了しました。アプリを再起動します。');
+                        window.location.reload();
+                    }
+                } else {
+                    alert('無効なバックアップファイルです。');
+                }
+            } catch (error) {
+                console.error("Error parsing backup file:", error);
+                alert('ファイルの読み込みに失敗しました。');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    });
+
     const recenterBtn = document.getElementById('btn-recenter');
     const compassBtn = document.getElementById('btn-compass');
 

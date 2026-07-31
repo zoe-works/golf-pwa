@@ -162,6 +162,25 @@
                         </div>
                         <span style="font-size: 24px; color: #1e88e5;">&rarr;</span>
                     </button>
+                    <!-- NEW BACKUP BUTTONS -->
+                    <button id="btn-backup-data" class="stat-box"
+                        style="width: 100%; border:none; text-align: left; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff;">
+                        <div>
+                            <div class="stat-label" style="font-size: 18px; color: #333; font-weight: bold; margin-bottom: 5px;">Backup Data</div>
+                            <div style="font-size: 13px; color: #777;">Export all your data for device transfer.</div>
+                        </div>
+                        <span style="font-size: 24px; color: #1e88e5;">&darr;</span>
+                    </button>
+                    <button id="btn-restore-data" class="stat-box"
+                        style="width: 100%; border:none; text-align: left; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff;">
+                        <div>
+                            <div class="stat-label" style="font-size: 18px; color: #333; font-weight: bold; margin-bottom: 5px;">Restore Data</div>
+                            <div style="font-size: 13px; color: #777;">Import data from a backup file.</div>
+                        </div>
+                        <span style="font-size: 24px; color: #1e88e5;">&uarr;</span>
+                    </button>
+                    <input type="file" id="restore-file-input" style="display: none;" accept=".json">
+
                     <!-- App Version Display -->
                     <div class="version-display"
                         style="margin-top: 30px; font-size: 12px; color: #999; text-align: center;">
