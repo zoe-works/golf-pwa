@@ -21,6 +21,7 @@ let tempShotData = { club: null, penalties: [], score: 3, memo: '', fw_keep: fal
 let historyFilter = 'all'; // 'all' or 'last3'
 
 const COURSE_METADATA = {
+    'data/pomelo.json': { lat: 13.780, lng: 100.188, name: 'The Pomelo Golf Club' },
     'data/pinehurst.json': { lat: 14.045, lng: 100.600, name: 'Pinehurst Golf Club' },
     'data/prime_city.json': { lat: 14.141, lng: 100.951, name: 'Prime City & Golf' },
     'data/bangsai.json': { lat: 14.212, lng: 100.463, name: 'Bangsai Country Club' },

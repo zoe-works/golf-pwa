@@ -1,0 +1,294 @@
+{
+  "type": "FeatureCollection",
+  "name": "The Pomelo Golf Club",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 1,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 2,
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 3,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 4,
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 5,
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 6,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 7,
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 8,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 9,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 10,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 11,
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 12,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 13,
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 14,
+        "par": 5,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 15,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 16,
+        "par": 3,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 17,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "hole": 18,
+        "par": 4,
+        "kind": "green_center",
+        "description": "Green Center (Estimated)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.18818589325329,
+          13.780507420224874
+        ]
+      }
+    }
+  ]
+}
